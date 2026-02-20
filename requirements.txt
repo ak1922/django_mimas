@@ -1,0 +1,9 @@
+asgiref==3.11.1
+Django==6.0.2
+django-model-utils==5.0.0
+django-stubs==5.2.9
+django-stubs-ext==5.2.9
+pillow==12.1.1
+sqlparse==0.5.5
+types-PyYAML==6.0.12.20250915
+typing_extensions==4.15.0
