@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_content %}Staff Room{% endblock %}
+
+{% block extra_css %}
+<!-- No extra CSS file needed if using Bootstrap fully -->
+{% endblock %}
+
+{% block body_content %}
+<div class="container mt-5">
+    <header class="mb-4">
+        <h1 class="text-center">Staff Room Dashboard</h1>
+    </header>
+
+    <!-- Totals Section (Cards) -->
+    <div class="row g-3 mb-5">
+        <div class="col-md-4 col-lg-2">
+            <div class="card text-white bg-success mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Employees</h5>
+                    <p class="card-text fs-4">{{ h_employeetotal }}</p>
+                    <a href="" class="stretched-link text-white">[View All]</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2">
+            <div class="card text-white bg-success mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Dentists</h5>
+                    <p class="card-text fs-4">{{ h_dentistscount }}</p>
+                    <a href="" class="stretched-link text-white">[View All]</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2">
+            <div class="card text-white bg-primary mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Departments</h5>
+                    <p class="card-text fs-4">{{ h_departmentstotal }}</p>
+                    <a href="" class="stretched-link text-white">[View All]</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2">
+            <div class="card text-white bg-primary mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Branches</h5>
+                    <p class="card-text fs-4">{{ h_branchestotal }}</p>
+                    <a href="" class="stretched-link text-white">[View All]</a>
+                </div>
+            </div>
+        </div>
+         <div class="col-md-4 col-lg-2">
+            <div class="card text-white bg-warning mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Services</h5>
+                    <p class="card-text fs-4">{{ h_servicestotal }}</p>
+                    <a href="" class="stretched-link text-white">[View All]</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2">
+            <div class="card text-white bg-secondary mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Bills</h5>
+                    <p class="card-text fs-4">{{ h_billscount }}</p>
+                    <a href="" class="stretched-link text-white">[View All]</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions Section -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-lg h-100">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Create Records</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="" class="btn btn-outline-primary" title="Add Employee">Employee</a>
+                        <a href="" class="btn btn-outline-primary" title="Add Employee Details">Detail</a>
+                        <a href="" class="btn btn-outline-primary" title="Add Employee Contact">Contact</a>
+                        <a href="" class="btn btn-outline-success" title="Add Dental Service">Service</a>
+                        <a href="" class="btn btn-outline-info" title="Add Dentist">Dentist</a>
+                        <a href="" class="btn btn-outline-warning" title="Add Department">Department</a>
+                        <a href="" class="btn btn-outline-danger" title="Add Branch">Branch</a>
+                        <a href="" title="Create Job Position" class="btn btn-outline-secondary">Positions</a>
+                        <a href="" class="btn btn-outline-danger" title="Add Branch">Tasks</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-lg h-100">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">List Records</h5>
+                </div>
+                <div class="card-body">
+                     <div class="d-flex flex-wrap gap-2">
+                        <a href="" class="btn btn-primary" title="List Employee">Employees</a>
+                        <a href="" class="btn btn-primary" title="List Employees Details">Details</a>
+                        <a href="" class="btn btn-primary" title="List Employees Contacts">Contacts</a>
+                        <a href="" class="btn btn-success" title="List Dental Services">Services</a>
+                        <a href="" class="btn btn-info" title="List Dentists">Dentists</a>
+                        <a href="" class="btn btn-warning" title="List Departments">Departments</a>
+                        <a href="" class="btn btn-danger" title="List Branches">Branches</a>
+                        <a href="" class="btn btn-secondary" title="List Bills">Bills</a>
+                        <a href="" class="btn btn-secondary" title="List Positions">Positions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -15,16 +15,19 @@
 <body>
 
     <!-- Main navigation bar -->
-    <nav class="container-fluid">
-        <div>
-            <a href="{% url 'mimascompany:index' %}" id="appNameLink">Mimas Company</a>
-        </div>
-        <div>
-            <ul>
+    <nav class="navbar">
+
+        <a href="{% url 'mimascompany:index' %}" id="appNameLink">Mimas Company</a>
+
+        <div class="">
+            <ul class="">
                 {# Administrators #}
                 {% if user.is_authenticated and user.user_type == 'Administrators' %}
                     <li><a href="" class="linkItem">Managers Dashboard</a></li>
-                    <li><a href="" class="linkItem">Staff Room</a></li>
+                    <li><a href="" class="linkItem">Employee Dashboard</a></li>
+                    <li><a href="" class="linkItem">Dentist Dashboard</a></li>
+                    <li><a href="" class="linkItem">Patient Dashboard</a></li>
+                    <li><a href="{% url 'mimascompany:staffroom' %}" class="linkItem">Staff Room</a></li>
                     <li><a href="" class="linkItem">Dentist Office</a></li>
                     <li><a href="" class="linkItem">Patients Center</a></li>
                 {% elif user.is_authenticated and user.user_type == 'Employees' %}
@@ -42,25 +45,26 @@
                 {% else %}
                 {# Patients #}
                     {% if user.is_authenticated and user.user_type == 'Patients' %}
-                    	<li><a href="" class="linkItem">Patient Dashboard</a></li>
+                        <li><a href="" class="linkItem">Patient Dashboard</a></li>
                     {% endif %}
                 {% endif %}
             </ul>
         </div>
+
         <div>
-            <ul>
+            <ul class="">
                 {% if user.is_authenticated %}
-                	<li>
+                    <li>
                         <a href="{% url 'accounts:accountlogout' %}" class="linkItem">Welcome {{ user.username }}: Logout</a>
                     </li>
                 {% else %}
-                	<li>
+                    <li>
                         <a href="{% url 'accounts:accountlogin' %}" class="linkItem">Login</a>
                     </li>
-                	<li>
+                    <li>
                         <a href="{% url 'accounts:registeruser' %}" class="linkItem">Register</a>
                     </li>
-                {% endif %} 
+                {% endif %}
             </ul>
         </div>
     </nav>
@@ -68,17 +72,21 @@
     <!-- Messages -->
     <div id="messagesDiv">
         {% if messages %}
-        	<ul class="messages">
-                {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
+        <div class="message-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+                <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
+            {% endfor %}
+        </div>
         {% endif %}
     </div>
 
     <!-- html content -->
     {% block body_content %}
     {% endblock %}
+
 
 </body>
 </html>

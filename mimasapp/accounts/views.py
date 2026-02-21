@@ -15,7 +15,7 @@ def register_user(request):
             new_user = form.save()
             new_user.save()
             print(f'New user created for {new_user}')
-            return redirect('accounts:index')
+            return redirect('mimascompany:index')
         else:
             for field, errors in form.errors.items():
                 messages.error(request, f'{field}:- {", ".join(errors)}')
@@ -50,4 +50,4 @@ def account_login(request):
 def account_logout(request):
 
     logout(request)
-    return render(request, 'accounts/logout.html')
+    return redirect('mimascompany:index')

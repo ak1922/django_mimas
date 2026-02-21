@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Logout{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <div class="mesaDiv">
+            <h5>You are logged out, clink the link below to access the login page.</h5>
+        </div>
+        <div class="loginDiv">
+            <a class="loginTag" href="{% url 'accounts:accountlogin' %}">Login</a>
+        </div>
+    </div>
+
+{% endblock %}

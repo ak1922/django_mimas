@@ -10,13 +10,14 @@
 
 {% block body_content %}
 
-    <div class="container-fluid">
+    <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4>Register User</h4>
-            {{ h_form }}
+            <h4 class="formTitle">Register User</h4>
+            {{ h_form.as_p }}
+
             <div class="buttomsDiv">
-                <button class="formSubmitButton" type="submit">Login</button>
+                <button class="formSubmitButton" type="submit">Register</button>
             </div>
         </form>
     </div>
