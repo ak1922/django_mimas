@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+{% endblock %}
+{% block body_content %}
+<div class="container-fluid px-4">
+    <h2 class="mt-4">Employee Dashboard</h2>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 my-2">
+        <div class="col-md-3">
+            <div class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
+                <div>
+                    <h3 class="fs-2">{{ stats.h_total }}</h3>
+                    <p class="fs-5">Total Tasks</p>
+                </div>
+                <i class="fas fa-tasks fs-1 text-primary"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
+                <div>
+                    <h3 class="fs-2">{{ stats.in_progress }}</h3>
+                    <p class="fs-5">In Progress</p>
+                </div>
+                <i class="fas fa-spinner fs-1 text-warning"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
+                <div>
+                    <h3 class="fs-2">{{ stats.completed }}</h3>
+                    <p class="fs-5">Completed</p>
+                </div>
+                <i class="fas fa-check-circle fs-1 text-success"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
+                <div>
+                    <h3 class="fs-2 text-danger">{{ stats.overdue }}</h3>
+                    <p class="fs-5">Overdue</p>
+                </div>
+                <i class="fas fa-exclamation-triangle fs-1 text-danger"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Table -->
+    <div class="row my-5">
+        <h3 class="fs-4 mb-3">Your Tasks</h3>
+        <div class="col">
+            <table class="table bg-white rounded shadow-sm table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">Due Date</th>
+                        <th scope="col">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.task_name }}</td>
+                        <td>
+                            {% if task.priority == 4 %}
+                                <span class="badge bg-danger">High</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Normal</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ task.get_status_display }}</td>
+                        <td>{{ task.start_date }}</td>
+                        <td>{{ task.end_date|date:"Y-m-d" }}</td>
+                        <td>
+                            <a href="" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No tasks found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

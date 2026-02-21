@@ -2,42 +2,31 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 
-from .models import AccountUser
+from .models import AccountUser, UserType
 
 
 # Register user form
 class RegisterAppUserForm(forms.ModelForm):
     """ Registration form for all app users employees, dentists and patients """
 
-    # Password fields
-    password1 = forms.CharField(
-        label='Password',
-        widget=forms.PasswordInput(
-            attrs={
-                'style': 'width: 400px',
-                'class': 'form-control'
-            }
-        )
-    )
-    password2 = forms.CharField(
-        label='Confirm Password',
-        widget=forms.PasswordInput(
-            attrs={
-                'style': 'width: 400px',
-                'class': 'form-control'
-            }
-        )
-    )
+    # ------- Fields -----
+    password1 = forms.CharField(label='Password')
+    password2 = forms.CharField(label='Confirm Password')
+    user_type = forms.ChoiceField(choices=UserType.choices, label='User Type')
+
+    # ------ Form fields --------
+    def __init__(self, *args, **kwargs):
+        super(RegisterAppUserForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['style'] = 'width: 400px'
+            field.label_suffix = ''
 
     class Meta:
         model = AccountUser
         fields = ['username', 'email', 'user_type']
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 400px'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'style': 'width: 400px'}),
-            'user_type': forms.Select(attrs={'class': 'form-control', 'style': 'width: 400px'})
-        }
 
+    # ----- Validations -------
     def clean_email(self):
         """ Validate provided email """
 
