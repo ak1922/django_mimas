@@ -1,0 +1,84 @@
+<!doctype html>
+
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title_content %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block css_content %}{% endblock %}
+</head>
+<body>
+
+    <!-- Main navigation bar -->
+    <nav class="container-fluid">
+        <div>
+            <a href="{% url 'mimascompany:index' %}" id="appNameLink">Mimas Company</a>
+        </div>
+        <div>
+            <ul>
+                {# Administrators #}
+                {% if user.is_authenticated and user.user_type == 'Administrators' %}
+                    <li><a href="" class="linkItem">Managers Dashboard</a></li>
+                    <li><a href="" class="linkItem">Staff Room</a></li>
+                    <li><a href="" class="linkItem">Dentist Office</a></li>
+                    <li><a href="" class="linkItem">Patients Center</a></li>
+                {% elif user.is_authenticated and user.user_type == 'Employees' %}
+                {# Employees #}
+                    <li><a href="" class="linkItem">Employee Dashboard</a></li>
+                    <li><a href="" class="linkItem">Staff Room</a></li>
+                    <li><a href="" class="linkItem">Dentist Office</a></li>
+                    <li><a href="" class="linkItem">Patients Center</a></li>
+                {% elif user.is_authenticated and user.user_type == 'Dentists' %}
+                {# Dentists #}
+                    <li><a href="" class="linkItem">Dentist Dashboard</a></li>
+                    <li><a href="" class="linkItem">Patients Center</a></li>
+                    <li><a href="" class="linkItem">Dentist Office</a></li>
+                    <li><a href="" class="linkItem">Staff Room</a></li>
+                {% else %}
+                {# Patients #}
+                    {% if user.is_authenticated and user.user_type == 'Patients' %}
+                    	<li><a href="" class="linkItem">Patient Dashboard</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
+        <div>
+            <ul>
+                {% if user.is_authenticated %}
+                	<li>
+                        <a href="{% url 'accounts:accountlogout' %}" class="linkItem">Welcome {{ user.username }}: Logout</a>
+                    </li>
+                {% else %}
+                	<li>
+                        <a href="{% url 'accounts:accountlogin' %}" class="linkItem">Login</a>
+                    </li>
+                	<li>
+                        <a href="{% url 'accounts:registeruser' %}" class="linkItem">Register</a>
+                    </li>
+                {% endif %} 
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    <div id="messagesDiv">
+        {% if messages %}
+        	<ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <!-- html content -->
+    {% block body_content %}
+    {% endblock %}
+
+</body>
+</html>
