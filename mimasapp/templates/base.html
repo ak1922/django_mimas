@@ -24,7 +24,7 @@
                 {# Administrators #}
                 {% if user.is_authenticated and user.user_type == 'Administrators' %}
                     <li><a href="" class="linkItem">Managers Dashboard</a></li>
-                    <li><a href="" class="linkItem">Employee Dashboard</a></li>
+                    <li><a href="{% url 'mimascompany:employeedashboard' %}" class="linkItem">Employee Dashboard</a></li>
                     <li><a href="" class="linkItem">Dentist Dashboard</a></li>
                     <li><a href="" class="linkItem">Patient Dashboard</a></li>
                     <li><a href="{% url 'mimascompany:staffroom' %}" class="linkItem">Staff Room</a></li>
@@ -32,8 +32,8 @@
                     <li><a href="" class="linkItem">Patients Center</a></li>
                 {% elif user.is_authenticated and user.user_type == 'Employees' %}
                 {# Employees #}
-                    <li><a href="" class="linkItem">Employee Dashboard</a></li>
-                    <li><a href="" class="linkItem">Staff Room</a></li>
+                    <li><a href="{% url 'mimascompany:employeedashboard' %}" class="linkItem">Employee Dashboard</a></li>
+                    <li><a href="{% url 'mimascompany:staffroom' %}" class="linkItem">Staff Room</a></li>
                     <li><a href="" class="linkItem">Dentist Office</a></li>
                     <li><a href="" class="linkItem">Patients Center</a></li>
                 {% elif user.is_authenticated and user.user_type == 'Dentists' %}
@@ -41,7 +41,7 @@
                     <li><a href="" class="linkItem">Dentist Dashboard</a></li>
                     <li><a href="" class="linkItem">Patients Center</a></li>
                     <li><a href="" class="linkItem">Dentist Office</a></li>
-                    <li><a href="" class="linkItem">Staff Room</a></li>
+                    <li><a href="{% url 'mimascompany:staffroom' %}" class="linkItem">Staff Room</a></li>
                 {% else %}
                 {# Patients #}
                     {% if user.is_authenticated and user.user_type == 'Patients' %}
@@ -70,16 +70,13 @@
     </nav>
 
     <!-- Messages -->
-    <div id="messagesDiv">
+    <div id="messageDiv">
         {% if messages %}
-        <div class="message-container">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-                <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
-            </div>
-            {% endfor %}
-        </div>
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
         {% endif %}
     </div>
 

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Edit Employee{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+    <div class="container">
+        <h4>Update Information for {{ h_employee.full_name }}</h4>
+        <!-- Edit User Form -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h4>User Form</h4>
+            {{ h_formb.as_p }}
+
+            <h4>Employee Form</h4>
+            {{ h_forma.as_p }}
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{% url 'mimascompany:listemployees' %}" class="btn btn-secondary">Cancel</a
+        </form>
+    </div>
+{% endblock %}

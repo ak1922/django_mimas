@@ -1,0 +1,28 @@
+
+tr {
+    height: 20px;
+    font-size: 15px;
+    font-family: Cambria, serif;
+}
+
+.tableTopDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+    /*padding-right: 10px;*/
+    /*padding-left: 10px;*/
+    padding: 12px;
+    margin-right: 20px;
+}
+
+#tableTopRightDiv {
+    padding: 10px;
+    margin-left: 10px;
+}
+
+.countStat {
+    font-size: 22px;
+    font-weight: bold;
+    color: brown;
+}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}List Company Positions{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block body_content %}
+<div class="container-fluid mt-4">
+    <div class="card shadow">
+        <div class="tableTopDiv">
+            <h5>List of Company Positions</h5>
+            <div>
+                <span class="countStat">Positions Total {{ h_allpositions.count }}</span>
+                <a href="{% url 'mimascompany:createposition' %}" id="tableTopRightDiv" class="btn btn-sm btn-outline-primary" title="Add Company Title">
+                    <i class="fas fa-id-badge fa-fw"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>TITLE</th>
+                            <th>DESCRIPTION</th>
+                            <th>CREATED</th>
+                            <th>UPDATED</th>
+                            <th>UPDATED BY</th>
+                            <th class="text-center">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for position in h_allpositions %}
+                        <tr>
+                            <td class="fw-bold">{{ position.title }}</td>
+                            <td class="text-muted">{{ position.description|truncatechars:50 }}</td>
+                            <td>{{ position.created|date:"Y-m-d" }}</td>
+                            <td>{{ position.updated|date:"Y-m-d" }}</td>
+                            <td>{{ position.updated_by }}</td>
+                            <td class="text-center">
+                                <!-- View Icon -->
+                                <a href="" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <!-- Edit Icon -->
+                                <a href="{% url 'mimascompany:editposition' position.pk %}"
+                                   class="btn btn-sm btn-outline-primary" title="Edit {{ position.title }}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <!-- Delete Icon -->
+                                <a href="{% url 'mimascompany:deleteposition' position.pk %}"
+                                   class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ position.pk }}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                            <!-- Delete Modal -->
+                            <div class="modal fade" id="deleteModal{{ position.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ position.pk }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel{{ position.pk }}">Confirm Delete</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete position <strong>{{ position.title }}</strong>?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form action="{% url 'mimascompany:deleteposition' position.pk %}" method="POST" style="display:inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4">No positions found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

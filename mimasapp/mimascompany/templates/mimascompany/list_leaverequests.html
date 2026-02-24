@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title_content %}List Employees Tasks{% endblock %}
+{% block title_content %}List Leave Requests{% endblock %}
 
 {% block css_content %}
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -14,68 +14,61 @@
     <div class="container-fluid mt-4">
         <div class="card shadow">
             <div class="tableTopDiv">
-                <h5>List of Employees Tasks</h5>
+                <h5>All Leave Requests</h5>
                 <div>
-                    <span class="countStat">Tasks Total {{ h_alltasks.count }}</span>
-                    <a href="{% url 'mimascompany:createtask' %}" id="tableTopRightDiv"
-                       class="btn btn-sm btn-outline-primary" title="Add Employee Task">
-                        <i class="fas fa-list-check fa-fw"></i>
+                    <span class="countStat">Requests Total {{ h_alltasks.count }}</span>
+                    <a href="{% url 'mimascompany:createleaverequest' %}" id="tableTopRightDiv"
+                       class="btn btn-sm btn-outline-primary" title="Add Leave Request">
+                        <i class="fas fa-suitcase-rolling fa-fw"></i>
                     </a>
                 </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-striped align-middle">
-                        <thead class="table-light">
+                        <thead class="table-secondary">
                             <tr>
-                                <th>TASK NAME</th>
-                                <th>TASK CATEGORY</th>
-                                <th>DESCRIPTION</th>
-                                <th>TASK OWNER</th>
-                                <th>PRIORITY</th>
-                                <th>STATUS</th>
-                                <th>START DATE</th>
-                                <th>UPDATED BY</th>
+                                <th scope="col">EMPLOYEE</th>
+                                <th scope="col">LEAVE TYPE</th>
+                                <th scope="col">STATUS</th>
+                                <th scope="col">START DATE</th>
+                                <th scope="col">END DATE</th>
+                                <th scope="col">REQUESTED DATE</th>
+                                <th scope="col">UPDATED BY</th>
                                 <th class="text-center">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for task in h_alltasks %}
+                            {% for leave in h_allrequests %}
                                 <tr>
-                                    <td>{{ task.task_name }}</td>
-                                    <td>{{ task.category }}</td>
-                                    <td>{{ task.description|truncatechars:10 }}</td>
-                                    <td>{{ task.employee }}</td>
-                                    <td>{{ task.priority }}</td>
-                                    <td>{{ task.status }}</td>
-                                    <td>{{ task.start_date }}</td>
-                                    <td>{{ task.updated_by }}</td>
+                                    <td>{{ leave.employee }}</td>
+                                    <td>{{ leave.leave_type }}</td>
+                                    <td>{{ leave.status }}</td>
+                                    <td>{{ leave.start_date }}</td>
+                                    <td>{{ leave.end_date }}</td>
+                                    <td>{{ leave.requested_date }}</td>
+                                    <td>{{ leave.updated_by }}</td>
                                     <td class="text-center">
                                         <!-- View Icon -->
                                         <a href="" class="btn btn-sm btn-outline-info">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <!-- Edit Icon -->
-                                        <a href="{% url 'mimascompany:edittask' task.pk %}"
-                                           class="btn btn-sm btn-outline-primary" title="Edit {{ task.task_name }}">
+                                        <a href=""
+                                           class="btn btn-sm btn-outline-primary" title="Edit Leave Request for {{ leave.employee }}">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <!-- Delete Icon -->
-                                        <a href="{% url 'mimascompany:deletetask' task.pk %}"
+                                        <a href=""
                                            class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ task.pk }}">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
                                     </td>
                                 </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="6" class="text-center py-4">No Tasks found.</td>
-                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            </div>
             </div>
         </div>
     </div>

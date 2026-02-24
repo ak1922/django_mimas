@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
 {% block title_content %}Staff Room{% endblock %}
-
-{% block extra_css %}
-<!-- No extra CSS file needed if using Bootstrap fully -->
-{% endblock %}
 
 {% block body_content %}
 <div class="container mt-5">
@@ -20,7 +17,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Employees</h5>
                     <p class="card-text fs-4">{{ h_employeetotal }}</p>
-                    <a href="" class="stretched-link text-white">[View All]</a>
+                    <a href="{% url 'mimascompany:listemployees' %}" class="stretched-link text-white">[View All]</a>
                 </div>
             </div>
         </div>
@@ -80,15 +77,17 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2">
-                        <a href="" class="btn btn-outline-primary" title="Add Employee">Employee</a>
+                        <a href="{% url 'mimascompany:createposition' %}" title="Create Job Position" class="btn btn-outline-secondary">Positions</a>
+                        <a href="{% url 'mimascompany:createemployee' %}" class="btn btn-outline-primary" title="Add Employee">Employee</a>
                         <a href="" class="btn btn-outline-primary" title="Add Employee Details">Detail</a>
                         <a href="" class="btn btn-outline-primary" title="Add Employee Contact">Contact</a>
                         <a href="" class="btn btn-outline-success" title="Add Dental Service">Service</a>
                         <a href="" class="btn btn-outline-info" title="Add Dentist">Dentist</a>
                         <a href="" class="btn btn-outline-warning" title="Add Department">Department</a>
                         <a href="" class="btn btn-outline-danger" title="Add Branch">Branch</a>
-                        <a href="" title="Create Job Position" class="btn btn-outline-secondary">Positions</a>
-                        <a href="" class="btn btn-outline-danger" title="Add Branch">Tasks</a>
+                        <a href="{% url 'mimascompany:createtaskcategory' %}"  class="btn btn-outline-danger" title="Add Task Category">Task Category</a>
+                        <a href="{% url 'mimascompany:createtask' %}" class="btn btn-outline-danger" title="Add Employee Task">Tasks</a>
+                        <a href="{% url 'mimascompany:createleaverequest' %}" title="Request Time Off" class="btn btn-outline-secondary">Leave Request</a>
                     </div>
                 </div>
             </div>
@@ -100,19 +99,23 @@
                 </div>
                 <div class="card-body">
                      <div class="d-flex flex-wrap gap-2">
-                        <a href="" class="btn btn-primary" title="List Employee">Employees</a>
+                        <a href="{% url 'mimascompany:listpositions' %}" class="btn btn-secondary" title="List Positions">Positions</a>
+                        <a href="{% url 'mimascompany:listemployees' %}" class="btn btn-primary" title="List Employee">Employees</a>
                         <a href="" class="btn btn-primary" title="List Employees Details">Details</a>
                         <a href="" class="btn btn-primary" title="List Employees Contacts">Contacts</a>
                         <a href="" class="btn btn-success" title="List Dental Services">Services</a>
                         <a href="" class="btn btn-info" title="List Dentists">Dentists</a>
                         <a href="" class="btn btn-warning" title="List Departments">Departments</a>
                         <a href="" class="btn btn-danger" title="List Branches">Branches</a>
+                        <a href="{% url 'mimascompany:listtaskcategories' %}" class="btn btn-secondary" title="List Task Categories">Task Categories</a>
+                        <a href="{% url 'mimascompany:listtasks' %}" class="btn btn-secondary" title="List Employee Tasks">Tasks</a>
+                         <a href="{% url 'mimascompany:listallleaverequests' %}" class="btn btn-secondary" title="List All Leave Requests">Leave Request</a>
                         <a href="" class="btn btn-secondary" title="List Bills">Bills</a>
-                        <a href="" class="btn btn-secondary" title="List Positions">Positions</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}

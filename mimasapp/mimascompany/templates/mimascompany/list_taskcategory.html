@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}List Task Categories{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block body_content %}
+<div class="container-fluid mt-4">
+    <div class="card shadow">
+            <div class="tableTopDiv">
+                <h5>All Task Categories</h5>
+                <div>
+                    <span class="countStat">Categories Total {{ h_allcategories.count }}</span>
+                    <a href="{% url 'mimascompany:createemployee' %}" id="tableTopRightDiv"
+                       class="btn btn-sm btn-outline-primary" title="Add Task Category">
+                        <i class="fas fa-plus fa-fw"></i>
+                    </a>
+                </div>
+            </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>NAME</th>
+                            <th>DESCRIPTION</th>
+                            <th class="text-center">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in h_allcategories %}
+                        <tr>
+                            <td class="fw-bold">{{ category.name }}</td>
+                            <td class="text-muted">{{ category.description|truncatechars:50 }}</td>
+                            <td class="text-center">
+                                <!-- View Icon -->
+                                <a href="" class="btn btn-sm btn-outline-info" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <!-- Edit Icon -->
+                                <a href="" class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <!-- Delete Icon -->
+                                <a href="" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Are you sure?')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">No task categories found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

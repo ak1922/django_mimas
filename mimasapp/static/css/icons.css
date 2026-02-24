@@ -1,0 +1,17 @@
+/* Icon variables */
+
+:root {
+    --font-size: large;
+}
+
+.fa-user-plus {
+    font-size: var(--font-size);
+}
+
+.fa-id-badge {
+    font-size: var(--font-size);
+}
+
+.fa-list-check {
+    font-size: var(--font-size);
+}

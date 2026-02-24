@@ -10,13 +10,25 @@ class RegisterAppUserForm(forms.ModelForm):
     """ Registration form for all app users employees, dentists and patients """
 
     # ------- Fields -----
-    password1 = forms.CharField(label='Password')
-    password2 = forms.CharField(label='Confirm Password')
+    password1 = forms.CharField(
+        required=False,
+        label='Password',
+        widget=forms.PasswordInput()
+    )
+    password2 = forms.CharField(
+        label='Confirm Password',
+        required=False,
+        widget=forms.PasswordInput()
+    )
     user_type = forms.ChoiceField(choices=UserType.choices, label='User Type')
 
     # ------ Form fields --------
     def __init__(self, *args, **kwargs):
         super(RegisterAppUserForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['password1'].required = False
+            self.fields['password2'].required = False
+
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['style'] = 'width: 400px'
@@ -27,43 +39,49 @@ class RegisterAppUserForm(forms.ModelForm):
         fields = ['username', 'email', 'user_type']
 
     # ----- Validations -------
-    def clean_email(self):
-        """ Validate provided email """
-
-        email = self.cleaned_data.get('email')
-        if AccountUser.objects.filter(email=email).exists():
-            raise ValidationError("An account with this email already exists.")
-        return email
-
     def clean_username(self):
         """ Validate provided username """
-
         username = self.cleaned_data.get('username')
-        if AccountUser.objects.filter(username=username).exists():
+        if AccountUser.objects.filter(username=username).exclude(pk=self.instance.pk).exists():
             raise ValidationError("This username provided is already taken. Use another name or add numbers to the current username.")
         return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if AccountUser.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("An account with this email already exists.")
+        return email
 
     def clean(self):
         cleaned_data = super().clean()
         password1 = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2')
 
-        # 3. Check for matching passwords
-        if password1 and password2 and password1 != password2:
-            raise ValidationError("Passwords do not match.")
+        # ---- Check passwords for new users ----
+        if not self.instance.pk:
+            if not password1:
+                self.add_error('password1', 'This field is required for new registrations.')
+            if not password2:
+                self.add_error('password1', 'This field is required for new registrations.')
 
-        # Validate password strength (optional but recommended)
-        # if password1:
-        #     validate_password(password1)
-
+        # ---- Check for matching passwords
+        if password1 and password2:
+            if password1 != password2:
+                raise ValidationError('Passwords do not match.')
+            # try:
+            #     validate_password(password1, self.instance)
+            # except ValidationError as e:
+            #     self.add_error('password1', e)
         return cleaned_data
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
+        if 'password1' in self.cleaned_data and self.cleaned_data['password1']:
+            user.set_password(self.cleaned_data['password1'])
         if commit:
             user.save()
         return user
+
 
 
 # User login form

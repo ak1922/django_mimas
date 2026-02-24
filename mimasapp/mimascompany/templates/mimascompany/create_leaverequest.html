@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title_content %}Create Employee{% endblock %}
+{% block title_content %}Create Leave Request{% endblock %}
 
 {% block css_content %}
 	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
@@ -13,10 +13,10 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4>Create Employee</h4>
+            <h4>Create Leave Request</h4>
             {{ h_form.as_p }}
             <div class="buttomsDiv">
-                <button class="formSubmitButton" type="submit">Submit Employee</button>
+                <button class="formSubmitButton" type="submit">Submit Request</button>
             </div>
         </form>
     </div>
