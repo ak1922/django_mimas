@@ -16,7 +16,7 @@
             <div class="card text-white bg-success mb-3 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Employees</h5>
-                    <p class="card-text fs-4">{{ h_employeetotal }}</p>
+                    <p class="card-text fs-4">{{ h_allemployees }}</p>
                     <a href="{% url 'mimascompany:listemployees' %}" class="stretched-link text-white">[View All]</a>
                 </div>
             </div>
@@ -25,7 +25,7 @@
             <div class="card text-white bg-success mb-3 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Dentists</h5>
-                    <p class="card-text fs-4">{{ h_dentistscount }}</p>
+                    <p class="card-text fs-4">{{ h_alldentists }}</p>
                     <a href="" class="stretched-link text-white">[View All]</a>
                 </div>
             </div>
@@ -34,7 +34,7 @@
             <div class="card text-white bg-primary mb-3 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Departments</h5>
-                    <p class="card-text fs-4">{{ h_departmentstotal }}</p>
+                    <p class="card-text fs-4">{{ h_alldepartments }}</p>
                     <a href="" class="stretched-link text-white">[View All]</a>
                 </div>
             </div>
@@ -43,7 +43,7 @@
             <div class="card text-white bg-primary mb-3 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Branches</h5>
-                    <p class="card-text fs-4">{{ h_branchestotal }}</p>
+                    <p class="card-text fs-4">{{ h_allbranches }}</p>
                     <a href="" class="stretched-link text-white">[View All]</a>
                 </div>
             </div>
@@ -52,7 +52,7 @@
             <div class="card text-white bg-warning mb-3 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Services</h5>
-                    <p class="card-text fs-4">{{ h_servicestotal }}</p>
+                    <p class="card-text fs-4">{{ h_allservices }}</p>
                     <a href="" class="stretched-link text-white">[View All]</a>
                 </div>
             </div>
@@ -79,14 +79,15 @@
                     <div class="d-flex flex-wrap gap-2">
                         <a href="{% url 'mimascompany:createposition' %}" title="Create Job Position" class="btn btn-outline-secondary">Positions</a>
                         <a href="{% url 'mimascompany:createemployee' %}" class="btn btn-outline-primary" title="Add Employee">Employee</a>
-                        <a href="" class="btn btn-outline-primary" title="Add Employee Details">Detail</a>
-                        <a href="" class="btn btn-outline-primary" title="Add Employee Contact">Contact</a>
-                        <a href="" class="btn btn-outline-success" title="Add Dental Service">Service</a>
-                        <a href="" class="btn btn-outline-info" title="Add Dentist">Dentist</a>
-                        <a href="" class="btn btn-outline-warning" title="Add Department">Department</a>
-                        <a href="" class="btn btn-outline-danger" title="Add Branch">Branch</a>
+                        <a href="{% url 'mimascompany:createemployeedetail' %}" class="btn btn-outline-primary" title="Add Employee Details">Detail</a>
+                        <a href="{% url 'mimascompany:createemployeecontact' %}" class="btn btn-outline-primary" title="Add Employee Contact">Contact</a>
+                        <a href="{% url 'mimascompany:createservice' %}" class="btn btn-outline-success" title="Add Dental Service">Service</a>
+                        <a href="{% url 'mimascompany:createdentist' %}" class="btn btn-outline-info" title="Add Dentist">Dentist</a>
+                        <a href="{% url 'mimascompany:createdepartment' %}" class="btn btn-outline-warning" title="Add Department">Department</a>
+                        <a href="{% url 'mimascompany:createbranch' %}" class="btn btn-outline-danger" title="Add Branch">Branch</a>
                         <a href="{% url 'mimascompany:createtaskcategory' %}"  class="btn btn-outline-danger" title="Add Task Category">Task Category</a>
                         <a href="{% url 'mimascompany:createtask' %}" class="btn btn-outline-danger" title="Add Employee Task">Tasks</a>
+                        <a href="{% url 'mimascompany:createtaskitem' %}" class="btn btn-outline-danger" title="Add Employee Task Item">Task Item</a>
                         <a href="{% url 'mimascompany:createleaverequest' %}" title="Request Time Off" class="btn btn-outline-secondary">Leave Request</a>
                     </div>
                 </div>
@@ -101,15 +102,16 @@
                      <div class="d-flex flex-wrap gap-2">
                         <a href="{% url 'mimascompany:listpositions' %}" class="btn btn-secondary" title="List Positions">Positions</a>
                         <a href="{% url 'mimascompany:listemployees' %}" class="btn btn-primary" title="List Employee">Employees</a>
-                        <a href="" class="btn btn-primary" title="List Employees Details">Details</a>
-                        <a href="" class="btn btn-primary" title="List Employees Contacts">Contacts</a>
-                        <a href="" class="btn btn-success" title="List Dental Services">Services</a>
-                        <a href="" class="btn btn-info" title="List Dentists">Dentists</a>
-                        <a href="" class="btn btn-warning" title="List Departments">Departments</a>
-                        <a href="" class="btn btn-danger" title="List Branches">Branches</a>
+                        <a href="{% url 'mimascompany:listemployeedetails' %}" class="btn btn-primary" title="List Employees Details">Details</a>
+                        <a href="{% url 'mimascompany:listemployeecontacts' %}" class="btn btn-primary" title="List Employees Contacts">Contacts</a>
+                        <a href="{% url 'mimascompany:listservices' %}" class="btn btn-success" title="List Dental Services">Services</a>
+                        <a href="{% url 'mimascompany:listdentists' %}" class="btn btn-info" title="List Dentists">Dentists</a>
+                        <a href="{% url 'mimascompany:listdepartments' %}" class="btn btn-warning" title="List Departments">Departments</a>
+                        <a href="{% url 'mimascompany:listbranches' %}" class="btn btn-danger" title="List Branches">Branches</a>
                         <a href="{% url 'mimascompany:listtaskcategories' %}" class="btn btn-secondary" title="List Task Categories">Task Categories</a>
                         <a href="{% url 'mimascompany:listtasks' %}" class="btn btn-secondary" title="List Employee Tasks">Tasks</a>
-                         <a href="{% url 'mimascompany:listallleaverequests' %}" class="btn btn-secondary" title="List All Leave Requests">Leave Request</a>
+                        <a href="{% url 'mimascompany:listtaskitems' %}" class="btn btn-secondary" title="List Employee Tasks Items">Tasks Items</a>
+                        <a href="{% url 'mimascompany:listallleaverequests' %}" class="btn btn-secondary" title="List All Leave Requests">Leave Request</a>
                         <a href="" class="btn btn-secondary" title="List Bills">Bills</a>
                     </div>
                 </div>

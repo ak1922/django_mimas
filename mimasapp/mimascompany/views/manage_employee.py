@@ -1,20 +1,22 @@
 import logging
 from PIL import Image
+from django.db.models import Q
 from django.db import transaction
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
 from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
 
 from accounts.models import AccountUser
 from accounts.forms import RegisterAppUserForm
 from accounts.decorators import group_required
 from mimascompany.models.employee_model import Employee
-from mimascompany.forms.employee_form import EmployeeForm
+from mimascompany.forms.employee_form import EmployeeForm, UploadImageForm
 
 
 # Set up logging
@@ -63,9 +65,20 @@ class EmployeeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 @group_required(allowed_groups=['Administrators', 'Employees'])
 def list_employees(request):
 
-    all_employees = Employee.objects.all()
+    query = request.GET.get('item_name')
+    all_employees = Employee.objects.all().order_by('user__username', 'status')
 
-    paginator = Paginator(all_employees, 10)
+    if query:
+        all_employees = all_employees.filter(
+            Q(last_name__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(user__username__icontains=query) |
+            Q(user__email__icontains=query)
+        ).distinct()
+    else:
+        all_employees = Employee.objects.all().order_by('user__username', 'status')
+
+    paginator = Paginator(all_employees, 5)
     page_number = request.GET.get('page')
     page_allemployees = paginator.get_page(page_number)
 
@@ -139,13 +152,22 @@ def edit_employee(request, emp_id):
     return render(request, 'mimascompany/edit_employee.html', context)
 
 
+# View employee
+@login_required
+@group_required(allowed_groups=['Administrators', 'Employees'])
+def view_employee(request, emp_id):
+    employee = get_object_or_404(Employee, pk=emp_id)
+    return render(request, 'mimascompany/view_employee.html', {'employee': employee})
+
+
 # Delete employee
 @login_required
+@group_required(allowed_groups=['Administrators', 'Employees'])
 def delete_employee(request, emp_id):
 
     employee = get_object_or_404(Employee, pk=emp_id)
     if request.method == 'POST':
         employee.delete()
         messages.success(request, 'Employee deleted')
-        logger.info(request, 'Employee deleted')
+        logger.info('Employee deleted')
     return redirect('mimascompany:listemployees')

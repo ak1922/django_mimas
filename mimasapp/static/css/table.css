@@ -1,28 +1,64 @@
 
-tr {
-    height: 20px;
-    font-size: 15px;
-    font-family: Cambria, serif;
+/* Table Styling */
+.custom-table-container table.table {
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.tableTopDiv {
+.custom-table-container .table-hover tbody tr:hover {
+    background-color: #f1f4f8;
+}
+
+/* Header and Action Bar Layout */
+.titleStatsDiv {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    align-content: center;
-    /*padding-right: 10px;*/
-    /*padding-left: 10px;*/
-    padding: 12px;
-    margin-right: 20px;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.searchAddDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+}
+
+/* Specific Element Styling */
+.countStat {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #856404; /* Darker brown/gold for better readability */
+    background-color: #fff3cd;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.searchDiv {
+    display: flex;
+    flex-grow: 1; /* Allow search to take available space */
+    max-width: 400px;
+}
+
+.searchDiv input {
+    border-radius: 20px;
 }
 
 #tableTopRightDiv {
-    padding: 10px;
-    margin-left: 10px;
+    margin-left: 15px;
+    border-radius: 20px;
 }
 
-.countStat {
-    font-size: 22px;
-    font-weight: bold;
-    color: brown;
+.pagination {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center; /* Center the pagination */
+    gap: 0; /* Ensures no gap between <li> elements */
+}
+
+/* Ensure pagination links don't have margins that create spaces */
+.pagination .page-item {
+    margin: 0;
 }

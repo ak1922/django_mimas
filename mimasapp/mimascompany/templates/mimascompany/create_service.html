@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Create Service{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <h4>Create Service</h4>
+            {{ h_form.as_p }}
+            <div class="buttomsDiv">
+                <button class="formSubmitButton" type="submit">Submit Service</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Create Branch{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <h4>Create Branch</h4>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {{ h_form.branch_name.label_tag }}
+            {{ h_form.branch_name }}
+            {{ h_form.branch_head.label_tag }}
+            {{ h_form.branch_head }}
+            {{ h_form.location.label_tag }}
+            {{ h_form.location }}
+
+            <!-- Custom rendering for Departments and Services -->
+            <h5 class="text-center mt-3">Departments & Services</h5>
+
+            {% for department in h_departments %}
+                <div class="department-section mt-2">
+                    <label>
+                        <input type="checkbox" name="departments" value="{{ department.pk }}">
+                        <strong>{{ department.department_name }}</strong>
+                    </label>
+                    <!-- Loop through services related to this department -->
+                    <div class="service-list">
+                        {% for service in department.service_department.all %}
+                        <label>
+
+                            <input type="checkbox" name="services" value="{{ service.pk }}">
+                            {{ service.service_name }}
+                        </label><br>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="buttomsDiv">
+                <button class="formSubmitButton" type="submit">Submit Branch</button>
+            </div>
+        </form>
+    </div>
+
+<br><br><br><br>
+{% endblock %}

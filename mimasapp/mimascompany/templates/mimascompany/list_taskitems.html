@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title_content %}List Leave Requests{% endblock %}
+{% block title_content %}List Task Items{% endblock %}
 
 {% block css_content %}
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -16,17 +16,17 @@
 
             <!-- Title & Stats -->
             <div class="titleStatsDiv">
-                <h5 class="mb-0 text-gray-800">All Leave Requests</h5>
+                <h5 class="mb-0 text-gray-800">All Tasks Items</h5>
                 <div>
-                    <span class="countStat">Requests Total: {{ h_allrequestscount }}</span>
+                    <span class="countStat">Items Total: {{ h_allitemscount }}</span>
                 </div>
             </div>
 
-            <!-- Add & Search -->
+            <!-- Add & search -->
             <div class="searchAddDiv">
                 <div class="searchDiv">
                     <form method="GET" class="d-flex w-100">
-                        <input class="form-control form-control-sm me-2" type="search" name="item_name" placeholder="Search Employee, Approver...">
+                        <input class="form-control form-control-sm me-2" type="search" name="item_name" placeholder="Search Item Name, Task Name, Employee...">
                         <button class="btn btn-sm btn-success" type="submit">
                             Submit
                             <i class="fas fa-search"></i>
@@ -34,66 +34,66 @@
                     </form>
                 </div>
 
-                <!-- Add task icon -->
-                <a href="{% url 'mimascompany:createleaverequest' %}" id="tableTopRightDiv" class="btn btn-sm btn-primary" title="Add Employee Leave Request">
-                    <i class="fas fa-plus fa-fw"></i> Add Leave Request
+                <a href="{% url 'mimascompany:createtaskitem' %}" id="tableTopRightDiv" class="btn btn-sm btn-primary" title="Add Task Item">
+                    <i class="fas fa-plus fa-fw"></i> Add Task Item
                 </a>
             </div>
 
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle mb-0">
+                    <table class="table table-hover table-striped align-middle mb-0 text-center">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">EMPLOYEE</th>
-                                <th scope="col">LEAVE TYPE</th>
-                                <th scope="col">STATUS</th>
-                                <th scope="col">START DATE</th>
-                                <th scope="col">END DATE</th>
-                                <th scope="col">REQUESTED DATE</th>
-                                <th scope="col">UPDATED BY</th>
-                                <th class="text-center">ACTIONS</th>
+                                <th>EMPLOYEE</th>
+                                <th>ITEM NAME</th>
+                                <th>TASK NAME</th>
+                                <th>START DATE</th>
+                                <th>END DATE</th>
+                                <th>COMMENTS</th>
+                                <th>CREATED</th>
+                                <th>UPDATED</th>
+                                <th>UPDATED BY</th>
+                                <th>ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for leave in page_allrequests %}
-                            	<tr>
-                                    <td>{{ leave.employee }}</td>
-                                    <td>{{ leave.leave_type }}</td>
-                                    <td>{{ leave.status }}</td>
-                                    <td>{{ leave.start_date }}</td>
-                                    <td>{{ leave.end_date }}</td>
-                                    <td>{{ leave.requested_date }}</td>
-                                    <td>{{ leave.updated_by }}</td>
+                            {% for item in page_alltaskitems %}
+                            	<tr class="tableText">
+                                    <td>{{ item.employee.full_name }}</td>
+                                    <td>{{ item.item_name }}</td>
+                                    <td>{{ item.task_name }}</td>
+                                    <td>{{ item.start_date }}</td>
+                                    <td>{{ item.end_date }}</td>
+                                    <td>{{ item.comments|truncatechars:10 }}</td>
+                                    <td>{{ item.created }}</td>
+                                    <td>{{ item.updated }}</td>
+                                    <td>{{ item.updated_by }}</td>
                                     <td class="text-center">
-                                        <!-- View Icon -->
-                                        <a href="" class="btn btn-sm btn-outline-primary">
+                                        <a href="" class="btn btn-sm btn-outline-info">
                                             <i class="fas fa-eye fa-fw"></i>
                                         </a>
-                                        <!-- Edit Icon -->
-                                        <a href="{% url 'mimascompany:editleaverequest' leave.pk %}" class="btn btn-sm btn-outline-warning" title="Edit Leave Request for {{ leave.employee }}">
+                                        <a href="{% url 'mimascompany:edittaskitem' item.pk %}" class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="fas fa-edit fa-fw"></i>
                                         </a>
-                                        <!-- Delete Icon -->
-                                        <a href="" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ leave.pk }}">
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.pk }}">
                                             <i class="fas fa-trash-alt fa-fw"></i>
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                                 <!-- Delete Modal -->
-                                <div class="modal fade" id="deleteModal{{ leave.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ leave.pk }}" aria-hidden="true">
+                                <div class="modal fade" id="deleteModal{{ item.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.pk }}" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteModalLabel{{ leave.pk }}">Confirm Delete</h5>
+                                                <h5 class="modal-title" id="deleteModalLabel{{ item.pk }}">Confirm Delete</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                Are you sure you want to delete leave for employee <strong>{{ leave.employee }}</strong>?
+                                                Are you sure you want to delete item {{ item.item_name }} <strong>{{ item.employee.full_name }}</strong>?
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <form action="{% url 'mimascompany:deleteleaverequest' leave.pk %}" method="POST" style="display:inline;">
+                                                <form action="{% url 'mimascompany:deletetaskitem' item.pk %}" method="POST" style="display:inline;">
                                                     {% csrf_token %}
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
@@ -102,34 +102,31 @@
                                     </div>
                                 </div>
                             {% empty %}
-                                <tr>
-                                    <td colspan="9" class="text-center py-4 text-muted">No Leave Requests Found.</td>
-                                </tr>
+
                             {% endfor %}
+
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Pagination -->
-                {% if page_allrequests.has_other_pages %}
+                {% if page_alltasks.has_other_pages %}
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
-                            {% if page_allrequests.has_previous %}
-                                <li class="page-item"><a class="page-link" href="?page={{ page_allrequests.previous_page_number }}">&laquo; Previous</a></li>
+                            {% if page_alltasks.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_alltasks.previous_page_number }}">&laquo; Previous</a></li>
                             {% else %}
                                 <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
                             {% endif %}
 
-                            {% for i in page_allrequests.paginator.page_range %}
-                                {% if page_allrequests.number == i %}
+                            {% for i in page_alltasks.paginator.page_range %}
+                                {% if page_alltasks.number == i %}
                                     <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
                                 {% else %}
                                     <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                                 {% endif %}
                             {% endfor %}
 
-                            {% if page_allrequests.has_next %}
-                                <li class="page-item"><a class="page-link" href="?page={{ page_allrequests.next_page_number }}">Next &raquo;</a></li>
+                            {% if page_alltasks.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_alltasks.next_page_number }}">Next &raquo;</a></li>
                             {% else %}
                                 <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
                             {% endif %}
@@ -140,5 +137,4 @@
         </div>
     </div>
 
-<br><br><br><br>
 {% endblock %}

@@ -12,7 +12,7 @@
     <div class="container">
         <h4>Update Information for {{ h_employee.full_name }}</h4>
         <!-- Edit User Form -->
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST">
             {% csrf_token %}
             <h4>User Form</h4>
             {{ h_formb.as_p }}

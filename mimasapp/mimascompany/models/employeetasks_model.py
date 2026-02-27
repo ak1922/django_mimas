@@ -1,9 +1,10 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
-from .auxiliary_models import AuditModel
+
 from .employee_model import Employee
+from .auxiliary_models import AuditModel
 
 
 # Task category model
@@ -118,11 +119,11 @@ class EmployeeTaskItem(AuditModel):
 
     # ---- Item info ----
     item_name = models.CharField(max_length=250)
-    comments = models.CharField()
+    comments = models.CharField(blank=True, null=True)
 
     # ---- Dates ----
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateTimeField(blank=True, null=True)
 
     # ---- Foriegn keys ----
     employee = models.ForeignKey(

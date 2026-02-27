@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Create Employee Contact{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <h4>Create Employee Contact</h4>
+            {{ h_form.as_p }}
+            <div class="buttomsDiv">
+                <button class="formSubmitButton" type="submit">Submit Contact</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

@@ -22,3 +22,20 @@
     justify-content: center;
     align-items: center;
 }
+
+/* Custom Fonts for Tables */
+.task-table {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+}
+
+.sub-task-table {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    background-color: #f8f9fa;
+}
+
+.leave-table {
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+}

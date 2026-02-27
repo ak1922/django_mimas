@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-from mimascompany.models.employeetasks_model import TaskCategory, EmployeeTask
+from mimascompany.models.employeetasks_model import TaskCategory, EmployeeTask, EmployeeTaskItem
 
 # Task category form
 class TaskCategoryForm(forms.ModelForm):
@@ -37,11 +37,6 @@ class EmployeeTaskForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({'style': 'width: 400px'})
 
     def clean(self):
-        """
-        Robust validation to ensure end_date is after start_date
-        and that the task is not being created/updated in the past.
-        """
-
         cleaned_data = super().clean()
         start_date = cleaned_data.get('start_date')
         end_date = cleaned_data.get('end_date')
@@ -57,3 +52,41 @@ class EmployeeTaskForm(forms.ModelForm):
                 {'start_date': 'Start date cannot be in the past.'}
             )
         return cleaned_data
+
+
+# Task item form
+class EmployeeTaskItemForm(forms.ModelForm):
+
+    class Meta:
+        model = EmployeeTaskItem
+        fields = ['item_name', 'task_name', 'employee', 'start_date', 'end_date']
+        widgets = {
+            'start_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'end_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+            self.fields[field].widget.attrs.update({'style': 'width: 400px'})
+
+
+
+class EmployeeTaskItemDashForm(forms.ModelForm):
+
+    class Meta:
+        model = EmployeeTaskItem
+        fields = ['item_name', 'task_name', 'employee', 'start_date', 'end_date', 'comments']
+        widgets = {
+            'start_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'end_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'comments': forms.Textarea(attrs={'rows': 3, 'cols': 20}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(EmployeeTaskItemDashForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.label_suffix = ''
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['style'] = 'width: 400px'

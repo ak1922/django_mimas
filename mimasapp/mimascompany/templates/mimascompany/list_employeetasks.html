@@ -5,33 +5,50 @@
 {% block title_content %}List Employees Tasks{% endblock %}
 
 {% block css_content %}
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+	<link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <link rel="stylesheet" href="{% static 'css/icons.css' %}">
 {% endblock %}
 
 {% block body_content %}
-
     <div class="container-fluid mt-4">
-        <div class="card shadow">
-            <div class="tableTopDiv">
-                <h5>List of Employees Tasks</h5>
+        <div class="card shadow-sm custom-table-container">
+
+            <!-- Header: Title and Stats -->
+            <div class="titleStatsDiv">
+                <h5 class="mb-0 text-gray-800">All Employees Tasks</h5>
                 <div>
-                    <span class="countStat">Tasks Total {{ h_alltasks.count }}</span>
-                    <a href="{% url 'mimascompany:createtask' %}" id="tableTopRightDiv"
-                       class="btn btn-sm btn-outline-primary" title="Add Employee Task">
-                        <i class="fas fa-list-check fa-fw"></i>
-                    </a>
+                    <span class="countStat">Total: {{ h_alltasks.count }}</span>
                 </div>
             </div>
-            <div class="card-body">
+
+            <!-- Action Bar: Search and Add -->
+            <div class="searchAddDiv">
+                <div class="searchDiv">
+                    <form method="GET" class="d-flex w-100">
+                        <input class="form-control form-control-sm me-2" type="search" name="item_name" placeholder="Search Task Name, First Name, Last Name">
+                        <button class="btn btn-sm btn-success" type="submit">
+                            Submit
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Add task icon -->
+                <a href="{% url 'mimascompany:createtask' %}" id="tableTopRightDiv" class="btn btn-sm btn-primary" title="Add Employee Task">
+                    <i class="fas fa-plus fa-fw"></i> Add Employee Task
+                </a>
+            </div>
+
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle">
+                    <table class="table table-hover table-striped align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th>TASK NAME</th>
-                                <th>TASK CATEGORY</th>
+                                <th>CATEGORY</th>
                                 <th>DESCRIPTION</th>
-                                <th>TASK OWNER</th>
+                                <th>OWNER</th>
                                 <th>PRIORITY</th>
                                 <th>STATUS</th>
                                 <th>START DATE</th>
@@ -40,44 +57,87 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for task in h_alltasks %}
-                                <tr>
-                                    <td>{{ task.task_name }}</td>
-                                    <td>{{ task.category }}</td>
-                                    <td>{{ task.description|truncatechars:10 }}</td>
-                                    <td>{{ task.employee }}</td>
-                                    <td>{{ task.priority }}</td>
-                                    <td>{{ task.status }}</td>
-                                    <td>{{ task.start_date }}</td>
-                                    <td>{{ task.updated_by }}</td>
-                                    <td class="text-center">
-                                        <!-- View Icon -->
-                                        <a href="" class="btn btn-sm btn-outline-info">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <!-- Edit Icon -->
-                                        <a href="{% url 'mimascompany:edittask' task.pk %}"
-                                           class="btn btn-sm btn-outline-primary" title="Edit {{ task.task_name }}">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <!-- Delete Icon -->
-                                        <a href="{% url 'mimascompany:deletetask' task.pk %}"
-                                           class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ task.pk }}">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                            {% for task in page_alltasks %}
+                            <tr>
+                                <td class="fw-bold text-primary">{{ task.task_name }}</td>
+                                <td>{{ task.category }}</td>
+                                <td>{{ task.description|truncatechars:10 }}</td>
+                                <td>{{ task.employee }}</td>
+                                <td>{{ task.priority }}</td>
+                                <td>{{ task.status }}</td>
+                                <td>{{ task.start_date|date:"Y-m-d" }}</td>
+                                <td>{{ task.updated_by }}</td>
+                                <td class="text-center">
+                                    <a href="" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'mimascompany:edittask' task.pk %}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <!-- Example Triggering Modal -->
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ task.pk }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal{{ task.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ task.pk }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ task.pk }}">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete {{ task.task_name }} for <strong>{{ task.employee.full_name }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{% url 'mimascompany:deleteemployee' task.pk %}" method="POST" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                
                             {% empty %}
-                                <tr>
-                                    <td colspan="6" class="text-center py-4">No Tasks found.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="9" class="text-center py-4 text-muted">No Employee Tasks Found.</td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            </div>
+                <!-- Pagination -->
+                {% if page_alltasks.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if page_alltasks.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_alltasks.previous_page_number }}">&laquo; Previous</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+                            {% endif %}
+
+                            {% for i in page_alltasks.paginator.page_range %}
+                                {% if page_alltasks.number == i %}
+                                    <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_alltasks.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_alltasks.next_page_number }}">Next &raquo;</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}              
             </div>
         </div>
     </div>
 
+<br><br><br><br>
 {% endblock %}

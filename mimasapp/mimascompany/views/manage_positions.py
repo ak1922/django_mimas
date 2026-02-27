@@ -1,5 +1,7 @@
 import logging
+from django.db.models import Q
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -39,9 +41,22 @@ def create_position(request):
 @group_required(allowed_groups=['Employees', 'Administrators'])
 def list_positions(request):
 
-    all_positions = CompanyPositions.objects.all()
+    query = request.GET.get('item_name')
+    all_positions = CompanyPositions.objects.all().order_by('title')
+
+    if query:
+        all_positions = all_positions.filter(
+            Q(title__icontains=query)
+        ).distinct()
+    else:
+        all_positions = CompanyPositions.objects.all().order_by('title')
+
+    paginator = Paginator(all_positions, per_page=5)
+    page_number = request.GET.get('page')
+    page_allpositions = paginator.get_page(page_number)
+
     context = {
-        'h_allpositions': all_positions,
+        'page_allpositions': page_allpositions,
         'h_positionscount': all_positions.count()
     }
     return render(request, 'mimascompany/list_positions.html', context)
