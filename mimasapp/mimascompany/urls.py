@@ -14,7 +14,7 @@ from .views.manage_services import create_service, list_services, view_service, 
 from .views.manage_employeedetails import create_employee_detail, create_employee_detail_employee, edit_employee_detail, \
     list_employee_details, delete_employee_detail
 from .views.manage_employeecontact import create_employee_contact, edit_employee_contact, delete_employee_contact, \
-    list_employee_contacts
+    list_employee_contacts, add_employee_contact_employee
 from .views.manage_dentists import create_dentist, list_dentists, delete_dentist, edit_dentist, update_info_dentist_dash
 
 app_name = 'mimascompany'
@@ -85,6 +85,7 @@ urlpatterns = [
     path('listemployeecontacts/', list_employee_contacts, name='listemployeecontacts'),
     path('editemployeecontact/<int:con_id>/edit/', edit_employee_contact, name='editemployeecontact'),
     path('deleteemployeecontact/<int:con_id>/delete/', delete_employee_contact, name='deleteemployeecontact'),
+    path('addemployeecontactemployee/<int:emp_id>/add/', add_employee_contact_employee, name='addemployeecontactemployee'),
     # Employee Details
     path('listemployeedetails/', list_employee_details, name='listemployeedetails'),
     path('createemployeedetail/', create_employee_detail, name='createemployeedetail'),

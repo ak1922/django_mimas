@@ -86,7 +86,7 @@ def create_employee_detail_employee(request, emp_id=None):
         if form.is_valid():
             new_detail = form.save()
             messages.success(request, f'New employee detail added for {new_detail.employee.full_name}')
-            return redirect('mimascompany:listemployeedetails')
+            return redirect('mimascompany:listemployees')
         else:
             messages.error(request, 'Invalid form submitted!')
 

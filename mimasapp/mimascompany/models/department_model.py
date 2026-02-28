@@ -20,6 +20,8 @@ class Department(AuditModel):
 
     class Meta:
         ordering = ['department_name']
+        verbose_name = 'Department'
+        verbose_name_plural = 'Departments'
 
     def __str__(self):
         return self.department_name

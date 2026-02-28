@@ -55,6 +55,7 @@
                                 <th>UPDATED</th>
                                 <th>UPDATED BY</th>
                                 <th class="text-center">ACTIONS</th>
+                                <th class="text-center">RELATED</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,6 +80,26 @@
                                         <a href="" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ employee.pk }}">
                                             <i class="fas fa-trash-alt fa-fw"></i>
                                         </a>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if employee.employee_with_contact %}
+                                        	<a href="{% url 'mimascompany:addemployeecontactemployee' employee.pk %}" class="btn btn-sm btn-outline-info" title="Edit Contact:- {{ employee.full_name }}">
+                                                <i class="fas fa-user fa-fw"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'mimascompany:addemployeecontactemployee' employee.pk %}" class="btn btn-sm btn-outline-primary" id="genericBlinker" title="Add Contact:- {{ employee.full_name }}">
+                                                <i class="fas fa-user-plus fa-fw"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% if employee.employee_with_details %}
+                                            <a href="{% url 'mimascompany:createemployeedetailemployee' employee.pk %}" class="btn btn-sm btn-outline-info" title="Edit Details:- {{ employee.full_name }}">
+                                                <i class="fas fa-circle-info fa-fw"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'mimascompany:createemployeedetailemployee' employee.pk %}" class="btn btn-sm btn-outline-primary" id="genericBlinker" title="Add Details:- {{ employee.full_name }}">
+                                                <i class="fas fa-circle-info fa-fw"></i>
+                                            </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 <!-- Delete Modal -->

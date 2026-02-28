@@ -1,5 +1,7 @@
 from django import forms
+from django.db.models import Q
 
+from accounts.models import UserType
 from mimascompany.models.branch_model import Branch
 from mimascompany.models.dentist_model import Dentist
 from mimascompany.models.employee_model import Employee
@@ -31,18 +33,21 @@ class DentistForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['style'] = 'width: 400px'
 
-        existing_dentist = Dentist.objects.values_list('employee_id', flat=True)
-        incoming_dentist = Employee.objects.filter(
-            dentist_employee__isnull=True
-        ).exclude(pk__in=existing_dentist)
+        existing_dentist_ids = Dentist.objects.values_list('employee_id', flat=True)
+        available_employees_qs = Employee.objects.filter(
+            Q(dentist_employee__isnull=True),
+            user__user_type=UserType.DENTISTS
+        ).exclude(pk__in=existing_dentist_ids)
 
         if self.instance and self.instance.pk:
-            self.fields['employee'].queryset = incoming_dentist | Employee.objects.filter(pk=self.instance.employee_id)
+            current_employee = Employee.objects.filter(pk=self.instance.employee_id, user__user_type=UserType.DENTISTS)
+            self.fields['employee'].queryset = available_employees_qs | current_employee
         else:
-            self.fields['employee'].queryset = incoming_dentist
-            self.fields['employee'].empty_label = 'Select an Employee'
+            self.fields['employee'].queryset = available_employees_qs
+
+        self.fields['supervisor'].queryset = Employee.objects.filter(user__user_type=UserType.DENTISTS)
 
     class Meta:
         model = Dentist
-        fields = '__all__'
+        fields = ['employee', 'supervisor', 'branch_name', 'specialty']
         exclude = ['updated_by']

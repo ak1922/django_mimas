@@ -78,6 +78,8 @@ class LeaveRequest(AuditModel):
 
     class Meta:
         ordering = ['status']
+        verbose_name = 'EmployeeDetail'
+        verbose_name_plural = 'EmployeeDetails'
 
     def __str__(self):
         return f"{self.employee.full_name}"

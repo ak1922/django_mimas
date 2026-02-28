@@ -26,11 +26,10 @@
     background-color: #f8f9fa;
 }
 
-/* Specific Element Styling */
 .countStat {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #856404; /* Darker brown/gold for better readability */
+    color: #856404;
     background-color: #fff3cd;
     padding: 5px 10px;
     border-radius: 5px;
@@ -38,7 +37,7 @@
 
 .searchDiv {
     display: flex;
-    flex-grow: 1; /* Allow search to take available space */
+    flex-grow: 1;
     max-width: 400px;
 }
 
@@ -54,11 +53,28 @@
 .pagination {
     margin-top: 15px;
     display: flex;
-    justify-content: center; /* Center the pagination */
-    gap: 0; /* Ensures no gap between <li> elements */
+    justify-content: center;
+    gap: 0;
 }
 
-/* Ensure pagination links don't have margins that create spaces */
 .pagination .page-item {
     margin: 0;
+}
+
+/* Keyframes for the blinking animation */
+@keyframes blinker {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+#genericBlinker {
+    animation: blinker 4s infinite;
+    will-change: opacity;
 }

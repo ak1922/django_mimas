@@ -7,8 +7,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from accounts.models import AccountUser
 from accounts.decorators import group_required
 from mimascompany.models.employee_model import Employee
-from mimascompany.models.employeecontact_model import EmployeeEMContact
-from mimascompany.forms.employeecontact_form import EmployeeEMContactForm
+from mimascompany.models.employeecontact_model import EmployeeContact
+from mimascompany.forms.employeecontact_form import EmployeeContactForm
 
 
 # Create employee contact no table
@@ -17,7 +17,7 @@ from mimascompany.forms.employeecontact_form import EmployeeEMContactForm
 def create_employee_contact(request):
 
     if request.method == 'POST':
-        form = EmployeeEMContactForm(request.POST)
+        form = EmployeeContactForm(request.POST)
 
         if form.is_valid():
             new_contact = form.save()
@@ -27,14 +27,14 @@ def create_employee_contact(request):
             messages.error(request, 'Invalid form.')
 
     else:
-        form = EmployeeEMContactForm()
+        form = EmployeeContactForm()
     return render(request,'mimascompany/create_employeecontact.html', {'h_form': form})
 
 
 # Create contact from employees
 @login_required
 @group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
-def add_contact_from_employee(request, emp_id=None):
+def add_employee_contact_employee(request, emp_id=None):
     """ Add employee contact from employee table list """
 
     employee_contact = None
@@ -43,21 +43,21 @@ def add_contact_from_employee(request, emp_id=None):
 
         try:
             employee_contact = employee.employeecontact_employee
-        except EmployeeEMContact.DoesNotExist:
-            employee_contact = EmployeeEMContact(employee=employee)
+        except EmployeeContact.DoesNotExist:
+            employee_contact = EmployeeContact(employee=employee)
 
     if request.method == 'POST':
-        form = EmployeeEMContactForm(request.POST, instance=employee_contact)
+        form = EmployeeContactForm(request.POST, instance=employee_contact)
 
         if form.is_valid():
             new_contact = form.save()
             messages.success(request, f'New contact created for {new_contact.employee_name}')
-            return redirect('marscompany:listemployees')
+            return redirect('mimascompany:listemployees')
         else:
             messages.error(request, 'Invalid form.')
 
     else:
-        form = EmployeeEMContactForm(instance=employee_contact)
+        form = EmployeeContactForm(instance=employee_contact)
     return render(request,'mimascompany/create_employeecontact.html', {'h_form': form})
 
 
@@ -66,9 +66,9 @@ def add_contact_from_employee(request, emp_id=None):
 @group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
 def edit_employee_contact(request, con_id):
 
-    contact = get_object_or_404(EmployeeEMContact, pk=con_id)
+    contact = get_object_or_404(EmployeeContact, pk=con_id)
     if request.method == 'POST':
-        form = EmployeeEMContactForm(request.POST, instance=contact)
+        form = EmployeeContactForm(request.POST, instance=contact)
 
         if form.is_valid():
             current_user = AccountUser.objects.get(username=request.user)
@@ -81,7 +81,7 @@ def edit_employee_contact(request, con_id):
             messages.error(request, 'Issues with form update for employee contact information.')
 
     else:
-        form = EmployeeEMContactForm(instance=contact)
+        form = EmployeeContactForm(instance=contact)
 
     context = {
         'h_form': form,
@@ -97,7 +97,7 @@ def list_employee_contacts(request):
 
     query = request.GET.get('item_name')
     employeescount = Employee.objects.all().count()
-    allcontacts = EmployeeEMContact.objects.all().order_by('created')
+    allcontacts = EmployeeContact.objects.all().order_by('created')
 
     # Search
     if query:
@@ -107,7 +107,7 @@ def list_employee_contacts(request):
             Q(employee__first_name__icontains=query)
         ).distinct()
     else:
-        allcontacts = EmployeeEMContact.objects.all().order_by('created')
+        allcontacts = EmployeeContact.objects.all().order_by('created')
 
     # Pagination
     paginator = Paginator(allcontacts, per_page=5)
@@ -128,7 +128,7 @@ def list_employee_contacts(request):
 @group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
 def delete_employee_contact(request, con_id):
 
-    contact = EmployeeEMContact.objects.get(pk=con_id)
+    contact = EmployeeContact.objects.get(pk=con_id)
 
     if request.method == 'POST':
         contact.delete()

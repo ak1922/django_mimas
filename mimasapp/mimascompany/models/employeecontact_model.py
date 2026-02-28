@@ -4,7 +4,7 @@ from .employee_model import Employee
 from .auxiliary_models import AuditModel
 
 # Employee contact
-class EmployeeEMContact(AuditModel):
+class EmployeeContact(AuditModel):
 
     # ---- Employee info ----
     contact_name = models.CharField(max_length=100)
@@ -26,6 +26,8 @@ class EmployeeEMContact(AuditModel):
 
     class Meta:
         ordering = ['contact_name']
+        verbose_name = 'EmployeeContact'
+        verbose_name_plural = 'EmployeeContacts'
 
     def __str__(self):
         return f'Emergency Contact: {self.employee_name}'

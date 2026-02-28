@@ -1,6 +1,7 @@
 from django import forms
+from django.db.models import Q
 
-from accounts.models import AccountUser
+from accounts.models import AccountUser, UserType
 from mimascompany.models.employee_model import CompanyPositions, Employee
 
 
@@ -41,14 +42,32 @@ class EmployeeForm(forms.ModelForm):
     position = forms.ModelChoiceField(queryset=CompanyPositions.objects.all())
 
     def __init__(self, *args, **kwargs):
-        super(EmployeeForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.label_suffix = ''
             field.widget.attrs['style'] = 'width: 400px'
             field.widget.attrs['class'] = 'form-control'
 
+        eligible_users = AccountUser.objects.filter(
+            Q(user_type=UserType.EMPLOYEES) |
+            Q(user_type=UserType.DENTISTS) |
+            Q(user_type=UserType.ADMINISTRATORS)
+        ).distinct()
+
+        if self.instance and self.instance.pk:
+            self.fields['user'].queryset = AccountUser.objects.filter(
+                Q(user_type=UserType.EMPLOYEES) |
+                Q(user_type=UserType.DENTISTS) |
+                Q(user_type=UserType.ADMINISTRATORS)
+            ).distinct()
+        else:
+            self.fields['user'].queryset = eligible_users.filter(
+                employee_accountuser__isnull=True
+            )
+
     class Meta:
         model = Employee
+        fields = ['user', 'first_name', 'last_name', 'gender', 'photo', 'position']
         exclude = ['updated_by', 'vacations_days_accrued']
 
 

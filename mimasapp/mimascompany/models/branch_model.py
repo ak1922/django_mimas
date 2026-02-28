@@ -35,6 +35,8 @@ class Branch(AuditModel):
 
     class Meta:
         ordering = ['branch_name']
+        verbose_name = 'Branch'
+        verbose_name_plural = 'Branches'
 
     def __str__(self):
         return f'{self.branch_name}'

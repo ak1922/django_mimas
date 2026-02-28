@@ -9,7 +9,7 @@ from .models.service_model import Service
 from .models.department_model import Department
 from .models.dentist_model import Dentist
 from .models.employeedetails_model import EmployeeDetail
-from .models.employeecontact_model import EmployeeEMContact
+from .models.employeecontact_model import EmployeeContact
 
 
 @admin.register(Branch)
@@ -42,7 +42,7 @@ class EmployeeDetailAdmin(admin.ModelAdmin):
     search_fields = ['employee__last_name', 'employee__first_name', 'supervisor__last_name', 'supervisor__first_name']
 
 
-@admin.register(EmployeeEMContact)
+@admin.register(EmployeeContact)
 class EmployeeEMContactAdmin(admin.ModelAdmin):
     list_display = ['employee', 'contact_name', 'contact_phone', 'created', 'updated', 'updated_by']
     search_fields = ['employee__last_name', 'employee__first_name', 'contact_name']

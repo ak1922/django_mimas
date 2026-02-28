@@ -134,6 +134,18 @@ class Employee(AuditModel):
         return f'{self.user.username}'
 
     @property
+    def employee_with_details(self):
+        if self.employeedetail_employee:
+            return True
+        return False
+
+    @property
+    def employee_with_contact(self):
+        if self.employeecontact_employee:
+            return True
+        return False
+
+    @property
     def vacation_days_remaining(self):
         """ Calculate vacation days taken """
 

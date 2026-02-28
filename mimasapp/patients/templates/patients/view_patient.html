@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title_content %}Create Department{% endblock %}
+{% block title_content %}View Patient {{ h_patient.full_name }}{% endblock %}
 
 {% block css_content %}
 	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
@@ -13,10 +13,10 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4 class="formTitle">Create Department</h4>
+            <h4>View Patient {{ h_patient.full_name }}</h4>
             {{ h_form.as_p }}
             <div class="buttomsDiv">
-                <button class="formSubmitButton" type="submit">Submit Department</button>
+                <a href="{% url 'patients:listpatients' %}" class="backToListLink">Back To List</a>
             </div>
         </form>
     </div>

@@ -18,8 +18,8 @@ class TaskCategory(AuditModel):
     description = models.TextField()
 
     class Meta:
-        verbose_name = 'Task Category'
-        verbose_name_plural = 'Task Categories'
+        verbose_name = 'TaskCategory'
+        verbose_name_plural = 'TaskCategories'
 
     def __str__(self):
         return self.name
@@ -93,8 +93,8 @@ class EmployeeTask(AuditModel):
     tasks = EmployeeTaskManager()  # Custom robust manager
 
     class Meta:
-        verbose_name = 'Employee Task'
-        verbose_name_plural = 'Employee Tasks'
+        verbose_name = 'EmployeeTask'
+        verbose_name_plural = 'EmployeeTasks'
         ordering = ['-priority', 'end_date']
         indexes = [
             models.Index(fields=['status', 'employee'])
@@ -139,6 +139,9 @@ class EmployeeTaskItem(AuditModel):
 
     class Meta:
         ordering = ['start_date']
+        verbose_name = 'EmployeeTaskItem'
+        verbose_name_plural = 'EmployeeTaskItems'
 
     def __str__(self):
         return f'{self.item_name} - {self.task_name}'
+

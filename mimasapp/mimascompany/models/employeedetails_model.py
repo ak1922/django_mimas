@@ -54,3 +54,7 @@ class EmployeeDetail(AuditModel):
 
     def __str__(self):
         return self.employee.full_name
+
+    class Meta:
+        verbose_name = 'EmployeeDetail'
+        verbose_name_plural = 'EmployeeDetails'

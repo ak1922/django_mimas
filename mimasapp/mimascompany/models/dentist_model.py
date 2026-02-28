@@ -4,6 +4,7 @@ from .branch_model import Branch
 from .employee_model import Employee
 from .auxiliary_models import AuditModel
 
+
 # Dentist model
 class Dentist(AuditModel):
 
@@ -31,5 +32,18 @@ class Dentist(AuditModel):
     def dentist_name(self):
         return f'{self.employee.full_name}'
 
+    @property
+    def dentist_username(self):
+        return f'{self.employee.employee_username}'
+
+    @property
+    def patients_count(self):
+        return self.patients_primarydentist.count()
+
     def __str__(self):
         return f'{self.dentist_name}'
+
+    class Meta:
+        ordering = ['created']
+        verbose_name = 'Dentist'
+        verbose_name_plural = 'Dentists'
