@@ -32,7 +32,7 @@ class PatientContact(DateTimeAuditModel):
     def __str__(self):
         return self.patient.full_name
 
-    class Meta:
+    class Meta(DateTimeAuditModel.Meta):
         ordering = ['created']
         verbose_name = _('PatientContact')
         verbose_name_plural = _('PatientContacts')

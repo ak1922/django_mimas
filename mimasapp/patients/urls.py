@@ -4,6 +4,10 @@ from .views.patients_center import patientscenter
 from .views.manage_patients import create_patient, edit_patient, list_patients, delete_patient, view_patient
 from .views.manage_patientcontacts import create_patient_contact, list_patient_contacts, edit_patient_contact, \
     create_patient_contact_patient, view_patient_contact, delete_patient_contact
+from .views.manage_patientdetails import create_patient_detail, edit_patient_detail, view_patient_detail, \
+    list_patient_details, delete_patient_detail, create_patient_detail_patient
+from .views.manage_patientinsurance import create_insurance, list_insurance, delete_insurance, edit_insurance, \
+    create_patient_insurance_patient
 
 
 app_name = 'patients'
@@ -25,7 +29,18 @@ urlpatterns = [
     path('deletepatientcontact/<uuid:con_id>/delete/', delete_patient_contact, name='deletepatientcontact'),
     path('createcontactpatient/<uuid:pat_id>/create/', create_patient_contact_patient, name='createcontactpatient'),
     # Patient Details
+    path('createpatientdetail/', create_patient_detail, name='createpatientdetail'),
+    path('listpatientdetails/', list_patient_details, name='listpatientdetails'),
+    path('editpatientdetail/<uuid:det_id>/edit/', edit_patient_detail, name='editpatientdetail'),
+    path('viewpatientdetail/<uuid:det_id>/view/', view_patient_detail, name='viewpatientdetail'),
+    path('deletepatientdetail/<uuid:det_id>/delete/', delete_patient_detail, name='deletepatientdetail'),
+    path('createpatientdetailpatient/<uuid:pat_id>/delete/', create_patient_detail_patient, name='createpatientdetailpatient'),
     # Patient Insurance
+    path('listinsurance/', list_insurance, name='listinsurance'),
+    path('createinsurance/', create_insurance, name='createinsurance'),
+    path('editinsurance/<uuid:ins_id>/edit/', edit_insurance, name='editinsurance'),
+    path('deleteinsurance/<uuid:ins_id>/delete/', delete_insurance, name='deleteinsurance'),
+    path('createinsurancepatient/<uuid:pat_id>/create/', create_patient_insurance_patient, name='createinsurancepatient'),
     # Patient Appointment
     # Archived Appointments
     # Patient Visit

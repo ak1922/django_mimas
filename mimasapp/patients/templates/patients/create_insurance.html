@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Create Insurance{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST" action="{{ request.path }}?next={{ request.META.HTTP_REFERER|urlencode }}">
+            {% csrf_token %}
+            <h4 class="formTitle">Create Patient Insurance</h4>
+            {{ h_form.as_p }}
+
+            <div class="buttomsDiv">
+                <button class="formSubmitButton" type="submit">Submit Insurance</button>
+            </div>
+
+        </form>
+    </div>
+
+<br><br><br><br>
+{% endblock %}

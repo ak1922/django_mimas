@@ -90,12 +90,20 @@ class Patient(DateTimeAuditModel):
         return self.patient.username
 
     @property
-    def dentist_name(self):
+    def patient_dentistname(self):
         return self.primary_dentist.full_name if self.primary_dentist else 'No Dentist Assigned'
 
     @property
     def has_contact(self):
         return self.patientcontact_patient if self.patientcontact_patient else 'No Contacts'
+
+    @property
+    def has_detail(self):
+        return self.patientdetail_patient if self.patientdetail_patient else 'No Details'
+
+    @property
+    def has_insurance(self):
+        return self.patientinsurance_patient if self.patientinsurance_patient else 'No Insurance'
 
     def __str__(self):
         return self.full_name

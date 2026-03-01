@@ -90,6 +90,30 @@
                                                 <i class="fas fa-user-plus fa-fw"></i>
                                             </a>
                                         {% endif %}
+                                        {# Details #}
+                                        {% if patient.has_detail %}
+                                        	<a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                               title="Edit Detail:- {{ patient.full_name }}">
+                                                <i class="fas fa-circle-info fa-fw"></i>
+                                            </a>
+                                        {% else %}
+                                        	<a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" id="genericBlinker" class="btn btn-sm btn-outline-info"
+                                               title="Edit Detail:- {{ patient.full_name }}">
+                                                <i class="fas fa-circle-info fa-fw"></i>
+                                            </a>
+                                        {% endif %}
+                                        {# Insurance #}
+                                        {% if patient.has_insurance %}
+                                        	<a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                               title="Edit Insurance:- {{ patient.full_name }}">
+                                                <i class="fas fa-hand-holding-medical fa-fw"></i>
+                                            </a>
+                                        {% else %}
+                                        	<a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-info" id="genericBlinker"
+                                               title="Add Insurance:- {{ patient.full_name }}">
+                                                <i class="fas fa-hand-holding-medical fa-fw"></i>
+                                            </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 <!-- Modal -->

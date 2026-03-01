@@ -34,9 +34,9 @@
                 <h5>Create Records</h5>
                 <div class="action-links">
                     <a href="{% url 'patients:createpatient' %}" title="Add Patient">Patient</a>
-                    <a href="" title="Add Patient Details">Detail</a>
+                    <a href="{% url 'patients:createpatientdetail' %}" title="Add Patient Details">Detail</a>
                     <a href="{% url 'patients:createpatientcontact' %}" title="Add Patient Contact">Contact</a>
-                    <a href="" title="Add Patient Insurance">Insurance</a>
+                    <a href="{% url 'patients:createinsurance' %}" title="Add Patient Insurance">Insurance</a>
                     <a href="" title="Add Patient Appointment">Appointment</a>
                     <a href="" title="Add Patient Visit">Patient Visit</a>
                     <a href="">Medical History</a>
@@ -46,9 +46,9 @@
                 <h5>List Records</h5>
                 <div class="action-links">
                     <a href="{% url 'patients:listpatients' %}" title="List Patients">Patients</a>
-                    <a href="" title="List Patients Details">Details</a>
+                    <a href="{% url 'patients:listpatientdetails' %}" title="List Patients Details">Details</a>
                     <a href="{% url 'patients:listpatientcontacts' %}" title="List Patients Contact">Contacts</a>
-                    <a href="" title="List Patient Insurance">Insurance</a>
+                    <a href="{% url 'patients:listinsurance' %}" title="List Patient Insurance">Insurance</a>
                     <a href="" title="List Patient Appointments">Appointments</a>
                     <a href="" title="List Patient Visits">Patients Visits</a>
                     <a href="" title="List Patient Bookings">Bookings</a>
