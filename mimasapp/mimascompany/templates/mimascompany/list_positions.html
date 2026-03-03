@@ -63,24 +63,45 @@
                                     <td>{{ position.updated_by }}</td>
                                     <td class="text-center">
                                         <!-- View Icon -->
-                                        <a href="" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i>
+                                        <a href="{% url 'mimascompany:viewposition' position.pk %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye fa-fw"></i>
                                         </a>
                                         <!-- Edit Icon -->
                                         <a href="{% url 'mimascompany:editposition' position.pk %}"
                                            class="btn btn-sm btn-outline-warning" title="Edit {{ position.title }}">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="fas fa-edit fa-fw"></i>
                                         </a>
                                         <!-- Delete Icon -->
                                         <a href="{% url 'mimascompany:deleteposition' position.pk %}"
                                            class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ position.pk }}">
-                                            <i class="fas fa-trash-alt"></i>
+                                            <i class="fas fa-trash-alt fa-fw"></i>
                                         </a>
                                     </td>
                                 </tr>
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal{{ position.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ position.pk }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ position.pk }}">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete <strong>{{ position.title }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{% url 'mimascompany:deleteposition' position.pk %}" method="POST" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             {% empty %}
                                 <tr>
-                                    <td colspan="6" class="text-center py-4">No positions found.</td>
+                                    <td colspan="6" class="text-center py-4">No Positions Found!</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

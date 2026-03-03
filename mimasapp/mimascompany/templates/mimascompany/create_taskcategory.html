@@ -13,10 +13,20 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4 class="formTitle">Create Task Category</h4>
+            <h4 class="formTitle">
+                {% if h_exists_category %}
+                    View Category {{ h_exists_category.name }}
+                {% else %}
+                    Create Task Category
+                {% endif %}
+            </h4>
             {{ h_form.as_p }}
             <div class="buttomsDiv">
-                <button class="formSubmitButton" type="submit">Submit Category</button>
+                {% if h_exists_category %}
+                    <a href="{% url 'mimascompany:listtaskcategories' %}" class="backToListLink">Back To Categories</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Category</button>
+                {% endif %}
             </div>
         </form>
     </div>

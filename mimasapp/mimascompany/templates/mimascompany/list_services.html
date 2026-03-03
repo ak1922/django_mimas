@@ -18,7 +18,7 @@
             <div class="titleStatsDiv">
                 <h5 class="mb-0 text-gray-800">All Services</h5>
                 <div>
-                    <span class="countStat">Total: {{ h_servicescount }}</span>
+                    <span class="countStat">Services Total: {{ h_servicescount }}</span>
                 </div>
             </div>
 
@@ -33,7 +33,6 @@
                     </form>
                 </div>
 
-                <!-- Add task icon -->
                 <a href="{% url 'mimascompany:createservice' %}" id="tableTopRightDiv" class="btn btn-sm btn-primary" title="Add Service">
                     <i class="fas fa-plus fa-fw"></i> Add Service
                 </a>
@@ -97,6 +96,10 @@
                                         </div>
                                     </div>
                                 </div>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">No Services Found!</td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>

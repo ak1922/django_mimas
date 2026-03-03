@@ -11,6 +11,36 @@ from mimascompany.forms.company_forms import BranchForm
 from mimascompany.models.department_model import Department
 
 
+# Create branch
+@login_required
+@group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
+def create_branch(request):
+
+    if request.method == 'POST':
+        form = BranchForm(request.POST)
+
+        if form.is_valid():
+            new_branch = form.save(commit=False)
+            new_branch.save()
+            form.save_m2m()
+            messages.success(request, f'New branch {new_branch.branch_name} created.')
+            return redirect('mimascompany:listbranches')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field.title()}:- {error}')
+    else:
+        form = BranchForm()
+
+    departments = Department.objects.prefetch_related('service_department').all()
+    context = {
+        'h_form': form,
+        'h_departments': departments,
+        'h_exists_branch': None
+    }
+    return render(request, 'mimascompany/create_branch.html', context)
+
+
 # List branches
 @login_required
 @group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
@@ -40,35 +70,6 @@ def list_branches(request):
     return render(request, 'mimascompany/list_branches.html', context)
 
 
-# Create branch
-@login_required
-@group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
-def create_branch(request):
-
-    if request.method == 'POST':
-        form = BranchForm(request.POST)
-
-        if form.is_valid():
-            new_branch = form.save(commit=False)
-            new_branch.save()
-            form.save_m2m()
-            messages.success(request, f'New branch {new_branch.branch_name} created.')
-            return redirect('mimascompany:listbranches')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f'{field}:- {error}')
-    else:
-        form = BranchForm()
-
-    departments = Department.objects.prefetch_related('service_department').all()
-    context = {
-        'h_form': form,
-        'h_departments': departments
-    }
-    return render(request, 'mimascompany/create_branch.html', context)
-
-
 # Edit branch
 @login_required
 @group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
@@ -94,10 +95,13 @@ def edit_branch(request, bra_id):
         form = BranchForm(instance=branch)
 
     selected_service_ids = branch.services.values_list('id', flat=True)
+    selected_dept_ids = branch.departments.values_list('department_id', flat=True)
     departments = Department.objects.prefetch_related('service_department').all()
+
     context = {
         'h_form': form,
         'h_departments': departments,
+        'h_selecteddeptids': selected_dept_ids,
         'h_selectedserviceids': selected_service_ids
     }
     return render(request, 'mimascompany/create_branch.html', context)
@@ -127,8 +131,16 @@ def view_branch(request, bra_id):
     for field in form.fields.values():
         field.disabled = True
 
+    selected_service_ids = branch.services.values_list('id', flat=True)
+    selected_dept_ids = branch.departments.values_list('department_id', flat=True)
+    departments = Department.objects.prefetch_related('service_department').all()
+
     context = {
         'h_form': form,
-        'h_branch': branch
+        'h_branch': branch,
+        'h_exists_branch': branch,
+        'h_departments': departments,
+        'h_selecteddeptids': selected_dept_ids,
+        'h_selectedserviceids': selected_service_ids
     }
     return render(request, 'mimascompany/create_branch.html', context)

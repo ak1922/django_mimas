@@ -13,10 +13,18 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4 class="formTitle">Create Company Position</h4>
+            <h4 class="formTitle">
+                {% if h_exists_position %}View Position{% else %}Create Position{% endif %}
+            </h4>
+
             {{ h_form.as_p }}
+
             <div class="buttomsDiv">
-                <button class="formSubmitButton" type="submit">Submit Position</button>
+                {% if h_exists_position %}
+                    <a href="{% url 'mimascompany:listpositions' %}" class="backToListLink">Back To Positions</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Position</button>
+                {% endif %}
             </div>
         </form>
     </div>

@@ -68,7 +68,7 @@ class EmployeeTask(AuditModel):
 
     # ---- Dates ----
     start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
 
     # ---- Enum-based fields ----
     priority = models.IntegerField(choices=Priority.choices, default=Priority.MEDIUM)
@@ -79,7 +79,7 @@ class EmployeeTask(AuditModel):
     category = models.ForeignKey(
         TaskCategory,
         on_delete=models.SET_NULL,
-        null=True, blank=True,
+        null=True,
         related_name='employeetask_category'
     )
     employee = models.ForeignKey(
@@ -101,7 +101,7 @@ class EmployeeTask(AuditModel):
         ]
 
     def __str__(self):
-        return f'{self.task_name} - {self.employee.full_name}'
+        return f'{self.task_name}'
 
     def clean(self):
         """Custom validation to ensure end_date is after start_date"""
@@ -129,12 +129,12 @@ class EmployeeTaskItem(AuditModel):
     employee = models.ForeignKey(
         Employee,
         on_delete=models.CASCADE,
-        related_name='taskitem_employee'
+        related_name='employeetaskitem_employee'
     )
     task_name = models.ForeignKey(
         EmployeeTask,
         on_delete=models.CASCADE,
-        related_name='taskitem_employeetask'
+        related_name='employeetaskitem_taskname'
     )
 
     class Meta:
@@ -144,4 +144,3 @@ class EmployeeTaskItem(AuditModel):
 
     def __str__(self):
         return f'{self.item_name} - {self.task_name}'
-

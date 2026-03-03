@@ -13,12 +13,20 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4 class="formTitle">Create Department</h4>
+
+            <h4 class="formTitle">
+                {% if h_exists_department %}View Department{% else %}Create Department{% endif %}
+            </h4>
+
             {{ h_form.as_p }}
+
             <div class="buttomsDiv">
-                <button class="formSubmitButton" type="submit">Submit Department</button>
+                {% if h_exists_department %}
+                    <a href="{% url 'mimascompany:listdepartments' %}" class="backToListLink">Back To Departments</a>
+                {% else %}
+                    <button type="submit" class="formSubmitButton">Submit Department</button>
+                {% endif %}
             </div>
         </form>
     </div>
-
 {% endblock %}

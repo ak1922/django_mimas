@@ -7,6 +7,8 @@ from mimascompany.models.employeecontact_model import EmployeeContact
 # Employee contact form
 class EmployeeContactForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     # ---- Contact info ----
     contact_name = forms.CharField(label='Contact Name')
     contact_address = forms.CharField(label='Contact Address')
@@ -16,6 +18,7 @@ class EmployeeContactForm(forms.ModelForm):
     # ---- Employee info ----
     employee = forms.ModelChoiceField(
         label='Employee',
+        empty_label='Choose Employee',
         queryset=Employee.objects.all()
     )
 
@@ -39,5 +42,11 @@ class EmployeeContactForm(forms.ModelForm):
 
     class Meta:
         model = EmployeeContact
-        fields = '__all__'
+        fields = [
+            'employee',
+            'contact_name',
+            'contact_phone',
+            'contact_address',
+            'relationship'
+        ]
         exclude = ['updated_by']

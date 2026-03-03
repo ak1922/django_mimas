@@ -45,8 +45,6 @@ class Patient(DateTimeAuditModel):
         OTHER = 'O', _('Other')
         NOT_SPECIFIED = 'NS', _('Not Specified')
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     # ---- Personal info ----
     first_name = models.CharField(max_length=70)
     last_name = models.CharField(max_length=70)

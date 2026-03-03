@@ -3,3 +3,4 @@ from .patients_model import Patient
 from .patientcontact_model import PatientContact
 from .patientdetails_model import PatientDetail
 from .patientinsurance_model import PatientInsurance
+from .patientappointment_model import PatientAppointment

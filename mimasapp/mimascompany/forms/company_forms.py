@@ -10,8 +10,10 @@ from mimascompany.models.bookings_model import PatientBooking
 # Branch form
 class BranchForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     location = forms.CharField(max_length=50)
-    branch_name = forms.CharField()
+    branch_name = forms.CharField(label='Branch Name')
 
     branch_head = forms.ModelChoiceField(
         label='Branch Head',
@@ -46,6 +48,8 @@ class BranchForm(forms.ModelForm):
 # Depratment form
 class DepartmentForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     department_name = forms.CharField(
         label='Department Name'
     )
@@ -77,6 +81,8 @@ class DepartmentForm(forms.ModelForm):
 # Service form
 class ServiceForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     service_name = forms.CharField(label='Servive Name')
     price = forms.DecimalField(label='Price')
     duration = forms.IntegerField(label='Duration')
@@ -106,6 +112,8 @@ class ServiceForm(forms.ModelForm):
 
 # Patient booking
 class PatientBookingForm(forms.ModelForm):
+
+    required_css_class = 'required'
 
     first_name = forms.CharField(label='First Name')
     last_name = forms.CharField(label='Last Name')

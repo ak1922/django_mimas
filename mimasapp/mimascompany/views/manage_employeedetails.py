@@ -29,41 +29,12 @@ def create_employee_detail(request):
 
     else:
         form = EmployeeDetailForm()
-    return render(request,'mimascompany/create_employeedetail.html', {'h_form': form})
 
-
-# # Create employee details with table
-# @login_required
-# @role_required(allowed_roles=['Employee', 'Admin'])
-# def create_employeedetail_with_table(request):
-#
-#     alldetails = EmployeeDetail.objects.all().order_by('-modified_on')
-#     allemployees = Employee.objects.all().count()
-#
-#     paginator = Paginator(alldetails, per_page=4)
-#     page_number = request.GET.get('page')
-#     page_alldetails = paginator.get_page(page_number)
-#
-#     if request.method == 'POST':
-#         form = EmployeeDetailForm(request.POST)
-#
-#         if form.is_valid:
-#             new_detail = form.save()
-#             messages.success(request, f'New employee detail added for {new_detail.employee.full_name}')
-#             return redirect(request.path)
-#         else:
-#             messages.error(request, 'Invalid form.')
-#
-#     else:
-#         form = EmployeeDetailForm()
-#
-#     context = {
-#         'h_form': form,
-#         'h_allemployees': allemployees,
-#         'page_alldetails': page_alldetails,
-#         'h_detailstotal': alldetails.count(),
-#     }
-#     return render(request,'marscompany/create_employeedetails_table.html', context)
+    context = {
+        'h_form': form,
+        'h_exists_details': None
+    }
+    return render(request,'mimascompany/create_employeedetail.html', context)
 
 
 # Add employee detail form employee
@@ -151,23 +122,23 @@ def list_employee_details(request):
     return render(request, 'mimascompany/list_employeedetails.html', context)
 
 
-# # Read only employee detail
-# @login_required
-# @group_required(allowed_groups=['Administrators', 'Employees', 'Dentists'])
-# def view_employee_detail(request, det_id):
-#     """ Read only view for employee detail record """
-#
-#     detail = EmployeeDetail.objects.get(pk=det_id)
-#     form = EmployeeDetailFormReadOnly(instance=detail)
-#
-#     for field in form.fields.values():
-#         field.disabled = True
-#
-#     context = {
-#         'h_form': form,
-#         'h_detail': detail
-#     }
-#     return render(request, 'marscompany/view_employeedetails.html', context)
+# Read only employee detail
+@login_required
+@group_required(allowed_groups=['Administrators', 'Employees', 'Dentists'])
+def view_employee_detail(request, det_id):
+    """ Read only view for employee detail record """
+
+    detail = EmployeeDetail.objects.get(pk=det_id)
+    form = EmployeeDetailForm(instance=detail)
+
+    for field in form.fields.values():
+        field.disabled = True
+
+    context = {
+        'h_form': form,
+        'h_exists_details': detail
+    }
+    return render(request, 'mimascompany/create_employeedetail.html', context)
 
 
 # Delete employee detail

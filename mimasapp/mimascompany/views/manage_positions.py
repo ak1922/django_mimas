@@ -25,7 +25,7 @@ def create_position(request):
         if form.is_valid():
             new_position = form.save()
             messages.success(request, f'New postion {new_position.title} created.')
-            logger.info(f'Position {new_position.title} create.')
+            logger.info(f'Position {new_position.title} created by {request.user}.')
             return redirect('mimascompany:listpositions')
         else:
             for field, errors in form.errors.items():
@@ -33,7 +33,12 @@ def create_position(request):
                     messages.error(request, f'{field.capitalize()}:- {error}')
     else:
         form = CompanyPositionForm()
-    return render(request, 'mimascompany/create_position.html', {'h_form': form})
+
+    context = {
+        'h_form': form,
+        'h_exists_position': None
+    }
+    return render(request, 'mimascompany/create_position.html', context)
 
 
 # List positions
@@ -86,6 +91,24 @@ def edit_position(request, pos_id):
     else:
         form = CompanyPositionForm(instance=position)
     return render(request, 'mimascompany/create_position.html', {'h_form': form})
+
+
+# View position
+@login_required
+@group_required(allowed_groups=['Employees', 'Administrators'])
+def view_position(request, pos_id):
+
+    position = get_object_or_404(CompanyPositions, pk=pos_id)
+    form = CompanyPositionForm(instance=position)
+
+    for field in form.fields.values():
+        field.disabled = True
+
+    context = {
+        'h_form': form,
+        'h_exists_position': position
+    }
+    return render(request, 'mimascompany/create_position.html', context)
 
 
 # Delete position

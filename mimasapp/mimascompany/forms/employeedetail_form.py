@@ -8,6 +8,8 @@ from mimascompany.models.employeedetails_model import EmployeeDetail
 # Employee detail form
 class EmployeeDetailForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     # ---- Employee personal info ----
     ssn = forms.CharField(label='SSN')
     address = forms.CharField(label='Address')
@@ -75,5 +77,18 @@ class EmployeeDetailForm(forms.ModelForm):
 
     class Meta:
         model = EmployeeDetail
-        fields = '__all__'
+        fields = [
+            'employee',
+            'ssn',
+            'supervisor',
+            'department',
+            'date_hired',
+            'address',
+            'phone_number',
+            'marital_status',
+            'spouse_name',
+            'spouse_address',
+            'spouse_employer',
+            'spouse_employer_address'
+        ]
         exclude = ['updated_by']

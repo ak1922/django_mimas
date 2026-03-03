@@ -67,11 +67,13 @@
                                     <td>{{ leave.updated_by }}</td>
                                     <td class="text-center">
                                         <!-- View Icon -->
-                                        <a href="" class="btn btn-sm btn-outline-primary">
+                                        <a href="{% url 'mimascompany:viewleaverequest' leave.pk %}" class="btn btn-sm btn-outline-primary"
+                                            title="View Request for {{ leave.employee.full_name }}">
                                             <i class="fas fa-eye fa-fw"></i>
                                         </a>
                                         <!-- Edit Icon -->
-                                        <a href="{% url 'mimascompany:editleaverequest' leave.pk %}" class="btn btn-sm btn-outline-warning" title="Edit Leave Request for {{ leave.employee }}">
+                                        <a href="{% url 'mimascompany:editleaverequest' leave.pk %}" class="btn btn-sm btn-outline-warning"
+                                           title="Edit Leave Request for {{ leave.employee.full_name }}">
                                             <i class="fas fa-edit fa-fw"></i>
                                         </a>
                                         <!-- Delete Icon -->

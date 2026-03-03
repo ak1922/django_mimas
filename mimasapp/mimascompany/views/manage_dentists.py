@@ -19,17 +19,20 @@ def create_dentist(request):
 
     if request.method == 'POST':
         form = DentistForm(request.POST)
-
         if form.is_valid():
             new_dentist = form.save()
             messages.success(request, f'New dentist created for {new_dentist.dentist_name}')
             return redirect('mimascompany:listdentists')
         else:
             messages.error(request, 'Issues encounted creating new dentist.')
-
     else:
         form = DentistForm()
-    return render(request, 'mimascompany/create_dentist.html', {'h_form': form})
+
+    context = {
+        'h_form': form,
+        'h_exists_dentists': None
+    }
+    return render(request, 'mimascompany/create_dentist.html', context)
 
 
 # Update dentist employee info
@@ -113,6 +116,24 @@ def list_dentists(request):
         'h_alldentistscount': alldentists.count()
     }
     return render(request, 'mimascompany/list_dentists.html', context)
+
+
+# View dentist
+@login_required
+@group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
+def view_dentist(request, den_id):
+
+    dentist = get_object_or_404(Dentist, pk=den_id)
+    form = DentistForm(instance=dentist)
+
+    for field in form.fields.values():
+        field.disabled = True
+
+    context = {
+        'h_form': form,
+        'h_exists_dentists': dentist
+    }
+    return render(request, 'mimascompany/create_dentist.html', context)
 
 
 # Delete dentist

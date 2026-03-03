@@ -13,12 +13,21 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4 class="formTitle">Create Service</h4>
+            <h4 class="formTitle">
+                {% if h_exists_service %}
+                    View Service {{ h_exists_service.service_name }}
+                {% else %}
+                    Create Service
+                {% endif %}
+            </h4>
             {{ h_form.as_p }}
             <div class="buttomsDiv">
-                <button class="formSubmitButton" type="submit">Submit Service</button>
+                {% if h_exists_service %}
+                    <a href="{% url 'mimascompany:listservices' %}" class="backToListLink">Back To Services</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Service</button>
+                {% endif %}
             </div>
         </form>
     </div>
-
 {% endblock %}

@@ -1,15 +1,17 @@
 from django.db.models import Q
+from django.urls import reverse
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
 
 from accounts.models import AccountUser
 from accounts.decorators import group_required
 from mimascompany.models.employee_model import Employee
+from mimascompany.forms.employeetask_form import EmployeeTaskForm
 from mimascompany.models.employeetasks_model import EmployeeTask, TaskCategory, EmployeeTaskItem
-from mimascompany.forms.employeetask_form import TaskCategoryForm, EmployeeTaskForm, EmployeeTaskItemForm, \
-    EmployeeTaskItemDashForm
+from mimascompany.forms.task_forms import TaskCategoryForm, EmployeeTaskItemForm, EmployeeTaskItemDashForm
 
 
 # ------ Manage Task Categories ------
@@ -27,7 +29,11 @@ def create_task_category(request):
             return redirect('mimascompany:listtaskcategories')
     else:
         form = TaskCategoryForm()
-    return render(request, 'mimascompany/create_taskcategory.html', {'h_form': form})
+    context = {
+        'h_form': form,
+        'h_exists_category': None
+    }
+    return render(request, 'mimascompany/create_taskcategory.html', context)
 
 
 # List task categories
@@ -44,15 +50,15 @@ def list_task_categories(request):
         ).distinct()
     else:
         all_categories = TaskCategory.objects.all().order_by('name')
-    return render(request, 'mimascompany/list_taskcategory.html', {'h_allcategories': all_categories})
+    return render(request, 'mimascompany/list_taskcategories.html', {'h_allcategories': all_categories})
 
 
 # Edit task category
 @login_required
 @group_required(allowed_groups=['Employees', 'Administrators'])
-def edit_task_category(request, task_id):
+def edit_task_category(request, cat_id):
 
-    category = get_object_or_404(TaskCategory, pk=task_id)
+    category = get_object_or_404(TaskCategory, pk=cat_id)
 
     if request.method == 'POST':
         form = TaskCategoryForm(request.POST, instance=category)
@@ -74,12 +80,30 @@ def edit_task_category(request, task_id):
     return render(request, 'mimascompany/create_taskcategory.html', context)
 
 
+# View task category
+@login_required
+@group_required(allowed_groups=['Employees', 'Administrators'])
+def view_task_category(request, cat_id):
+
+    category = get_object_or_404(TaskCategory, pk=cat_id)
+    form = TaskCategoryForm(instance=category)
+
+    for field in form.fields.values():
+        field.disabled = True
+
+    context = {
+        'h_form': form,
+        'h_exists_category': category
+    }
+    return render(request, 'mimascompany/create_taskcategory.html', context)
+
+
 # Delete task category
 @login_required
 @group_required(allowed_groups=['Employees', 'Administrators'])
-def delete_task_category(request, task_id):
+def delete_task_category(request, cat_id):
 
-    category = get_object_or_404(TaskCategory, pk=task_id)
+    category = get_object_or_404(TaskCategory, pk=cat_id)
     if request.method == 'POST':
         category.delete()
     return redirect('mimascompany:listtaskcategories')
@@ -99,6 +123,33 @@ def create_task(request):
             return redirect('mimascompany:listtasks')
     else:
         form = EmployeeTaskForm()
+
+    context = {
+        'h_form': form,
+        'h_task_exists': None
+    }
+    return render(request, 'mimascompany/create_employeetask.html', context)
+
+
+# Edit task
+@login_required
+@group_required(allowed_groups=['Employees', 'Administrators'])
+def edit_task(request, task_id):
+
+    next_url = request.GET.get('next', reverse('mimascompany:listtasks'))
+    employee_task = get_object_or_404(EmployeeTask, pk=task_id)
+
+    if request.method == 'POST':
+        form = EmployeeTaskForm(request.POST, instance=employee_task)
+        if form.is_valid():
+            current_user = get_object_or_404(AccountUser, username=request.user)
+            edited_task = form.save(commit=False)
+            edited_task.updated_by = current_user
+            edited_task.save()
+            messages.success(request, f'Task {edited_task.task_name} for {edited_task.employee} updated.')
+            return redirect(next_url)
+    else:
+        form = EmployeeTaskForm(instance=employee_task)
     return render(request, 'mimascompany/create_employeetask.html', {'h_form': form})
 
 
@@ -133,25 +184,22 @@ def list_tasks(request):
     return render(request, 'mimascompany/list_employeetasks.html', context)
 
 
-# Edit task
+# View task
 @login_required
 @group_required(allowed_groups=['Employees', 'Administrators'])
-def edit_task(request, task_id):
+def view_task(request, task_id):
 
     employee_task = get_object_or_404(EmployeeTask, pk=task_id)
+    form = EmployeeTaskForm(instance=employee_task)
 
-    if request.method == 'POST':
-        form = EmployeeTaskForm(request.POST, instance=employee_task)
-        if form.is_valid():
-            current_user = get_object_or_404(AccountUser, username=request.user)
-            edited_task = form.save(commit=False)
-            edited_task.updated_by = current_user
-            edited_task.save()
-            messages.success(request, f'Task {edited_task.task_name} for {edited_task.employee} updated.')
-            return redirect('mimascompany:listtasks')
-    else:
-        form = EmployeeTaskForm(instance=employee_task)
-    return render(request, 'mimascompany/create_employeetask.html', {'h_form': form})
+    for field in form.fields.values():
+        field.disabled = True
+
+    context = {
+        'h_form': form,
+        'h_task_exists': employee_task
+    }
+    return render(request, 'mimascompany/create_employeetask.html', context)
 
 
 # Delete task
@@ -166,6 +214,7 @@ def delete_task(request, task_id):
     if request.method == 'POST':
         employee_task.delete()
         messages.success(request, f'Task deleted for employee {task_owner}')
+        return redirect('mimascompany:listtasks')
 
     context = {
         'h_taskowner': task_owner,
@@ -191,7 +240,12 @@ def create_task_item(request):
             messages.error(request, 'Form submission error/s with task item.')
     else:
         form = EmployeeTaskItemForm()
-    return render(request, 'mimascompany/create_taskitem.html', {'h_form': form})
+
+    context = {
+        'h_form': form,
+        'h_exists_taskitem': None
+    }
+    return render(request, 'mimascompany/create_taskitem.html', context)
 
 
 # Create task item employee dash
@@ -207,6 +261,7 @@ def create_item_employeedash(request, task_id=None):
         if form.is_valid():
             new_item = form.save(commit=False)
             new_item.task_name = task_name
+            new_item.start_date = task_name.start_date
             new_item.emlpoyee = employee
             new_item.save()
             messages.success(request, 'New item created')
@@ -216,7 +271,8 @@ def create_item_employeedash(request, task_id=None):
     else:
         form = EmployeeTaskItemDashForm(initial={
             'task_name': task_name,
-            'employee': employee
+            'employee': employee,
+            'start_date': task_name.start_date
         })
 
     return render(request, 'mimascompany/create_taskitem.html', {'h_form': form})
@@ -272,6 +328,24 @@ def list_task_items(request):
         'h_allitemscount': all_taskitems.count()
     }
     return render(request, 'mimascompany/list_taskitems.html', context)
+
+
+# View task item
+@login_required
+@group_required(allowed_groups=['Employees', 'Administrators'])
+def view_task_item(request, item_id):
+
+    task_item = get_object_or_404(EmployeeTaskItem, pk=item_id)
+    form = EmployeeTaskItemForm(instance=task_item)
+
+    for field in form.fields.values():
+        field.disabled = True
+
+    context = {
+        'h_form': form,
+        'h_exists_taskitem': task_item
+    }
+    return render(request, 'mimascompany/create_taskitem.html', context)
 
 
 # Delete task item

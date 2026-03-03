@@ -59,11 +59,12 @@
                                     <td>{{ category.updated_by }}</td>
                                     <td class="text-center">
                                         <!-- View Icon -->
-                                        <a href="" class="btn btn-sm btn-outline-info" title="View">
+                                        <a href="{% url 'mimascompany:viewtaskcategory' category.pk %}" class="btn btn-sm btn-outline-primary"
+                                           title="View Category:- {{ category.name }}">
                                             <i class="fas fa-eye fa-fw"></i>
                                         </a>
                                         <!-- Edit Icon -->
-                                        <a href="{% url 'mimascompany:edittaskcategory' category.pk %}" class="btn btn-sm btn-outline-primary"
+                                        <a href="{% url 'mimascompany:edittaskcategory' category.pk %}" class="btn btn-sm btn-outline-warning"
                                            title="Edit Task Category {{ category.name }}">
                                             <i class="fas fa-edit fa-fw"></i>
                                         </a>
@@ -74,6 +75,28 @@
                                         </a>
                                     </td>
                                 </tr>
+
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal{{ category.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ category.pk }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ category.pk }}">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete Task Category <strong>{{ category.name | title }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{% url 'mimascompany:deletetaskcategory' category.pk %}" method="POST" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             {% empty %}
                                 <tr>
                                     <td colspan="6" class="text-center py-4">No task categories found.</td>
@@ -82,6 +105,33 @@
                         </tbody>
                     </table>
                 </div>
+            
+                <!-- Pagination -->
+                {% if h_allcategories.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if h_allcategories.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ h_allcategories.previous_page_number }}">&laquo; Previous</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+                            {% endif %}
+
+                            {% for i in h_allcategories.paginator.page_range %}
+                                {% if h_allcategories.number == i %}
+                                    <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if h_allcategories.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ h_allcategories.next_page_number }}">Next &raquo;</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}                
             </div>
         </div>
     </div>

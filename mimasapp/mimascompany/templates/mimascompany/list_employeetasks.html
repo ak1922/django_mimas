@@ -14,15 +14,13 @@
     <div class="container-fluid mt-4">
         <div class="card shadow-sm custom-table-container">
 
-            <!-- Header: Title and Stats -->
             <div class="titleStatsDiv">
-                <h5 class="mb-0 text-gray-800">All Employees Tasks</h5>
+                <h5 class="mb-0 text-info-emphasis">All Employees Tasks</h5>
                 <div>
                     <span class="countStat">Total: {{ h_alltasks.count }}</span>
                 </div>
             </div>
 
-            <!-- Action Bar: Search and Add -->
             <div class="searchAddDiv">
                 <div class="searchDiv">
                     <form method="GET" class="d-flex w-100">
@@ -34,7 +32,6 @@
                     </form>
                 </div>
 
-                <!-- Add task icon -->
                 <a href="{% url 'mimascompany:createtask' %}" id="tableTopRightDiv" class="btn btn-sm btn-primary" title="Add Employee Task">
                     <i class="fas fa-plus fa-fw"></i> Add Employee Task
                 </a>
@@ -48,7 +45,7 @@
                                 <th>TASK NAME</th>
                                 <th>CATEGORY</th>
                                 <th>DESCRIPTION</th>
-                                <th>OWNER</th>
+                                <th>EMPLOYEE</th>
                                 <th>PRIORITY</th>
                                 <th>STATUS</th>
                                 <th>START DATE</th>
@@ -68,19 +65,25 @@
                                 <td>{{ task.start_date|date:"Y-m-d" }}</td>
                                 <td>{{ task.updated_by }}</td>
                                 <td class="text-center">
-                                    <a href="" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-eye"></i>
+                                    <a href="{% url 'mimascompany:viewtask' task.pk %}" class="btn btn-sm btn-outline-primary"
+                                        title="View Task:- {{ task.task_name }}">
+                                        <i class="fas fa-eye fa-fw"></i>
                                     </a>
-                                    <a href="{% url 'mimascompany:edittask' task.pk %}" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="fas fa-edit"></i>
+                                    <a href="{% url 'mimascompany:edittask' task.pk %}" class="btn btn-sm btn-outline-warning"
+                                       title="Edit Task:- {{ task.task_name }}">
+                                        <i class="fas fa-edit fa-fw"></i>
                                     </a>
-                                    <!-- Example Triggering Modal -->
+                                    <a href="{% url 'mimascompany:createitememployeedash' task.pk %}" class="btn btn-sm btn-outline-success"
+                                       title="Add Task Item:- {{ task.task_name }}">
+                                        <i class="fas fa-folder-plus fa-fw"></i>
+                                    </a>
                                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ task.pk }}">
-                                        <i class="fas fa-trash-alt"></i>
+                                        <i class="fas fa-trash-alt fa-fw"></i>
                                     </button>
                                 </td>
                             </tr>
-                                <!-- Delete Modal -->
+
+                                <!-- Delete -->
                                 <div class="modal fade" id="deleteModal{{ task.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ task.pk }}" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -89,11 +92,11 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                Are you sure you want to delete {{ task.task_name }} for <strong>{{ task.employee.full_name }}</strong>?
+                                                Delete task <strong>{{ task.task_name }}</strong> for <strong>{{ task.employee.full_name }}</strong>?
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <form action="{% url 'mimascompany:deleteemployee' task.pk %}" method="POST" style="display:inline;">
+                                                <form action="{% url 'mimascompany:deletetask' task.pk %}" method="POST" style="display:inline;">
                                                     {% csrf_token %}
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
@@ -108,7 +111,56 @@
                             {% endfor %}
                         </tbody>
                     </table>
+
+
+                    <br><br>
+
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <h5 class="mb-0 text-info-emphasis ps-4 mb-4">All Related Task Items</h5>
+                        <thead class="table-light">
+                            <tr>
+                                <th>EMPLOYEE</th>
+                                <th>ITEM NAME</th>
+                                <th>TASK NAME</th>
+                                <th>START DATE</th>
+                                <th>END DATE</th>
+                                <th>COMMENTS</th>
+                                <th>CREATED</th>
+                                <th>UPDATED</th>
+                                <th class="text-center">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in page_alltasks %}
+                            	{% for item in task.employeetaskitem_taskname.all %}
+                                    <tr>
+                                        <td>{{ item.employee.full_name }}</td>
+                                        <td>{{ item.item_name }}</td>
+                                        <td class="fw-bold text-primary">{{ item.task_name }}</td>
+                                        <td>{{ item.start_date }}</td>
+                                        <td>{{ item.end_date }}</td>
+                                        <td>{{ item.comments|truncatechars:10 }}</td>
+                                        <td>{{ item.created }}</td>
+                                        <td>{{ item.updated }}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'mimascompany:viewtaskitem' item.pk %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye fa-fw"></i>
+                                            </a>
+                                            <a href="{% url 'mimascompany:edittaskitem' item.pk %}" class="btn btn-sm btn-outline-warning"
+                                               title="Edit">
+                                                <i class="fas fa-edit fa-fw"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.pk }}">
+                                                <i class="fas fa-trash-alt fa-fw"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                            	{% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
+
                 <!-- Pagination -->
                 {% if page_alltasks.has_other_pages %}
                     <nav aria-label="Page navigation example">

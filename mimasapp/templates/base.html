@@ -56,7 +56,7 @@
             <ul class="">
                 {% if user.is_authenticated %}
                     <li>
-                        <a href="{% url 'accounts:accountlogout' %}" class="linkItem">Welcome {{ user.username }}: Logout</a>
+                        <a href="{% url 'accounts:accountlogout' user.id %}" class="linkItem">Welcome {{ user.username }}: Logout</a>
                     </li>
                 {% else %}
                     <li>

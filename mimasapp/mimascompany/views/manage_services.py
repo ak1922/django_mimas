@@ -10,9 +10,33 @@ from mimascompany.models.service_model import Service
 from mimascompany.forms.company_forms import ServiceForm
 
 
+# Create service
+@login_required
+@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
+def create_service(request):
+
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+
+        if form.is_valid():
+            new_service = form.save()
+            messages.success(request, f'New service {new_service} created for {new_service.department} department by {request.user}.')
+            return redirect('mimascompany:listservices')
+        else:
+            messages.error(request, 'Issues creating new service.')
+
+    else:
+        form = ServiceForm()
+    context = {
+        'h_form': form,
+        'h_exists_service': None
+    }
+    return render(request, 'mimascompany/create_service.html', context)
+
+
 # List services
 @login_required
-@group_required(allowed_groups=['Administrators', 'Dentists', 'Employee'])
+@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
 def list_services(request):
     """ List all dental services """
 
@@ -39,29 +63,9 @@ def list_services(request):
     return render(request, 'mimascompany/list_services.html', context)
 
 
-# Create service
-@login_required
-@group_required(allowed_groups=['Administrators', 'Dentists', 'Employee'])
-def create_service(request):
-
-    if request.method == 'POST':
-        form = ServiceForm(request.POST)
-
-        if form.is_valid():
-            new_service = form.save()
-            messages.success(request, f'New service {new_service} created for {new_service.department}.')
-            return redirect('mimascompany:listservices')
-        else:
-            messages.error(request, 'Issues creating new service.')
-
-    else:
-        form = ServiceForm()
-    return render(request, 'mimascompany/create_service.html', {'h_form': form})
-
-
 # Edit service
 @login_required
-@group_required(allowed_groups=['Administrators', 'Dentists', 'Employee'])
+@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
 def edit_service(request, svc_id):
 
     service = Service.objects.get(pk=svc_id)
@@ -74,7 +78,7 @@ def edit_service(request, svc_id):
             edited_service = form.save(commit=False)
             edited_service.updated_by = current_user
             edited_service.save()
-            messages.success(request, f'Service {edited_service.service_name} updated.')
+            messages.success(request, f'Service {edited_service.service_name} updated by {request.user}.')
             return redirect('mimascompany:listservices')
         else:
             messages.error(request, 'Issues updating dental service.')
@@ -84,20 +88,9 @@ def edit_service(request, svc_id):
     return render(request, 'mimascompany/create_service.html', {'h_form': form})
 
 
-# Delete service
-@login_required
-@group_required(allowed_groups=['Administrators', 'Dentists', 'Employee'])
-def delete_service(request, svc_id):
-
-    service = Service.objects.get(pk=svc_id)
-    if request.method == 'POST':
-        service.delete()
-    return redirect('mimascompany:listservices')
-
-
 # View service
 @login_required
-@group_required(allowed_groups=['Administrators', 'Dentists', 'Employee'])
+@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
 def view_service(request, svc_id):
 
     service = get_object_or_404(Service, pk=svc_id)
@@ -108,6 +101,17 @@ def view_service(request, svc_id):
 
     context = {
         'h_form': form,
-        'h_service': service
+        'h_exists_service': service
     }
     return render(request, 'mimascompany/create_service.html', context)
+
+
+# Delete service
+@login_required
+@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
+def delete_service(request, svc_id):
+
+    service = Service.objects.get(pk=svc_id)
+    if request.method == 'POST':
+        service.delete()
+    return redirect('mimascompany:listservices')

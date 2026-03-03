@@ -45,7 +45,6 @@ class LeaveRequest(AuditModel):
     requested_date = models.DateTimeField(auto_now_add=True)
     reason = models.TextField(blank=True)
 
-
     days_taken = models.DecimalField(
         max_digits=4,
         decimal_places=1,

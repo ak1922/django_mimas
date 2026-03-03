@@ -48,8 +48,7 @@ class EmployeeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             response = super().form_valid(form)
             employee = form.instance
             logger.info(
-                f'Employee created: {employee.first_name} {employee.last_name}'
-                f'Created by: {self.request.user}'
+                f'New employee {employee.first_name} {employee.last_name} added by {self.request.user}'
             )
             return response
 
@@ -78,7 +77,7 @@ def list_employees(request):
     else:
         all_employees = Employee.objects.all().order_by('user__username', 'status')
 
-    paginator = Paginator(all_employees, 5)
+    paginator = Paginator(all_employees, 10)
     page_number = request.GET.get('page')
     page_allemployees = paginator.get_page(page_number)
 

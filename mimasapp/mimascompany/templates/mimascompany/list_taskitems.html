@@ -22,7 +22,7 @@
                 </div>
             </div>
 
-            <!-- Add & search -->
+            <!-- Add & Search -->
             <div class="searchAddDiv">
                 <div class="searchDiv">
                     <form method="GET" class="d-flex w-100">
@@ -69,10 +69,12 @@
                                     <td>{{ item.updated }}</td>
                                     <td>{{ item.updated_by }}</td>
                                     <td class="text-center">
-                                        <a href="" class="btn btn-sm btn-outline-info">
+                                        <a href="{% url 'mimascompany:viewtaskitem' item.pk %}" class="btn btn-sm btn-outline-primary"
+                                           title="View Task Item:- {{ item.employee.full_name }}">
                                             <i class="fas fa-eye fa-fw"></i>
                                         </a>
-                                        <a href="{% url 'mimascompany:edittaskitem' item.pk %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                        <a href="{% url 'mimascompany:edittaskitem' item.pk %}" class="btn btn-sm btn-outline-warning"
+                                           title="Edit Task Item:- {{ item.employee.full_name }}">
                                             <i class="fas fa-edit fa-fw"></i>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.pk }}">
@@ -102,12 +104,15 @@
                                     </div>
                                 </div>
                             {% empty %}
-
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">No Tasks found.</td>
+                                </tr>
                             {% endfor %}
-
                         </tbody>
                     </table>
                 </div>
+
+                {# Pagination #}
                 {% if page_alltasks.has_other_pages %}
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">

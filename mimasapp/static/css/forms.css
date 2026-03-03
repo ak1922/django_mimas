@@ -3,25 +3,28 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
 .formTitle {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-family: 'Georgia', serif;
+    margin-bottom: 25px;
 }
 .buttomsDiv {
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: center;
     gap: 20px;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .formSubmitButton {
-    display: block;
+    display: flex;
+    justify-content: center;
     align-items: center;
     width: 170px;
     padding: 8px;
@@ -54,8 +57,17 @@
     color: black;
 }
 
-.formTitle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/*.formTitle {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*}*/
+
+.genericFormDiv {
+    margin-bottom: 10px;
+}
+
+label.required::after {
+    content: " *";
+    color: red;
 }

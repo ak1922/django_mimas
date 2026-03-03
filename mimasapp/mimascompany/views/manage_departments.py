@@ -1,3 +1,4 @@
+import logging
 from django.db.models import Q
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -8,6 +9,10 @@ from accounts.decorators import group_required
 from accounts.models import AccountUser
 from mimascompany.models.department_model import Department
 from mimascompany.forms.company_forms import DepartmentForm
+
+
+# Setting logging
+logger = logging.getLogger(__name__)
 
 
 # Create department
@@ -21,14 +26,20 @@ def create_department(request):
 
         if form.is_valid():
             new_dept = form.save()
-            messages.success(request, f'New department {new_dept.department_name} created.')
+            messages.success(request, f'New department {new_dept.department_name} created by {request.user}.')
+            logger.info(f'New department {new_dept.department_name} created by {request.user}.')
             return redirect('mimascompany:listdepartments')
         else:
             messages.error(request, 'Issues with department creation!')
 
     else:
         form = DepartmentForm()
-    return render(request, 'mimascompany/create_department.html', {'h_form': form})
+
+    context = {
+        'h_form': form,
+        'h_exists_department': None
+    }
+    return render(request, 'mimascompany/create_department.html', context)
 
 
 # Edit department
@@ -47,6 +58,7 @@ def edit_department(request, dept_id):
             edited_department.updated_by = current_user
             edited_department.save()
             messages.success(request, f'Department {edited_department.department_name} updated!')
+            logger.info(f'Department {edited_department.department_name} updated by {request.user}')
             return redirect('mimascompany:listdepartments')
         else:
             messages.error(request, 'Issues with department update!')
@@ -97,7 +109,7 @@ def view_department(request, dept_id):
 
     context = {
         'h_form': form,
-        'h_department': department
+        'h_exists_department': department
     }
     return render(request, 'mimascompany/create_department.html', context)
 

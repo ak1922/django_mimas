@@ -49,5 +49,10 @@ class DentistForm(forms.ModelForm):
 
     class Meta:
         model = Dentist
-        fields = ['employee', 'supervisor', 'branch_name', 'specialty']
         exclude = ['updated_by']
+        fields = [
+            'employee',
+            'supervisor',
+            'branch_name',
+            'specialty'
+        ]

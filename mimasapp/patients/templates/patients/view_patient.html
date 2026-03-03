@@ -13,7 +13,7 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4>View Patient {{ h_patient.full_name }}</h4>
+            <h5 class="formTitle">View Patient {{ h_patient.full_name }}</h5>
             {{ h_form.as_p }}
             <div class="buttomsDiv">
                 <a href="{% url 'patients:listpatients' %}" class="backToListLink">Back To List</a>

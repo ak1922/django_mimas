@@ -62,7 +62,7 @@
                                 <td>{{ contact.relationship }}</td>
                                 <td>{{ contact.updated_by }}</td>
                                 <td class="text-center">
-                                    <a href="" class="btn btn-sm btn-outline-primary"
+                                    <a href="{% url 'mimascompany:viewemployeecontact' contact.pk %}" class="btn btn-sm btn-outline-primary"
                                        title="View Contact:- {{ contact.employee }}">
                                         <i class="fas fa-eye fa-fw"></i>
                                     </a>

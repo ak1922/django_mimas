@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.urls import reverse
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -18,17 +19,20 @@ def create_employee_contact(request):
 
     if request.method == 'POST':
         form = EmployeeContactForm(request.POST)
-
         if form.is_valid():
             new_contact = form.save()
             messages.success(request, f'New contact created for {new_contact.employee_name}')
             return redirect('mimascompany:listemployeecontacts')
         else:
             messages.error(request, 'Invalid form.')
-
     else:
         form = EmployeeContactForm()
-    return render(request,'mimascompany/create_employeecontact.html', {'h_form': form})
+
+    context = {
+        'h_form': form,
+        'h_exists_contact': None
+    }
+    return render(request,'mimascompany/create_employeecontact.html', context)
 
 
 # Create contact from employees
@@ -36,6 +40,7 @@ def create_employee_contact(request):
 @group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
 def add_employee_contact_employee(request, emp_id=None):
     """ Add employee contact from employee table list """
+
 
     employee_contact = None
     if emp_id:
@@ -121,6 +126,23 @@ def list_employee_contacts(request):
         'h_contactscount': allcontacts.count(),
     }
     return render(request, 'mimascompany/list_employeecontacts.html', context)
+
+# View contact
+@login_required
+@group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
+def view_employee_contact(request, con_id):
+
+    contact = EmployeeContact.objects.get(pk=con_id)
+    form = EmployeeContactForm(instance=contact)
+
+    for field in form.fields.values():
+        field.disabled = True
+
+    context = {
+        'h_form': form,
+        'h_exists_contact': contact
+    }
+    return render(request, 'mimascompany/create_employeecontact.html', context)
 
 
 # Delete contact

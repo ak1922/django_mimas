@@ -4,6 +4,7 @@ from patients.models.patients_model import Patient
 from patients.models.patientcontact_model import PatientContact
 from patients.models.patientdetails_model import PatientDetail
 from patients.models.patientinsurance_model import PatientInsurance
+from patients.models.patientappointment_model import PatientAppointment
 
 
 @admin.register(Patient)
@@ -48,3 +49,16 @@ class PatientInsuranceAdmin(admin.ModelAdmin):
     search_fields = ['patient__last_name', 'patient__first_name', 'company']
     ordering = ['created']
     list_per_page = 10
+
+
+# Patient appointment admin
+@admin.register(PatientAppointment)
+class PatientAppointmentAdmin(admin.ModelAdmin):
+    list_display = ['patient', 'dentist', 'branch_name', 'appointment_title', 'appointment_date', 'appointment_title', 'created', 'updated', 'updated_by']
+    search_fields = [
+        'patient__last_name',
+        'patient__first_name',
+        'dentist__patients_primarydentist__last_name',
+        'dentist__patients_primarydentist__first_name'
+    ]
+    ordering = ['-appointment_date', '-appointment_time']

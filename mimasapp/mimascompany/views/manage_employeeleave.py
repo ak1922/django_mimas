@@ -28,7 +28,12 @@ def create_leave_request(request):
                     messages.error(request, f'{field}:- {error}')
     else:
         form = LeaveRequestForm()
-    return render(request, 'mimascompany/create_leaverequest.html', {'h_form': form})
+
+    context = {
+        'h_form': form,
+        'h_exists_request': None
+    }
+    return render(request, 'mimascompany/create_leaverequest.html', context)
 
 
 # List requests
@@ -84,6 +89,24 @@ def edit_leave_request(request, req_id):
     else:
         form = LeaveRequestForm(instance=employee_request)
     return render(request, 'mimascompany/create_leaverequest.html', {'h_form': form})
+
+
+# View leave request
+@login_required
+@group_required(allowed_groups=['Employees', 'Administrators'])
+def view_leave_request(request, req_id):
+
+    employee_request = get_object_or_404(LeaveRequest, pk=req_id)
+    form = LeaveRequestForm(instance=employee_request)
+
+    for field in form.fields.values():
+        field.disabled = True
+
+    context = {
+        'h_form': form,
+        'h_exists_request': employee_request
+    }
+    return render(request, 'mimascompany/create_leaverequest.html', context)
 
 
 # Delete request

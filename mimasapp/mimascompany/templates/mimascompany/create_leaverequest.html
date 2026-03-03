@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title_content %}Create Leave Request{% endblock %}
+{% block title_content %}Leave Request{% endblock %}
 
 {% block css_content %}
 	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
@@ -13,10 +13,20 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4 class="formTitle">Create Leave Request</h4>
+            <h4 class="formTitle">
+                {% if h_exists_request %}
+                    View Request for {{ h_exists_request.employee.full_name }}
+                {% else %}
+                    Create Leave Request
+                {% endif %}
+            </h4>
             {{ h_form.as_p }}
             <div class="buttomsDiv">
-                <button class="formSubmitButton" type="submit">Submit Request</button>
+                {% if h_exists_request %}
+                    <a href="{% url 'mimascompany:listallleaverequests' %}" class="backToListLink">Back to Requests</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Request</button>
+                {% endif %}
             </div>
         </form>
     </div>
