@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Employee Task{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <h4 class="formTitle">
+                {% if h_task_exists %}
+                    View Task {{ h_task_exists.task_name }}
+                {% else %}
+                    Create Employee Task
+                {% endif %}
+            </h4>
+            {{ h_form.as_p }}
+            <div class="buttomsDiv">
+                {% if h_task_exists %}
+                    <a href="{% url 'mimascompany:listtasks' %}" class="backToListLink">Back To Tasks</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Task</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+<br><br><br><br>
+{% endblock %}

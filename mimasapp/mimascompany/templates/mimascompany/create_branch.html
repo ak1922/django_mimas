@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Branch Form{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <h4 class="formTitle">
+                {% if h_exists_branch %}
+                    View Branch {{ h_exists_branch.branch_name }}
+                {% else %}
+                    Create Branch
+                {% endif %}
+            </h4>
+
+            <div class="genericFormDiv">
+                <strong>{{ h_form.branch_name.label_tag }}</strong>
+                {{ h_form.branch_name }}
+            </div>
+            <div class="genericFormDiv">
+                <strong>{{ h_form.branch_head.label_tag }}</strong>
+                {{ h_form.branch_head }}
+            </div>
+            <div class="genericFormDiv">
+                <strong>{{ h_form.location.label_tag }}</strong>
+                {{ h_form.location }}
+            </div>
+
+            <h5 class="text-center mt-3">Departments & Services</h5>
+
+            {% for department in h_departments %}
+                <div class="department-section mt-2">
+                    <label>
+                        <input type="checkbox" name="departments" value="{{ department.pk }}"
+                            {% if department.pk in h_selecteddeptids %}checked{% endif %}>
+                        <strong>{{ department.department_name }}</strong>
+                    </label>
+                    <div class="service-list">
+                        {% for service in department.service_department.all %}
+                            <label>
+                                <input type="checkbox" name="services" value="{{ service.pk }}"
+                                    {% if service.pk in h_selectedserviceids %}checked{% endif %}>
+                                {{ service.service_name }}
+                            </label><br>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <br><br>
+            <div class="buttomsDiv">
+                {% if h_exists_branch %}
+                    <a href="{% url 'mimascompany:listbranches' %}" class="backToListLink">Back To Branches</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Branch</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+{% endblock %}

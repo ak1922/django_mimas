@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Create Patient Details{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <h4 class="formTitle">View Patient Details</h4>
+            {{ h_form.as_p }}
+
+            <div class="buttomsDiv">
+                <a href="{% url 'patients:listpatientdetails' %}" class="backToListLink">Back To List</a>
+            </div>
+
+        </form>
+    </div>
+
+<br><br><br><br>
+{% endblock %}

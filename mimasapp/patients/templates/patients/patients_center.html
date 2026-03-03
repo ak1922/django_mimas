@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Patients Center{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="{% static 'css/center.css' %}">
+{% endblock %}
+
+{% block body_content %}
+    <div class="container">
+        <h3>Patients Center</h3>
+        <!-- Show appointments and visits -->
+        <div class="totalsDivStaff">
+            <h6>Patients: <a href="">{{ h_allpatients }}</a></h6>
+            <h6>Visits: <a href="">{{ h_visitscount }}</a></h6>
+            <h6>Appointments: <a href="">{{ h_appointscount }}</a></h6>
+        </div>
+        <!-- Scrolling messages section -->
+        <div class="message-container">
+            <div class="scrolling-messages">
+                <div class="marquee-content">
+                    {% for message in h_messages %}
+                    <span>{{ message.message }}</span>
+                    {% endfor %}
+                    <!-- Duplicate the content inside the loop if necessary for seamlessness -->
+                </div>
+            </div>
+        </div>
+        <!-- Links to tasks -->
+        <div id="workDiv">
+            <div class="action-group">
+                <h5>Create Records</h5>
+                <div class="action-links">
+                    <a href="{% url 'patients:createpatient' %}" title="Add Patient">Patient</a>
+                    <a href="{% url 'patients:createpatientdetail' %}" title="Add Patient Details">Detail</a>
+                    <a href="{% url 'patients:createpatientcontact' %}" title="Add Patient Contact">Contact</a>
+                    <a href="{% url 'patients:createinsurance' %}" title="Add Patient Insurance">Insurance</a>
+                    <a href="{% url 'patients:createappointment' %}" title="Add Patient Appointment">Appointment</a>
+                    <a href="" title="Add Patient Visit">Patient Visit</a>
+                    <a href="">Medical History</a>
+                </div>
+            </div>
+            <div class="action-group">
+                <h5>List Records</h5>
+                <div class="action-links">
+                    <a href="{% url 'patients:listpatients' %}" title="List Patients">Patients</a>
+                    <a href="{% url 'patients:listpatientdetails' %}" title="List Patients Details">Details</a>
+                    <a href="{% url 'patients:listpatientcontacts' %}" title="List Patients Contact">Contacts</a>
+                    <a href="{% url 'patients:listinsurance' %}" title="List Patient Insurance">Insurance</a>
+                    <a href="{% url 'patients:listallappointments' %}" title="List Patient Appointments">Appointments</a>
+                    <a href="" title="List Patient Visits">Patients Visits</a>
+                    <a href="" title="List Patient Bookings">Bookings</a>
+                </div>
+            </div>
+            <div class="action-group">
+                <h5 id="archiveDivTitle">List Archived Records</h5>
+                <div class="action-links" id="archiveItemsDiv">
+                    <a href="" title="List Archived Patient Appointments">Appointments</a>
+                    <a href="" title="List Archived Patient Visits">Visits</a>
+                    <a href="" title="List Archived Patient Bills">Bills</a>
+                    <a href="" title="List Archived Service Details">Archived Service</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

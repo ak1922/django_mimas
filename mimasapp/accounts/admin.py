@@ -13,6 +13,6 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('user_type',)}),
     )
     list_display = UserAdmin.list_display + ('user_type',)
-    list_per_page = 6
+    list_per_page = 15
 
 admin.site.register(AccountUser, CustomUserAdmin)

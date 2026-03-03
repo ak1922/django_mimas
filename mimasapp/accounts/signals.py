@@ -8,7 +8,7 @@ from .models import AccountUser
 # ------- User Group Assigment --------
 @receiver(post_save, sender=AccountUser)
 def assign_user_group(sender, instance, created, **kwargs):
-    """ Assign users to a group after registration """
+    """ Create and/or assign users to a group after registration """
 
     if created:
         if instance.is_superuser:

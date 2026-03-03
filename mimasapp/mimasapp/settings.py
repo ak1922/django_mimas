@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+import logging
 from django.contrib.messages import constants as messages
 
 
@@ -140,3 +141,41 @@ MESSAGE_TAGS = {
 }
 
 AUTH_USER_MODEL = 'accounts.AccountUser'
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False, # Keep Django's default loggers, but we will redefine the levels
+    "formatters": {
+        "verbose": {
+            "format": "[%(asctime)s] [%(levelname)s] [%(name)s:%(lineno)s] %(message)s",
+            "datefmt": "%d/%b/%Y %H:%M:%S"
+        },
+        "simple": {
+            "format": "%(levelname)s %(message)s"
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO", # Handler level: Processes INFO and above
+            "class": "logging.StreamHandler",
+            "formatter": "verbose"
+        },
+    },
+    "loggers": {
+        "": { # This is the root logger
+            "handlers": ["console"],
+            "level": "INFO", # Logger level: Captures INFO and above
+            "propagate": True,
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"), # Allows overriding via env variable
+            "propagate": False, # Prevents logs from being handled by the root logger's handler again
+        },
+        "myproject": { # A logger for your specific application/project namespace
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}

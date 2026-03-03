@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}List Patients{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container-fluid mt-4">
+        <div class="card shadow-sm custom-table-container">
+
+            <div class="titleStatsDiv">
+                <h5 class="mb-0 text-gray-800">All Patients</h5>
+                <div>
+                    <span class="countStat">Total: {{ h_patientscount }}</span>
+                </div>
+            </div>
+
+            <div class="searchAddDiv">
+                <div class="searchDiv">
+                    <form method="GET" class="d-flex w-100">
+                        <input class="form-control form-control-sm me-2" type="search" name="item_name" placeholder="Search First Name Last Name...">
+                        <button class="btn btn-sm btn-success" type="submit">
+                            Submit
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <a href="{% url 'patients:createpatient' %}" id="tableTopRightDiv" class="btn btn-sm btn-primary" title="Create Patient">
+                    <i class="fas fa-plus fa-fw"></i> Add Patient
+                </a>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-light">
+                            <tr class="text-center">
+                                <th>USERNAME</th>
+                                <th>FIRST NAME</th>
+                                <th>LAST NAME</th>
+                                <th>GENDER</th>
+                                <th>DENTIST</th>
+                                <th>UPDATED BY</th>
+                                <th>PATIENT ACTIONS</th>
+                                <th>PATIENT INFORMATION</th>
+                                <th>APPOINTMENT ACTIONS</th>
+                                <th>VISIT ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for patient in page_patients %}
+                            	<tr class="text-center">
+                                    <td class="text-primary">{{ patient.patient_username }}</td>
+                                    <td>{{ patient.first_name }}</td>
+                                    <td>{{ patient.last_name }}</td>
+                                    <td>{{ patient.gender }}</td>
+                                    <td>{{ patient.primary_dentist }}</td>
+                                    <td>{{ patient.updated_by }}</td>
+                                    <!-- Patient Actions -->
+                                    <td class="text-center">
+                                        <a href="{% url 'patients:viewpatient' patient.pk %}" class="btn btn-sm btn-outline-primary" title="View Patient:- {{ patient.full_name }}">
+                                            <i class="fas fa-eye fa-fw"></i>
+                                        </a>
+                                        <a href="{% url 'patients:editpatient' patient.pk %}" class="btn btn-sm btn-outline-warning"
+                                           title="Edit Patient:- {{ patient.full_name }}">
+                                            <i class="fas fa-edit fa-fw"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ patient.pk }}">
+                                            <i class="fas fa-trash-alt fa-fw"></i>
+                                        </button>
+                                    </td>
+                                    <!-- Patient information -->
+                                    <td>
+                                        {# Contacts #}
+                                        {% if patient.has_contact %}
+                                        	<a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                               title="Edit Contact:- {{ patient.full_name }}">
+                                                <i class="fas fa-user fa-fw"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-info" id="genericBlinker"
+                                               title="Add Contact:- {{ patient.full_name }}">
+                                                <i class="fas fa-user-plus fa-fw"></i>
+                                            </a>
+                                        {% endif %}
+                                        {# Details #}
+                                        {% if patient.has_detail %}
+                                        	<a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                               title="Edit Detail:- {{ patient.full_name }}">
+                                                <i class="fas fa-circle-info fa-fw"></i>
+                                            </a>
+                                        {% else %}
+                                        	<a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" id="genericBlinker" class="btn btn-sm btn-outline-info"
+                                               title="Edit Detail:- {{ patient.full_name }}">
+                                                <i class="fas fa-circle-info fa-fw"></i>
+                                            </a>
+                                        {% endif %}
+                                        {# Insurance #}
+                                        {% if patient.has_insurance %}
+                                        	<a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                               title="Edit Insurance:- {{ patient.full_name }}">
+                                                <i class="fas fa-hand-holding-medical fa-fw"></i>
+                                            </a>
+                                        {% else %}
+                                        	<a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-info" id="genericBlinker"
+                                               title="Add Insurance:- {{ patient.full_name }}">
+                                                <i class="fas fa-hand-holding-medical fa-fw"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <!-- Modal -->
+                                <div class="modal fade" id="deleteModal{{ patient.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ patient.pk }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ patient.pk }}">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete patient <strong>{{ patient.full_name }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{% url 'patients:deletepatient' patient.pk %}" method="POST" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                            	<tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">No Patients found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            
+                {% if page_patients.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if page_patients.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_patients.previous_page_number }}">&laquo; Previous</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+                            {% endif %}
+
+                            {% for i in page_patients.paginator.page_range %}
+                                {% if page_patients.number == i %}
+                                    <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_patients.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_patients.next_page_number }}">Next &raquo;</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}            
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

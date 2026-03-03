@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block body_content %}
+    <div class="employee-detail-container" style="max-width: 800px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
+
+        <!-- Header: Photo and Name -->
+        <div class="employee-header" style="text-align: center; margin-bottom: 20px;">
+            <a href="" title="">
+                {% if employee.photo %}
+                    <img src="{{ employee.photo.url }}" alt="{{ employee.full_name }}" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                {% else %}
+                    <div style="width: 150px; height: 150px; border-radius: 50%; background-color: #eee; display: flex; align-items: center; justify-content: center; margin: 0 auto;">No Photo</div>
+                {% endif %}
+            </a>
+            <h2>{{ employee.full_name }}</h2>
+            <p><strong>Position:</strong> {{ employee.position|default:"No Position Assigned" }}</p>
+            <span class="badge" style="background-color: {% if employee.status == 'AC' %}#28a745{% else %}#dc3545{% endif %}; color: white; padding: 5px 10px; border-radius: 4px;">
+                {{ employee.get_status_display }}
+            </span>
+        </div>
+
+        <!-- Details Section -->
+        <div class="employee-info-body">
+            <h3>Personal Information</h3>
+            <table class="table" style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Username:</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ employee.employee_username }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Gender:</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ employee.get_gender_display }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Accrued Vacation Days:</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ employee.vacations_days_accrued }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Remaining Vacation:</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong></strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="actions" style="margin-top: 20px; text-align: center;">
+            <a href="{% url 'mimascompany:editemployee' emp_id=employee.pk %}"
+               style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">Edit Profile</a>
+        </div>
+    </div>
+{% endblock %}

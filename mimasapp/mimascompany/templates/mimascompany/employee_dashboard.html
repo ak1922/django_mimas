@@ -2,15 +2,20 @@
 
 {% load static %}
 
+{% block title_content %}Employee Dashboard {{ request.user }}{% endblock %}
+
 {% block css_content %}
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/dash.css' %}">
 {% endblock %}
+
 {% block body_content %}
 <div class="container-fluid px-4">
     <h2 class="mt-4">Employee Dashboard</h2>
 
     <!-- Stats Cards -->
     <div class="row g-3 my-2">
+        <!-- (Existing Stats Cards remain the same) -->
         <div class="col-md-3">
             <div class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
                 <div>
@@ -49,48 +54,160 @@
         </div>
     </div>
 
-    <!-- Task Table -->
+    <!-- Tab Navigation -->
     <div class="row my-5">
-        <h3 class="fs-4 mb-3">Your Tasks</h3>
         <div class="col">
-            <table class="table bg-white rounded shadow-sm table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Title</th>
-                        <th scope="col">Priority</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Start Date</th>
-                        <th scope="col">Due Date</th>
-                        <th scope="col">ACTIONS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for task in tasks %}
-                    <tr>
-                        <td>{{ task.task_name }}</td>
-                        <td>
-                            {% if task.priority == 4 %}
-                                <span class="badge bg-danger">High</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Normal</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ task.get_status_display }}</td>
-                        <td>{{ task.start_date }}</td>
-                        <td>{{ task.end_date|date:"Y-m-d" }}</td>
-                        <td>
-                            <a href="" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4">No tasks found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks" type="button" role="tab" aria-controls="tasks" aria-selected="true">
+                        <i class="fas fa-tasks me-2"></i>Tasks
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="leave-tab" data-bs-toggle="tab" data-bs-target="#leave" type="button" role="tab" aria-controls="leave" aria-selected="false">
+                        <i class="fas fa-calendar-alt me-2"></i>Leave Requests
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content bg-white p-4 rounded shadow-sm" id="dashboardTabsContent">
+
+                <!-- Task Table Pane -->
+                <div class="tab-pane fade show active" id="tasks" role="tabpanel" aria-labelledby="tasks-tab">
+                    <h3 class="fs-4 mb-3">Your Tasks</h3>
+                    <table class="table table-hover task-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">TITLE</th>
+                                <th scope="col">PRIORITY</th>
+                                <th scope="col">STATUS</th>
+                                <th scope="col">START DATE</th>
+                                <th scope="col">END DATE</th>
+                                <th scope="col">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in tasks %}
+                                <tr>
+                                    <td>{{ task.task_name }}</td>
+                                    <td>
+                                        {% if task.priority == 4 %} <span class="badge bg-danger">Critical</span>
+                                        {% elif task.priority == 3 %} <span class="badge bg-warning">High</span>
+                                        {% elif task.priority == 2 %} <span class="badge bg-primary">Medium</span>
+                                        {% else %} <span class="badge bg-secondary">Low</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ task.get_status_display }}</td>
+                                    <td>{{ task.start_date }}</td>
+                                    <td>{{ task.end_date|date:"Y-m-d" }}</td>
+                                    <td>
+                                        <a href="{% url 'mimascompany:edittask' task.pk %}" class="btn btn-sm btn-outline-warning" title="Edit Task:- {{ task.task_name }}">
+                                            <i class="fas fa-edit fa-fw"></i>
+                                        </a>
+                                        <a href="{% url 'mimascompany:createitememployeedash' task.pk %}" class="btn btn-sm btn-outline-success" title="Create Task Item:- {{ task.task_name }}">
+                                            <i class="fas fa-folder-plus fa-fw"></i>
+                                        </a>
+                                        <a href="{% url 'mimascompany:deletetask' task.pk %}" class="btn btn-sm btn-outline-danger" title="Edit Task:- {{ task.task_name }}">
+                                            <i class="fas fa-trash fa-fw"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <!-- --- Sub-table for EmployeeTaskItems --- -->
+                                <tr>
+                                    <td colspan="6" class="p-0">
+                                        <div class="collapse show" id="items-{{ task.id }}">
+                                            <table class="table table-sm table-striped mb-0 sub-task-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ITEM NAME</th>
+                                                        <th>COMMENTS</th>
+                                                        <th>START DATE</th>
+                                                        <th>END DATE</th>
+                                                        <th>ACTIONS</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for item in task.employeetaskitem_taskname.all %}
+                                                    <tr>
+                                                        <td>{{ item.item_name }}</td>
+                                                        <td>{{ item.comments }}</td>
+                                                        <td>{{ item.start_date|date:"Y-m-d" }}</td>
+                                                        <td>{{ item.end_date|date:"Y-m-d" }}</td>
+                                                        <td>
+                                                            <a href="{% url 'mimascompany:edittaskitem' item.pk %}" title="Edit Task Item:- {{ item.item_name }}" class="btn btn-sm btn-outline-warning">
+                                                                <i class="fas fa-edit fa-fw"></i>
+                                                            </a>
+                                                            <a href="" class="btn btn-sm btn-outline-danger" title="Delete Task Item:- {{ item.item_name }}">
+                                                                <i class="fas fa-trash fa-fw"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="4" class="text-muted text-center">No sub-items</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- ----------------------------------------- -->
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6">No tasks found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- EmployeeLeave Table Pane -->
+                <div class="tab-pane fade" id="leave" role="tabpanel" aria-labelledby="leave-tab">
+                    <div id="topHeaderDiv">
+                        <h3 class="fs-4 mb-3">Leave Requests</h3>
+                        <a href="{% url 'mimascompany:createleaverequest' %}" class="btn btn-sm btn-outline-primary" title="Request Time Off">
+                            <i class="fas fa-suitcase-rolling fa-fw"></i>
+                        </a>
+                    </div>
+
+                    <table class="table table-hover leave-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Leave Type</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                                <th scope="col">Reason</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for leave in leave_requests %}
+                            <tr>
+                                <td>{{ leave.leave_type }}</td>
+                                <td>{{ leave.start_date }}</td>
+                                <td>{{ leave.end_date }}</td>
+                                <td>{{ leave.reason|truncatechars:30 }}</td>
+                                <td>
+                                    {% if leave.status == 'Approved' %}
+                                        <span class="badge bg-success">Approved</span>
+                                    {% elif leave.status == 'Pending' %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">No leave requests found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

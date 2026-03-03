@@ -1,0 +1,80 @@
+
+/* Table Styling */
+.custom-table-container table.table {
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.custom-table-container .table-hover tbody tr:hover {
+    background-color: #f1f4f8;
+}
+
+/* Header and Action Bar Layout */
+.titleStatsDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.searchAddDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+}
+
+.countStat {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #856404;
+    background-color: #fff3cd;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.searchDiv {
+    display: flex;
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+.searchDiv input {
+    border-radius: 20px;
+}
+
+#tableTopRightDiv {
+    margin-left: 15px;
+    border-radius: 20px;
+}
+
+.pagination {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+}
+
+.pagination .page-item {
+    margin: 0;
+}
+
+/* Keyframes for the blinking animation */
+@keyframes blinker {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+#genericBlinker {
+    animation: blinker 4s infinite;
+    will-change: opacity;
+}

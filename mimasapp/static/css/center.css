@@ -1,0 +1,117 @@
+/* General Styling & Layout */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Totals Section Styling */
+.totalsDivStaff {
+    display: flex;
+    justify-content: space-around;
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.totalsDivStaff h6 {
+    margin: 0;
+    color: #333;
+}
+
+.totalsDivStaff a {
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.totalsDivStaff a:hover {
+    text-decoration: underline;
+}
+
+/* Scrolling Messages (Marquee) */
+.message-container {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 10px;
+    border-radius: 5px;
+    overflow: hidden; /* Hide overflow to allow marquee effect */
+    margin-bottom: 20px;
+}
+
+.scrolling-messages {
+    white-space: nowrap;
+    animation: marquee 30s linear infinite; /* Animation definition */
+}
+
+.marquee-content span {
+    display: inline-block;
+    padding-right: 50px; /* Space between messages */
+    color: #856404;
+}
+
+@keyframes marquee {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Action Groups Section */
+#workDiv {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.action-group {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease; /* Smooth transition for hover */
+}
+
+.action-group:hover {
+    transform: translateY(-5px) scale(1.02); /* CSS Transformation on hover */
+}
+
+.action-group h5 {
+    color: #007bff;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.action-links a {
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.action-links a:hover {
+    background-color: #0056b3;
+    transform: translateX(5px); /* CSS Transformation on hover */
+}
+
+#archiveItemsDiv a {
+    background-color: #6c757d; /* Different color for archive links */
+}
+
+#archiveItemsDiv a:hover {
+    background-color: #5a6268;
+}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Create Employee Details{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <h4 class="formTitle">
+                {% if h_exists_details %}
+                    View Details for {{ h_exists_details.employee.full_name }}
+                {% else %}
+                    Create Employee Details
+                {% endif %}
+            </h4>
+            {{ h_form.as_p }}
+
+            <div class="buttomsDiv">
+                {% if h_exists_details %}
+                    <a href="{% url 'mimascompany:listemployeedetails' %}" class="backToListLink">Back To Details</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Details</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+<br><br><br><br>
+{% endblock %}
