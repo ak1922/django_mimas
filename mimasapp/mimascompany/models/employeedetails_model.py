@@ -71,5 +71,5 @@ class EmployeeDetail(AuditModel):
         return self.employee.full_name
 
     class Meta:
-        verbose_name = 'EmployeeDetail'
-        verbose_name_plural = 'EmployeeDetails'
+        verbose_name = 'Employee Detail'
+        verbose_name_plural = 'Employee Details'

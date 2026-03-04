@@ -26,8 +26,8 @@ class EmployeeContact(AuditModel):
 
     class Meta:
         ordering = ['contact_name']
-        verbose_name = 'EmployeeContact'
-        verbose_name_plural = 'EmployeeContacts'
+        verbose_name = 'Employee Contact'
+        verbose_name_plural = 'Employee Contacts'
 
     def __str__(self):
         return f'Emergency Contact: {self.employee_name}'

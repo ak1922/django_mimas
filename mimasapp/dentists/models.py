@@ -1,3 +1,3 @@
-from django.db import models
-
-# Create your models here.
+from .models.dentistreport_model import DentistReport
+from .models.archivedreport_model import ArchivedDentistReport
+from .models.auxiliary_models import DentistOfficeMessage

@@ -1,0 +1,90 @@
+from django.db import models
+
+from mimascompany.models.employee_model import Employee
+from patients.models.patients_model import Patient
+from patients.models.auxiliary_models import DateTimeAuditModel
+from patients.models.patientvisit_models import PatientVisit
+from .archivedvisit_model import ArchivedPatientVisit
+from .archivedappointment_model import ArchivedPatientAppointment
+
+
+# Patient bill model
+class PatientBill(DateTimeAuditModel):
+
+    bill_title = models.CharField(
+        max_length=300,
+        unique=True
+    )
+    is_paid = models.BooleanField(default=False)
+    total_charge = models.DecimalField(
+        default=0.00,
+        max_digits=10,
+        decimal_places=2
+    )
+
+    # ---- Related models ----
+    patient = models.OneToOneField(
+        Patient,
+        on_delete=models.CASCADE,
+        related_name='patientbill_patient'
+    )
+    visit = models.OneToOneField(
+        PatientVisit,
+        on_delete=models.CASCADE,
+        related_name='patientbill_visit'
+    )
+    updated_by = models.ForeignKey(
+        Employee,
+        on_delete=models.SET_NULL,
+        blank=True, null=True,
+        related_name='patientbill_updatedby'
+    )
+
+    def calculate_total_charge(self):
+        """ Method to calculate total charge based on related services """
+        if self.visit:
+            return sum(service.price for service in self.visit.services.all())
+        return 0.00
+
+    def __str__(self):
+        pass
+
+    class Meta(DateTimeAuditModel.Meta):
+        verbose_name = 'Patient Bill'
+        verbose_name_plural = 'Patient Bills'
+
+
+# Archived patient bill
+class ArchivedPatientBill(DateTimeAuditModel):
+
+    bill_title = models.CharField(max_length=300)
+    is_paid = models.BooleanField(default=True)
+    total_charge = models.DecimalField(
+        default=0.00,
+        max_digits=10,
+        decimal_places=2
+    )
+
+    patient = models.ForeignKey(
+        Patient,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    appointment = models.ForeignKey(
+        ArchivedPatientAppointment,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+    visit = models.ForeignKey(
+        ArchivedPatientVisit,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+
+    def __str__(self):
+        pass
+
+    class Meta(DateTimeAuditModel.Meta):
+        verbose_name = 'Archived Patient Bill'
+        verbose_name_plural = 'Archived Patients Bills'
+

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Patient Dash{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/patientsdash.css' %}">
+{% endblock %}
+
+{% block body_content %}
+    <div class="container dashboard-container">
+        <div class="profileHeaderDiv">
+            <h3 class="profileHeaderTitle"><i class="fas fa-user-circle"></i> Patient Dashboard</h3>
+            <span class="profileHeaderName">Dashboard for {{ h_patient.patient_name }}</span>
+        </div>
+
+        <!-- ... profile image section ... -->
+
+        <div class="formActionsMenu">
+            <a class="formActionsProfile" href=""><i class="fas fa-camera"></i> Update Photo</a>
+            <a class="formActionsDetails" href=""><i class="fas fa-notes-medical"></i> Update Insurance</a>
+            <a class="formActionsJob" href=""><i class="fas fa-address-card"></i> Update Contact</a>
+        </div>
+
+        <!-- Use a single class name for all main info sections for consistency -->
+        <div class="info-card">
+            <h4><i class="fas fa-calendar-alt"></i> Patient Appointments</h4>
+            <div class="visitMenu">
+                <!-- Show next patient appointment -->
+                <div class="visitItems">
+                    {% if h_daysleft is not None %}
+                        {% if h_daysleft == 0 %}
+                            <span class="visitItemTopicblinker"><i class="fas fa-exclamation-triangle"></i> Your appointment is today.</span>
+                        {% elif h_daysleft == 1 %}
+                            <span>Your appointment is tomorrow</span>
+                        {% else %}
+                            <span class="visitItemTopic"><i class="fas fa-calendar-day"></i> Your next appointment: {{ h_nextappointment.appointment_date|date:"F j, Y" }}</span>
+                            <span>There are {{ h_daysleft }} days before the appointment.</span>
+                        {% endif %}
+                    {% else %}
+                        <span>There are {{ h_daysleft }} days before the appointment.</span>
+                    {% endif %}
+                </div>
+                <div class="visitItems">
+                    <span class="visitItemTopic"><i class="fas fa-question-circle"></i> Unconfirmed Appointments</span>
+                    <a class="visitItemTopicLink" href="">{{ h_unconfirmed }}</a>
+                </div>
+                <div class="visitItems">
+                    <span class="visitItemTopic"><i class="fas fa-check-circle"></i> Confirmed Appointment</span>
+                    <a class="visitItemTopicLink" href="">{{ h_confirmed }}</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h4><i class="fas fa-procedures"></i> Patient Visits</h4>
+            <div class="visitMenu">
+                <div class="visitItems">
+                    <span class="visitItemTopic"><i class="fas fa-clock"></i> Scheduled</span>
+                    <a class="visitItemTopicLink" href="">{{ h_scheduledvisits }}</a>
+                </div>
+                <div class="visitItems">
+                    <span class="visitItemTopic"><i class="fas fa-check"></i> Completed Visits</span>
+                    <a class="visitItemTopicLink" href="">{{ h_completedvisits }}</a>
+                </div>
+                <div class="visitItems">
+                    <span class="visitItemTopic"><i class="fas fa-times-circle"></i> No Show</span>
+                    <a class="visitItemTopicLink" href="#">{{ h_noshowvisits }}</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h4><i class="fas fa-file-medical-alt"></i> Patient Reports</h4>
+            <div class="visitMenu">
+                <div class="visitItems">
+                    <span class="visitItemTopic"><i class="fas fa-tooth"></i> Completed Treatments</span>
+                    <a class="visitItemTopicLink" href="">{{ h_completedtreatments }}</a>
+                </div>
+                <div class="visitItems">
+                    <span class="visitItemTopic"><i class="fas fa-flask"></i> Completed Labs</span>
+                    <a class="visitItemTopicLink" href="">{{ h_completedlabs }}</a>
+                </div>
+                <div class="visitItems">
+                    <span class="visitItemTopic"><i class="fas fa-user-md"></i> Completed Referrals</span>
+                    <a class="visitItemTopicLink" href="">{{ h_completedreferrals }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

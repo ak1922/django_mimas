@@ -71,7 +71,7 @@ class PatientAppointment(DateTimeAuditModel):
         on_delete=models.SET_NULL,
         related_name='patientappointment_dentist'
     )
-    branch_name = models.ForeignKey(
+    branch = models.ForeignKey(
         Branch,
         null=True,
         on_delete=models.SET_NULL,
@@ -119,8 +119,8 @@ class PatientAppointment(DateTimeAuditModel):
 
     class Meta(DateTimeAuditModel.Meta):
         ordering = ['-appointment_date', '-appointment_time']
-        verbose_name = 'PatientAppointment'
-        verbose_name_plural = 'PatientAppointments'
+        verbose_name = 'Patient Appointment'
+        verbose_name_plural = 'Patient Appointments'
 
         # Model constraints
         constraints = [
@@ -131,3 +131,23 @@ class PatientAppointment(DateTimeAuditModel):
                 violation_error_message='The chosen time is already booked by another appointment.'
             )
         ]
+
+
+# Patient booking model
+class PatientBooking(DateTimeAuditModel):
+
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    email = models.EmailField(max_length=300)
+    message = models.TextField()
+
+    def person_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    def __str__(self):
+        return f'{self.person_name()} - Booking'
+
+    class Meta:
+        ordering = ['created']
+        verbose_name = 'Patient Booking'
+        verbose_name_plural = 'Patient Bookings'

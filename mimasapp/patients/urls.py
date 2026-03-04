@@ -9,7 +9,8 @@ from .views.manage_patientdetails import create_patient_detail, edit_patient_det
 from .views.manage_patientinsurance import create_insurance, list_insurance, delete_insurance, edit_insurance, \
     create_patient_insurance_patient
 from .views.manage_patientappointments import create_appointment, create_reocurring_appointment, edit_appointment, \
-    delete_appointment, list_patient_appointments, list_all_appointments, add_patient_appointment_patient
+    delete_appointment, list_patient_appointments, list_all_appointments, add_patient_appointment_patient, \
+    view_appointment
 
 app_name = 'patients'
 
@@ -46,6 +47,7 @@ urlpatterns = [
     path('createappointment/', create_appointment, name='createappointment'),
     path('listallappointments/', list_all_appointments, name='listallappointments'),
     path('editappointment/<int:app_id>/edit/', edit_appointment, name='editappointment'),
+    path('viewappointment/<int:app_id>/view/', view_appointment, name='viewappointment'),
     path('deleteappointment/<int:app_id>/delete/', delete_appointment, name='deleteappointment'),
     path('listpatientappointments/<int:pat_id>/list/', list_patient_appointments, name='listpatientappointments'),
     path('addappointmentpatient/<int:pat_id>/add/', add_patient_appointment_patient, name='addappointmentpatient'),

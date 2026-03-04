@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title_content %}Dentist Office{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/dentistoffice.css' %}">
+{% endblock %}
+
+{% block body_content %}
+    <div class="container">
+        <h3>Dentist Office</h3>
+        <div class="stats-container">
+            <div class="stat-card general-stat">
+                <a href="" class="stat-item patient-item">Patients <span class="stat-value">{{ h_patientscount }}</span></a>
+                <a href="" class="stat-item appointment-item">Appointments <span class="stat-value">{{ h_appintmentcount }}</span></a>
+                <a href="" class="stat-item visit-item">Visits <span class="stat-value">{{ h_visitscount }}</span></a>
+            </div>
+        </div>
+
+        <!-- Scrolling messages section -->
+        <div class="message-container">
+            <div class="scrolling-messages">
+                <div class="marquee-content">
+                    {% for message in h_messages %}
+                        <span>{{ message.message }}</span>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+        <div id="workDiv">
+            <div>
+                <h5>Create Records</h5>
+                <div id="actionDiv">
+                    <a id="actionDivTop" href="" title="Create Patient Treatment">Patient Treatment</a>
+                    <a id="actionDivTop" href="" title="Create Patient Referral">Patient Referral</a>
+                    <a id="actionDivTop" href="" title="Create Patient Lab">Patient Laboratory</a>
+                </div>
+            </div>
+            <div id="lastDiv">
+                <h5>List Records</h5>
+                <div id="actionDiv">
+                    <a id="actionDivBel" href="" title="List Patients">Patients</a>
+                    <a id="actionDivBel" href="" title="List Patient Visits">Patient Visits</a>
+                    <a id="actionDivBel" href="" title="List Patient Treatments">Patient Treatments</a>
+                    <a id="actionDivBel" href="" title="List Patient Referrals">Patient Referrals</a>
+                    <a id="actionDivBel" href="" title="List Patient Labs">Patient Laboratories</a>
+                    <a id="actionDivBel" href="" title="List Dentists Reports">Dentist Reports</a>
+                </div>
+            </div>
+            <div id="archiveDiv">
+                <h5 id="archiveDivTitle">List Archived Records</h5>
+                <div id="archiveItemsDiv">
+                    <a id="archiveDivItem" href="" title="List Archived Patient Treatments">Treatments</a>
+                    <a id="archiveDivItem" href="" title="List Archived Patient Referrals">Referrals</a>
+                    <a id="archiveDivItem" href="" title="List Archived Patient Labs">Labs</a>
+                    <a id="archiveDivItem" href="" title="List Archived Dentists Reports">Dentists Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

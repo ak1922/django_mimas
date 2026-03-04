@@ -36,10 +36,10 @@ class DepartmentAdmin(admin.ModelAdmin):
     search_fields = ['department_name', 'department_head__last_name', 'department_head__first_name']
 
 
-@admin.register(EmployeeDetail)
-class EmployeeDetailAdmin(admin.ModelAdmin):
-    list_display = ['employee', 'ssn', 'address', 'phone_number', 'date_hired', 'created', 'updated', 'updated_by']
-    search_fields = ['employee__last_name', 'employee__first_name', 'supervisor__last_name', 'supervisor__first_name']
+# @admin.register(EmployeeDetail)
+# class EmployeeDetailAdmin(admin.ModelAdmin):
+#     list_display = ['employee', 'ssn', 'address', 'phone_number', 'date_hired', 'created', 'updated', 'updated_by']
+#     search_fields = ['employee__last_name', 'employee__first_name', 'supervisor__last_name', 'supervisor__first_name']
 
 
 @admin.register(EmployeeContact)

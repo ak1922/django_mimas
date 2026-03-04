@@ -30,7 +30,12 @@ def create_patient_contact(request):
 
     else:
         form = PatientContactForm()
-    return render(request, 'patients/create_patientcontact.html', {'h_form': form})
+
+    context = {
+        'h_form': form,
+        'h_exists_contact': None
+    }
+    return render(request, 'patients/create_patientcontact.html', context)
 
 
 @login_required
@@ -148,9 +153,9 @@ def view_patient_contact(request, con_id):
 
     context = {
         'h_form': form,
-        'h_patient': patient_contact
+        'h_exists_contact': patient_contact
     }
-    return render(request, 'patients/view_patientcontact.html', context)
+    return render(request, 'patients/create_patientcontact.html', context)
 
 
 # Delete contact
