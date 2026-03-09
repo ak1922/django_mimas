@@ -37,9 +37,9 @@ class PatientAppointmentForm(forms.ModelForm):
         queryset=Dentist.objects.all(),
         widget=forms.Select()
     )
-    branch_name = forms.ModelChoiceField(
+    branch = forms.ModelChoiceField(
         widget=forms.Select(),
-        label='Branch Name',
+        label='Branch',
         queryset=Branch.objects.all()
     )
     insurance = forms.ModelChoiceField(
@@ -78,8 +78,9 @@ class PatientAppointmentForm(forms.ModelForm):
         fields = [
             'patient',
             'dentist',
-            'branch_name',
+            'branch',
             'insurance',
+            'status',
             'appointment_title',
             'appointment_date',
             'appointment_time',

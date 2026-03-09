@@ -5,6 +5,7 @@ from .auxiliary_models import DateTimeAuditModel
 from .patients_model import Patient
 from .patientinsurance_model import PatientInsurance
 from .patientappointment_model import PatientAppointment
+from .treatmentroom_model import TreatmentRoom
 from mimascompany.models.employee_model import Employee
 from mimascompany.models.dentist_model import Dentist
 from mimascompany.models.branch_model import Branch
@@ -44,18 +45,37 @@ class VisitManager(models.Manager):
 # Patient visit model
 class PatientVisit(DateTimeAuditModel):
 
-    class VisitStatus(models.TextChoices):
-        CREATED = 'CREATE', 'Created'
-        CHECKED_IN = 'CHECK', 'Checked In'
-        COMPLETED = 'COMP', 'Completed'
-        CLOSED = 'CLOSED', 'Closed'
-        NO_SHOW = 'NO SHOW', 'No Show'
+    VISIT_STATUS = [
+        ('Created','Created'),
+        ('Checked In','Checked In'),
+        ('Completed','Completed'),
+        ('Closed','Closed'),
+        ('No Show','No Show'),
+    ]
+
+    VISIT_TIME = [
+        ('08:00 AM', '08:00 AM'),
+        ('09:00 AM', '09:00 AM'),
+        ('10:00 AM', '10:00 AM'),
+        ('11:00 AM', '11:00 AM'),
+        ('12:00 PM', '12:00 PM'),
+        ('01:00 PM', '01:00 PM'),
+        ('02:00 PM', '02:00 PM'),
+        ('03:00 PM', '03:00 PM'),
+        ('04:00 PM', '04:00 PM'),
+    ]
 
     # ---- Visit info ----
     visit_title = models.CharField(max_length=300)
     visit_date = models.DateField()
-    visit_time = models.CharField(blank=True, null=True)
-    visit_status = models.CharField(choices=VisitStatus.choices)
+    visit_time = models.CharField(
+        choices=VISIT_TIME,
+        blank=True, null=True
+    )
+    visit_status = models.CharField(
+        choices=VISIT_STATUS,
+        default='Created'
+    )
 
     # ---- Related models ----
     patient = models.ForeignKey(
@@ -89,8 +109,16 @@ class PatientVisit(DateTimeAuditModel):
     )
     updated_by = models.ForeignKey(
         Employee,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        blank=True, null=True,
         related_name='patientvisit_updatedby'
+    )
+    treatment_room = models.ForeignKey(
+        TreatmentRoom,
+        on_delete=models.SET_NULL,
+        default='',
+        blank=True, null=True,
+        related_name='patientvisit_treatmentroom'
     )
 
     # ---- Many2Many fields ----
@@ -113,6 +141,73 @@ class PatientVisit(DateTimeAuditModel):
     objects = models.Manager()
     visits = VisitManager()
 
+    @property
+    def all_treatments_closed(self):
+        treatments = self.patienttreatment_visit.all()
+        if not treatments.exists():
+            return True
+        return not treatments.filter(closed=False).exists()
+
+    @property
+    def open_treatments(self):
+        return self.patienttreatment_visit.filter(closed=False)
+
+    @property
+    def open_treatments_count(self):
+        return self.open_treatments.count()
+
+    @property
+    def all_referrals_closed(self):
+        referrals = self.patientreferral_visit.all()
+        if not referrals.exists():
+            return True
+        return not referrals.filter(closed=False).exists()
+
+    @property
+    def open_referrals(self):
+        return self.patientreferral_visit.filter(closed=False)
+
+    @property
+    def open_referrals_count(self):
+        return self.open_referrals.count()
+
+    @property
+    def all_labs_closed(self):
+        labs = self.patientlab_visit.all()
+        if not labs.exists():
+            return True
+        return not labs.filter(closed=False).exists()
+
+    @property
+    def open_labs(self):
+        return self.patientlab_visit.filter(closed=False)
+
+    @property
+    def open_labs_count(self):
+        return self.open_labs.count()
+
+    @property
+    def all_dentisreports_closed(self):
+        dentistreports = self.dentistreport_visit.all()
+        if not dentistreports.exists():
+            return True
+        return not dentistreports.filter(closed=False).exists()
+
+    @property
+    def open_reports(self):
+        return self.dentistreport_visit.filter(closed=False)
+
+    @property
+    def open_reports_count(self):
+        return self.open_reports.count()
+
+    @property
+    def allpaid_bills(self):
+        bill = getattr(self, 'patientbill_visit', None)
+        if bill:
+            return bill.is_paid
+        return True
+
     def __str__(self):
         return f'{self.visit_title}'
 
@@ -120,52 +215,3 @@ class PatientVisit(DateTimeAuditModel):
         ordering = ['-visit_date', '-visit_time']
         verbose_name = 'Patient Visit'
         verbose_name_plural = 'Patients Visits'
-
-
-# Visit management
-class PatientVisitTask(DateTimeAuditModel):
-
-    STATUS_CHOICES = [
-        ('Pending', 'Pending'),
-        ('In_Progress', 'In Progress'),
-        ('Completed', 'Completed'),
-        ('Cancelled', 'Cancelled')
-    ]
-
-    class Priority(models.IntegerChoices):
-        LOW = 1, 'Low'
-        MEDIUM = 2, 'Medium'
-        HIGH = 3, 'High'
-        CRITICAL = 4, 'Critical'
-
-    task_title = models.CharField(max_length=300)
-    description = models.TextField(blank=True, null=True)
-    task_status = models.CharField(
-        choices=STATUS_CHOICES,
-        default='Pending'
-    )
-    priority = models.CharField(
-        choices=Priority.choices,
-        default='Medium'
-    )
-
-    # ---- Related models ----
-    assigned_to = models.ForeignKey(
-        Employee,
-        on_delete=models.SET_NULL,
-        null=True, blank=True,
-        related_name='patientvisittask_assignedto'
-    )
-    visit = models.ForeignKey(
-        PatientVisit,
-        on_delete=models.CASCADE,
-        related_name='patientvisittask_visit'
-    )
-
-    class Meta(DateTimeAuditModel.Meta):
-        ordering = ['task_status']
-        verbose_name = 'Patient Visit Task'
-        verbose_name_plural = 'Patient Visits Tasks'
-
-    def __str__(self):
-        return f'{self.task_title}- {self.visit.visit_title}'

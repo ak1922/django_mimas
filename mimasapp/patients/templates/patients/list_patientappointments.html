@@ -58,17 +58,24 @@
                                 <tr class="text-center">
                                     <td>{{ appointment.patient }}</td>
                                     <td>{{ appointment.dentist }}</td>
-                                    <td>{{ appointment.branch_name }}</td>
+                                    <td>{{ appointment.branch }}</td>
                                     <td>{{ appointment.insurance }}</td>
                                     <td>{{ appointment.status }}</td>
                                     <td>{{ appointment.appointment_title }}</td>
                                     <td>{{ appointment.appointment_date }}</td>
                                     <td>{{ appointment.updated_by }}</td>
                                     <td>
-                                        <a href="{% url 'patients:viewappointment' appointment.pk %}" class="btn btn-sm btn-outline-primary"
-                                           title="View Appointment:- {{ appointment.appointment_title }}">
-                                            <i class="fas fa-eye fa-fw"></i>
-                                        </a>
+                                        {% if appointment.appointment_date|date:"Y-m-d" == h_today|date:"Y-m-d" %}
+                                            <a href="{% url 'patients:viewappointment' appointment.pk %}" class="btn btn-sm btn-outline-primary"
+                                               title="View Today's Appointment:- {{ appointment.appointment_title }}">
+                                                <i class="fas fa-eye fa-fw genericBlinker"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'patients:viewappointment' appointment.pk %}" class="btn btn-sm btn-outline-primary"
+                                               title="View Appointment:- {{ appointment.appointment_title }}">
+                                                <i class="fas fa-eye fa-fw"></i>
+                                            </a>
+                                        {% endif %}
                                         <a href="{% url 'patients:editappointment' appointment.pk %}" class="btn btn-sm btn-outline-warning"
                                            title="View Appointment:- {{ appointment.appointment_title }}">
                                             <i class="fas fa-edit fa-fw"></i>

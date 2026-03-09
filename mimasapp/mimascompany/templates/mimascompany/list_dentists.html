@@ -57,7 +57,7 @@
                                 <tr>
                                     <td>{{ dentist.dentist_username }}</td>
                                     <td>{{ dentist.employee }}</td>
-                                    <td>{{ dentist.branch_name }}</td>
+                                    <td>{{ dentist.branch }}</td>
                                     <td>{{ dentist.patients_count }}</td>
                                     <td>{{ dentist.specialty }}</td>
                                     <td>{{ dentist.supervisor }}</td>
@@ -98,7 +98,9 @@
                                     </div>
                                 </div>
                             {% empty %}
-                            	
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">No Dentists found.</td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>

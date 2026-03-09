@@ -65,6 +65,27 @@ class PatientTreatment(DateTimeAuditModel):
         related_name='patienttreatment_updatedby'
     )
 
+    @property
+    def closed_visit(self):
+        """ Return closed patient visit """
+        if self.visit and self.visit.visit_status == 'Closed':
+            return True
+        return False
+
+    @property
+    def is_finalized(self):
+        return self.closed or (self.visit and self.visit.visit_status == 'Closed')
+
+    @property
+    def needs_attention(self):
+        return not self.is_finalized
+
+    @property
+    def closed_treatment(self):
+        if self.closed:
+            return True
+        return False
+
     def __str__(self):
         return f'{self.treatment_title}'
 

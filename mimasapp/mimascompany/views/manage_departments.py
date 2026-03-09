@@ -85,7 +85,7 @@ def list_departments(request):
     else:
         alldepartments = Department.objects.all().order_by('created')
 
-    paginator = Paginator(alldepartments, per_page=5)
+    paginator = Paginator(alldepartments, per_page=10)
     page_number = request.GET.get('page')
     page_alldepartments = paginator.get_page(page_number)
 

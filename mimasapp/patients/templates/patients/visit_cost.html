@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Patient Visit Cost {{ h_visit.patient.full_name }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <h5>Visit: {{ h_visit.visit_title }}</h5>
+        <table class="table table-striped">
+            <p class="formTitle">Patient: {{ h_visit.patient.full_name }}</p>
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in h_visit.services.all %}
+                    <tr>
+                        <td>{{ service.service_name }}</td>
+                        <td>{{ service.price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4>Total Amount: ${{ h_totalcost }}</h4>
+
+        <div class="buttomsDiv">
+            <a class="backToListLink" href="">Back to List</a>
+            <a class="backToListLink" href="{% url 'patients:patientscenter' %}">Patients Center</a>
+        </div>
+    </div>
+
+
+<br><br><br><br>
+{% endblock %}

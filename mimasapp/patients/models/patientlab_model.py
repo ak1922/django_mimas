@@ -10,6 +10,31 @@ from mimascompany.models.dentist_model import Dentist
 from mimascompany.models.employee_model import Employee
 
 
+# --------- Custom queryset -----------
+class PatientLabQuerySet(models.QuerySet):
+
+    def open_labs(self):
+        return self.filter(closed=False)
+
+    def closed_labs(self):
+        return self.filter(closed=True)
+
+    def with_related(self):
+        return self.select_related('patient', 'dentist')
+
+
+# --------- Custom manager -----------
+class PatientLabManager(models.Manager):
+    def get_queryset(self):
+        return PatientLabQuerySet(self.model, using=self._db)
+
+    def open_labs(self):
+        return self.get_queryset().open_labs()
+
+    def closed_labs(self):
+        return self.get_queryset().closed_labs()
+
+
 # Patient lab model
 class PatientLab(DateTimeAuditModel):
 
@@ -63,6 +88,18 @@ class PatientLab(DateTimeAuditModel):
         on_delete=models.SET_NULL,
         related_name='patientlab_updatedby'
     )
+
+    # ---- Managers ----
+    objects = models.Manager()
+    all_patientlabs = PatientLabManager()
+
+    @property
+    def closed_visit(self):
+        """ Return closed patient visit """
+        if self.visit and self.visit.visit_status == 'Closed':
+            return True
+        return False
+
 
     def __str__(self):
         return self.lab_title

@@ -70,10 +70,12 @@
                                     <td>{{ employee.updated }}</td>
                                     <td>{{ employee.updated_by }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'mimascompany:viewemployee' employee.pk %}" class="btn btn-sm btn-outline-primary" title="View {{ employee.full_name }}">
+                                        <a href="{% url 'mimascompany:viewemployee' employee.pk %}" class="btn btn-sm btn-outline-primary"
+                                           title="View {{ employee.full_name }}">
                                             <i class="fas fa-eye fa-fw"></i>
                                         </a>
-                                        <a href="{% url 'mimascompany:editemployee' employee.pk %}" class="btn btn-sm btn-outline-warning" title="Edit {{ employee.full_name }}">
+                                        <a href="{% url 'mimascompany:editemployee' employee.pk %}" class="btn btn-sm btn-outline-warning"
+                                           title="Edit {{ employee.full_name }}">
                                             <i class="fas fa-edit fa-fw"></i>
                                         </a>
                                         <!-- Delete Icon -->
@@ -83,21 +85,25 @@
                                     </td>
                                     <td class="text-center">
                                         {% if employee.employee_with_contact %}
-                                        	<a href="{% url 'mimascompany:addemployeecontactemployee' employee.pk %}" class="btn btn-sm btn-outline-info" title="Edit Contact:- {{ employee.full_name }}">
+                                        	<a href="{% url 'mimascompany:addemployeecontactemployee' employee.pk %}" class="btn btn-sm btn-outline-info"
+                                               title="Edit Contact:- {{ employee.full_name }}">
                                                 <i class="fas fa-user fa-fw"></i>
                                             </a>
                                         {% else %}
-                                            <a href="{% url 'mimascompany:addemployeecontactemployee' employee.pk %}" class="btn btn-sm btn-outline-primary" id="genericBlinker" title="Add Contact:- {{ employee.full_name }}">
-                                                <i class="fas fa-user-plus fa-fw"></i>
+                                            <a href="{% url 'mimascompany:addemployeecontactemployee' employee.pk %}" class="btn btn-sm btn-outline-primary"
+                                               title="Add Contact:- {{ employee.full_name }}">
+                                                <i class="fas fa-user-plus fa-fw genericBlinker"></i>
                                             </a>
                                         {% endif %}
                                         {% if employee.employee_with_details %}
-                                            <a href="{% url 'mimascompany:createemployeedetailemployee' employee.pk %}" class="btn btn-sm btn-outline-info" title="Edit Details:- {{ employee.full_name }}">
+                                            <a href="{% url 'mimascompany:createemployeedetailemployee' employee.pk %}" class="btn btn-sm btn-outline-info"
+                                               title="Edit Details:- {{ employee.full_name }}">
                                                 <i class="fas fa-circle-info fa-fw"></i>
                                             </a>
                                         {% else %}
-                                            <a href="{% url 'mimascompany:createemployeedetailemployee' employee.pk %}" class="btn btn-sm btn-outline-primary" id="genericBlinker" title="Add Details:- {{ employee.full_name }}">
-                                                <i class="fas fa-circle-info fa-fw"></i>
+                                            <a href="{% url 'mimascompany:createemployeedetailemployee' employee.pk %}" class="btn btn-sm btn-outline-primary"
+                                               title="Add Details:- {{ employee.full_name }}">
+                                                <i class="fas fa-circle-info fa-fw genericBlinker"></i>
                                             </a>
                                         {% endif %}
                                     </td>

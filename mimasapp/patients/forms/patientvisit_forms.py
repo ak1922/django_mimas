@@ -3,12 +3,12 @@ from django import forms
 from mimascompany.models.service_model import Service
 from mimascompany.models.branch_model import Branch
 from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.employee_model import Employee
 from mimascompany.models.department_model import Department
 from patients.models.patients_model import Patient
 from patients.models.patientinsurance_model import PatientInsurance
 from patients.models.patientappointment_model import PatientAppointment
-from patients.models.patientvisit_models import PatientVisit, PostVisitOption, PatientVisitTask
+from patients.models.patientvisit_models import PatientVisit, PostVisitOption
+from patients.models.treatmentroom_model import TreatmentRoom
 
 
 # Patient visit form
@@ -19,13 +19,17 @@ class PatientVisitForm(forms.ModelForm):
     visit_title = forms.CharField(label='Visit Title')
     visit_status = forms.ChoiceField(
         label='Visit Status',
-        choices=PatientVisit.VisitStatus.choices
+        choices=PatientVisit.VISIT_STATUS
     )
-    visit_time = forms.CharField(label='Visit Time')
+
+    visit_time = forms.ChoiceField(
+        label='Visit Time',
+        choices=PatientVisit.VISIT_TIME
+    )
     visit_date = forms.DateField(
         label='Visit Date',
         widget=forms.DateInput(
-            format='%Y=%m-%d', attrs={'type': 'date'}
+            format='%Y-%m-%d', attrs={'type': 'date'}
         )
     )
 
@@ -46,15 +50,22 @@ class PatientVisitForm(forms.ModelForm):
         queryset=PatientAppointment.objects.all(),
         widget=forms.Select
     )
-    branch_name = forms.ModelChoiceField(
-        label='Branch Name',
+    branch = forms.ModelChoiceField(
+        label='Branch',
         queryset=Branch.objects.all(),
         widget=forms.Select()
     )
     insurance = forms.ModelChoiceField(
         label='Insurance',
+        required=False,
         queryset=PatientInsurance.objects.all(),
         widget=forms.Select()
+    )
+    treatment_room = forms.ModelChoiceField(
+        label='Treatment Room',
+        queryset=TreatmentRoom.cust_treatments.is_available().all(),
+        widget=forms.Select(),
+        required=False,
     )
 
     # ---- Many2Many ----
@@ -77,17 +88,20 @@ class PatientVisitForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in self.fields.values():
+
+        for field_name, field in self.fields.items():
             field.label_suffix = ''
-            field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['style'] = 'width: 400px'
+
+            if not isinstance(field.widget, forms.CheckboxSelectMultiple):
+                field.widget.attrs['class'] = 'form-control'
+                field.widget.attrs['style'] = 'width: 400px'
 
     class Meta:
         model = PatientVisit
         fields = [
             'patient',
             'dentist',
-            'branch_name',
+            'branch',
             'appointment',
             'visit_title',
             'visit_date',
@@ -96,49 +110,4 @@ class PatientVisitForm(forms.ModelForm):
             'departments',
             'visit_status',
             'visit_options'
-        ]
-
-
-# Employee task item
-class PatientVisitTaskForm(forms.ModelForm):
-
-    task_title = forms.CharField(label='Task Title')
-    description = forms.CharField(
-        label='Description',
-        required=False,
-        widget=forms.Textarea(
-            attrs={'cols': 20, 'rows': 4}
-        )
-    )
-    task_status = forms.ChoiceField(
-        label='Task Status',
-        choices=PatientVisitTask.STATUS_CHOICES,
-        widget=forms.Select()
-    )
-    priority = forms.ChoiceField(
-        label='Priority',
-        choices=PatientVisitTask.Priority.choices,
-        widget=forms.Select()
-    )
-
-    visit = forms.ModelChoiceField(
-        label='Patient Visit',
-        queryset=PatientVisit.objects.all(),
-        widget=forms.Select()
-    )
-    assigned_to = forms.ModelChoiceField(
-        label='Assigned To',
-        queryset=Employee.active_employees.all(),
-        widget=forms.Select()
-    )
-
-    class Meta:
-        model = PatientVisitTask
-        fields = [
-            'assigned_to',
-            'task_title',
-            'visit',
-            'task_status',
-            'priority',
-            'description',
         ]

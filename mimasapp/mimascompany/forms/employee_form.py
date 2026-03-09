@@ -8,6 +8,8 @@ from mimascompany.models.employee_model import CompanyPositions, Employee
 # Positions form
 class CompanyPositionForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     title = forms.CharField(
         label='Title', label_suffix='',
         widget=forms.TextInput(attrs={
@@ -31,11 +33,13 @@ class CompanyPositionForm(forms.ModelForm):
 # Employee form
 class EmployeeForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     # ---- Personal info
     first_name = forms.CharField(label='First Name')
     last_name = forms.CharField(label='Last Name')
     gender = forms.ChoiceField(choices=Employee.GENDER_CHOICES)
-    status = forms.ChoiceField(choices=Employee.EmployeeStatus)
+    status = forms.ChoiceField(choices=Employee.EmployeeStatus.choices)
 
     # ---- ForignKey fields -----
     user = forms.ModelChoiceField(queryset=AccountUser.objects.all())
@@ -67,7 +71,7 @@ class EmployeeForm(forms.ModelForm):
 
     class Meta:
         model = Employee
-        fields = ['user', 'first_name', 'last_name', 'gender', 'photo', 'position']
+        fields = ['user', 'first_name', 'last_name', 'gender', 'photo', 'position', 'status']
         exclude = ['updated_by', 'vacations_days_accrued']
 
 

@@ -15,7 +15,7 @@
         <div class="totalsDivStaff">
             <h6>Patients: <a href="">{{ h_allpatients }}</a></h6>
             <h6>Appointments: <a href="">{{ h_appointmentstotal }}</a></h6>
-            <h6>Visits: <a href="">{{ h_visitscount }}</a></h6>
+            <h6>Visits: <a href="">{{ h_visitstotal }}</a></h6>
         </div>
 
         <!-- Scrolling messages section -->
@@ -25,7 +25,6 @@
                     {% for message in h_messages %}
                     <span>{{ message.message }}</span>
                     {% endfor %}
-                    <!-- Duplicate the content inside the loop if necessary for seamlessness -->
                 </div>
             </div>
         </div>
@@ -40,10 +39,11 @@
                     <a href="{% url 'patients:createpatientcontact' %}" title="Add Patient Contact">Contact</a>
                     <a href="{% url 'patients:createinsurance' %}" title="Add Patient Insurance">Insurance</a>
                     <a href="{% url 'patients:createappointment' %}" title="Add Patient Appointment">Appointment</a>
-                    <a href="" title="Add Patient Visit">Patient Visit</a>
-                    <a href="">Medical History</a>
+                    <a href="{% url 'patients:createpatientvisit' %}" title="Add Patient Visit">Patient Visit</a>
+                    <a href="{% url 'patients:createvisittask' %}">Visit Task</a>
                 </div>
             </div>
+
             <div class="action-group">
                 <h5>List Records</h5>
                 <div class="action-links">
@@ -52,17 +52,18 @@
                     <a href="{% url 'patients:listpatientcontacts' %}" title="List Patients Contact">Contacts</a>
                     <a href="{% url 'patients:listinsurance' %}" title="List Patient Insurance">Insurance</a>
                     <a href="{% url 'patients:listallappointments' %}" title="List Patient Appointments">Appointments</a>
-                    <a href="" title="List Patient Visits">Patients Visits</a>
+                    <a href="{% url 'patients:listallpatientvisits' %}" title="List Patient Visits">Patients Visits</a>
+                    <a href="{% url 'patients:listvisittasks' %}" title="List Patient Visits">Visits Tasks</a>
                     <a href="" title="List Patient Bookings">Bookings</a>
                 </div>
             </div>
+
             <div class="action-group">
                 <h5 id="archiveDivTitle">List Archived Records</h5>
                 <div class="action-links" id="archiveItemsDiv">
-                    <a href="" title="List Archived Patient Appointments">Appointments</a>
-                    <a href="" title="List Archived Patient Visits">Visits</a>
+                    <a href="{% url 'patients:listarchivedappointments' %}" title="List Archived Patient Appointments">Appointments</a>
+                    <a href="{% url 'patients:listarchivedvisits' %}" title="List Archived Patient Visits">Visits</a>
                     <a href="" title="List Archived Patient Bills">Bills</a>
-                    <a href="" title="List Archived Service Details">Archived Service</a>
                 </div>
             </div>
         </div>

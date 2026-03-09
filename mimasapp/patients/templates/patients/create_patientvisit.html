@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Patient Visit{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <h4 class="formTitle">
+                {% if h_exists_visit %}
+                    View Visit {{ h_exists_visit.visit_title }}
+                {% else %}
+                    Patient Visit
+                {% endif %}
+            </h4>
+
+            <div class="genericFormDiv">
+                {{ h_form.patient.label_tag }}
+                {{ h_form.patient }}
+            </div>
+            <div class="genericFormDiv">
+                {{ h_form.dentist.label_tag }}
+                {{ h_form.dentist }}
+            </div>
+            <div class="genericFormDiv">
+                {{ h_form.branch.label_tag }}
+                {{ h_form.branch }}
+            </div>
+            <div class="genericFormDiv">
+                {{ h_form.appointment.label_tag }}
+                {{ h_form.appointment }}
+            </div>
+            <div class="genericFormDiv">
+                {{ h_form.visit_title.label_tag }}
+                {{ h_form.visit_title }}
+            </div>
+            <div class="genericFormDiv">
+                {{ h_form.visit_date.label_tag }}
+                {{ h_form.visit_date }}
+            </div>
+            <div class="genericFormDiv">
+                {{ h_form.visit_time.label_tag }}
+                {{ h_form.visit_time }}
+            </div>
+
+            <h5 class="text-center mt-3">Departments & Services</h5>
+            {% for department in h_departments %}
+                <div class="department-section mt-2 mb-3">
+                    <label>
+                        <input type="checkbox" name="departments" value="{{ department.pk }}"
+                            {% if department.pk in h_selecteddeptids %}checked{% endif %}>
+                        <strong>{{ department.department_name }}</strong>
+                    </label>
+                    <div class="service-list">
+                        {% for service in department.service_department.all %}
+                            <label>
+                                <input type="checkbox" name="services" value="{{ service.pk }}"
+                                    {% if service.pk in h_selectedserviceids %}checked{% endif %}>
+                                {{ service.service_name }}
+                            </label><br>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="genericFormDiv">
+                {{ h_form.visit_status.label_tag }}
+                {{ h_form.visit_status }}
+            </div>
+            <div class="genericFormDiv">
+                {{ h_form.visit_options.label_tag }}
+                {{ h_form.visit_options }}
+            </div>
+            <div class="genericFormDiv">
+                {{ h_form.insurance.label_tag }}
+                {{ h_form.insurance }}
+            </div>
+            <div class="genericFormDiv">
+                {{ h_form.treatment_room.label_tag }}
+                {{ h_form.treatment_room }}
+            </div>
+
+            <div class="buttomsDiv">
+                {% if h_exists_visit %}
+                    <a href="{% url 'patients:listallpatientvisits' %}" class="backToListLink">Back To Visits</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Visit</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+<br><br><br><br>
+{% endblock %}

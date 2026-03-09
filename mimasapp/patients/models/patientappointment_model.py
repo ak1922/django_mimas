@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Manager
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from datetime import time, datetime, timedelta
 
 from patients.models.auxiliary_models import DateTimeAuditModel
 from patients.models.patients_model import Patient
@@ -75,7 +76,7 @@ class PatientAppointment(DateTimeAuditModel):
         Branch,
         null=True,
         on_delete=models.SET_NULL,
-        related_name='patientappointment_branchname'
+        related_name='patientappointment_branch'
     )
     insurance = models.ForeignKey(
         PatientInsurance,
@@ -97,22 +98,45 @@ class PatientAppointment(DateTimeAuditModel):
 
     def clean(self):
         # Match Dentist and Branch
-        if self.dentist and self.branch_name:
-            if self.dentist.branch_name != self.branch_name:
+        if self.dentist and self.branch:
+            if self.dentist.branch != self.branch:
                 raise ValidationError(
-                    f'Dentist {self.dentist.dentist_name} does not work at {self.branch_name}, choose {self.dentist.branch_name}.'
+                    f'Dentist {self.dentist.dentist_name} does not work at {self.branch}, choose {self.dentist.branch}.'
                 )
-
-        # Prevent bookings in the past.
-        if self.appointment_date and self.dentist:
-            if self.appointment_date < timezone.now().date():
-                raise ValidationError('Cannot book appointments in the past')
-
+    #
+    #     # Prevent bookings for the same day if it's already 6 PM (18:00) or later.
+    #     if self.appointment_date and self.appointment_date == timezone.now().date():
+    #         # Define the cutoff time (6 PM)
+    #         cutoff_time = time(18, 0, 0)
+    #         # Combine appointment date with 6 PM
+    #         deadline = timezone.make_aware(datetime.combine(self.appointment_date, cutoff_time))
+    #
+    #         if timezone.now() > deadline:
+    #             raise ValidationError('Cannot book appointments in the past or after 6 PM on the same day.')
+    #
+    #     # General past date check (prevents picking yesterday)
+    #     if self.appointment_date and self.appointment_date < timezone.now().date():
+    #         raise ValidationError('Cannot book appointments in the past')
+    #
         super().clean()
 
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+
+    @property
+    def confirmed_appointment(self):
+        return self.status == AppointmentStatus.CONFIRMED
+
+    @property
+    def unconfirmed_within_three_days(self):
+        """ Check if appointment is confirmed within 3 days """
+        today = timezone.now().date()
+        three_days_to = today + timedelta(days=3)
+        return (
+            self.status == AppointmentStatus.SCHEDULED and
+            today <= self.appointment_date <= three_days_to
+        )
 
     def __str__(self):
         return f'{self.patient.full_name} - {self.appointment_title}'

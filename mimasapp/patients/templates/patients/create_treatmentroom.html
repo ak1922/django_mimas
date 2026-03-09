@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Treatment Room{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <h4 class="formTitle">
+                {% if h_exists_room %}
+                    View Room {{ h_exists_room.room_name }}
+                {% else %}
+                    Create Treatment Room
+                {% endif %}
+            </h4>
+            {{ h_form.as_p }}
+            <div class="buttomsDiv">
+                {% if h_exists_room %}
+                    <a href="{% url 'patients:listtreatmentrooms' %}" class="backToListLink">Back To Rooms</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Room</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

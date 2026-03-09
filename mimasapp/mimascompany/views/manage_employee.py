@@ -47,9 +47,7 @@ class EmployeeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         with transaction.atomic():
             response = super().form_valid(form)
             employee = form.instance
-            logger.info(
-                f'New employee {employee.first_name} {employee.last_name} added by {self.request.user}'
-            )
+            logger.info(f'New employee {employee.first_name} {employee.last_name} added by {self.request.user}')
             return response
 
     def form_invalid(self, form):

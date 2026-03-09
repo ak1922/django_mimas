@@ -5,7 +5,8 @@ from patients.models.patientcontact_model import PatientContact
 from patients.models.patientdetails_model import PatientDetail
 from patients.models.patientinsurance_model import PatientInsurance
 from patients.models.patientappointment_model import PatientAppointment, PatientBooking
-from patients.models.patientvisit_models import PatientVisit, PatientVisitTask, PostVisitOption
+from patients.models.patientvisit_models import PatientVisit, PostVisitOption
+from patients.models.visittask_model import PatientVisitTask
 from patients.models.patientbill_model import PatientBill, ArchivedPatientBill
 from patients.models.archivedvisit_model import ArchivedPatientVisit
 from patients.models.archivedappointment_model import ArchivedPatientAppointment
@@ -16,6 +17,8 @@ from patients.models.arcivedtreatment_model import ArchivedPatientTreatment
 from patients.models.patientreferral_model import PatientReferral
 from patients.models.archivedreferral_model import ArchivedPatientReferral
 from patients.models.patientmessage_model import PatientMessage
+from patients.models.treatmentroom_model import TreatmentRoom
+
 
 
 admin.site.register(PostVisitOption)
@@ -30,6 +33,7 @@ admin.site.register(ArchivedPatientTreatment)
 admin.site.register(PatientReferral)
 admin.site.register(ArchivedPatientReferral)
 admin.site.register(PatientMessage)
+admin.site.register(TreatmentRoom)
 
 
 @admin.register(Patient)

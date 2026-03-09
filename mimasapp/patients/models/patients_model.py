@@ -1,4 +1,3 @@
-import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -26,17 +25,36 @@ class PatientQuerySet(models.QuerySet):
         return self.filter(gender=Patient.Gender.FEMALE)
 
 
-# Custom manager
+# --------------------------  Custom Patient Managers ------------------------
+
 class PatientManager(models.Manager):
     def get_queryset(self):
         return PatientQuerySet(self.model, using=self._db).select_related('primary_dentist')
 
     def for_employee(self, employee):
-        """Use Case: Get patients associated with a specific dentist employee"""
+        """ Get patients associated with a specific dentist employee """
         return self.get_queryset().filter(primary_dentist__employee=employee)
 
 
-# Patients model
+class PatientWithoutDetailsManager(models.Manager):
+    """ Get patients without details """
+    def without_details(self):
+        return self.filter(patientdetail_patient__isnull=True)
+
+
+class PatientWithoutContactManager(models.Manager):
+    """ Get patients without contact """
+    def without_contact(self):
+        return self.filter(patientcontact_patient__isnull=True)
+
+
+class PatientWithoutInsuranceManage(models.Manager):
+    def without_insurance(self):
+        return self.filter(patientinsurance_patient__isnull=True)
+
+
+# --------------------------- Patients model ----------------------------------
+
 class Patient(DateTimeAuditModel):
 
     class Gender(models.TextChoices):
@@ -78,6 +96,9 @@ class Patient(DateTimeAuditModel):
     # ---- Managers ----
     objects = models.Manager()
     patient_manager = PatientManager()
+    patient_without_details = PatientWithoutDetailsManager()
+    patient_without_contact = PatientWithoutContactManager()
+    patient_without_insurance = PatientWithoutInsuranceManage()
 
     @property
     def full_name(self):
@@ -89,7 +110,7 @@ class Patient(DateTimeAuditModel):
 
     @property
     def patient_dentistname(self):
-        return self.primary_dentist.full_name if self.primary_dentist else 'No Dentist Assigned'
+        return self.primary_dentist.dentist_name if self.primary_dentist else 'No Dentist Assigned'
 
     @property
     def has_contact(self):
@@ -102,6 +123,10 @@ class Patient(DateTimeAuditModel):
     @property
     def has_insurance(self):
         return self.patientinsurance_patient if self.patientinsurance_patient else 'No Insurance'
+
+    @property
+    def has_appointment(self):
+        return self.patientappointment_patient if self.patientappointment_patient else 'No Appointment/s'
 
     def __str__(self):
         return self.full_name

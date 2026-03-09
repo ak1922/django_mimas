@@ -26,7 +26,7 @@ class ServiceAdmin(admin.ModelAdmin):
    
 @admin.register(Dentist)
 class DentistAdmin(admin.ModelAdmin):
-       list_display = ['employee', 'branch_name', 'supervisor', 'specialty', 'created', 'updated', 'updated_by']
+       list_display = ['employee', 'branch', 'supervisor', 'specialty', 'created', 'updated', 'updated_by']
        search_fields = ['employee__last_name', 'employee__first_name']
        
        

@@ -4,6 +4,7 @@ from mimascompany.models.employee_model import Employee
 from patients.models.patients_model import Patient
 from patients.models.auxiliary_models import DateTimeAuditModel
 from patients.models.patientvisit_models import PatientVisit
+from patients.models.patientappointment_model import PatientAppointment
 from .archivedvisit_model import ArchivedPatientVisit
 from .archivedappointment_model import ArchivedPatientAppointment
 
@@ -28,6 +29,11 @@ class PatientBill(DateTimeAuditModel):
         on_delete=models.CASCADE,
         related_name='patientbill_patient'
     )
+    appointment = models.OneToOneField(
+        PatientAppointment,
+        on_delete=models.CASCADE,
+        related_name='patientbill_appointment'
+    )
     visit = models.OneToOneField(
         PatientVisit,
         on_delete=models.CASCADE,
@@ -47,7 +53,7 @@ class PatientBill(DateTimeAuditModel):
         return 0.00
 
     def __str__(self):
-        pass
+        return f'{self.bill_title}'
 
     class Meta(DateTimeAuditModel.Meta):
         verbose_name = 'Patient Bill'

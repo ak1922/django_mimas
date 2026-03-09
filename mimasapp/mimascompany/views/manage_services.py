@@ -52,7 +52,7 @@ def list_services(request):
         allservices = Service.objects.all().order_by('-created')
 
     # Add pagination
-    paginator = Paginator(allservices, per_page=5)
+    paginator = Paginator(allservices, per_page=10)
     page_number = request.GET.get('page')
     page_services = paginator.get_page(page_number)
 

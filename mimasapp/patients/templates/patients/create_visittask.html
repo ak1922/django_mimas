@@ -2,31 +2,30 @@
 
 {% load static %}
 
-{% block title_content %}Patient Contact{% endblock %}
+{% block title_content %}Visit Task{% endblock %}
 
 {% block css_content %}
-    <link rel="stylesheet" href="{% static 'css/patient_forms.css' %}">
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
 {% endblock %}
 
 {% block body_content %}
 
     <div class="container">
-
         <form method="POST" action="{{ request.path }}?next={{ request.META.HTTP_REFERER|urlencode }}">
             {% csrf_token %}
             <h4 class="formTitle">
-                {% if h_exists_contact %}
-                    View Contact for {{ h_exists_contact.patient.full_name }}
+                {% if h_exists_task %}
+                    View Task {{ h_exists_task.task_title }}
                 {% else %}
-                    Create Patient Contact
+                    Create Visit Task
                 {% endif %}
             </h4>
             {{ h_form.as_p }}
             <div class="buttomsDiv">
-                {% if h_exists_contact %}
-                    <a href="{% url 'patients:listpatientcontacts' %}" class="backToListLink">Back To Contacts</a>
+                {% if h_exists_task %}
+                    <a href="{% url 'patients:listvisittasks' %}" class="backToListLink">Back To Tasks</a>
                 {% else %}
-                    <button class="formSubmitButton" type="submit">Submit Contact</button>
+                    <button class="formSubmitButton" type="submit">Submit Tasks</button>
                 {% endif %}
             </div>
         </form>
