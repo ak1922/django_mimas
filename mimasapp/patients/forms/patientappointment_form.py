@@ -10,6 +10,8 @@ from mimascompany.models.dentist_model import Dentist
 # Patient appointment form
 class PatientAppointmentForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     # ---- Appointment info ----
     appointment_title = forms.CharField(label='Appointment Title')
     reason = forms.CharField(label='Reason')

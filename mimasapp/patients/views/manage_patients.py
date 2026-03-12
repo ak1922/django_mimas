@@ -1,5 +1,5 @@
+import logging
 from django.db.models import Q
-from datetime import date
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -9,6 +9,9 @@ from accounts.decorators import group_required
 from mimascompany.models.employee_model import Employee
 from patients.models.patients_model import Patient
 from patients.forms.patient_form import PatientForm, PatientReadOnlyForm
+
+
+logger = logging.getLogger(__name__)
 
 
 # Create patient
@@ -23,10 +26,13 @@ def create_patient(request):
             new_patient = form.save(commit=False)
             new_patient.save()
             messages.success(request, f'New patient {new_patient.full_name} created.')
+            logger.info(f'New patient {new_patient.full_name} created by {request.user}.')
             return redirect('patients:listpatients')
         else:
-            messages.error(request, 'Issues encounted creating new patient.')
-
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Patient Form Error:- {field} - {error}')
+                    logger.info(f'Patient Form Error:- {field} - {error}')
     else:
         form = PatientForm()
     return render(request, 'patients/create_patient.html', {'h_form': form})
@@ -48,10 +54,13 @@ def edit_patient(request, pat_id):
             edited_patient.updated_by = current_user
             edited_patient.save()
             messages.success(request, f'Information for {edited_patient.full_name} updated.')
+            logger.info(f'Patient {edited_patient.full_name} updated by {request.user}')
             return redirect('patients:listpatients')
         else:
-            messages.error(request, 'Issues encounted updating patient information.')
-
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Patient Form Error:- {field} - {error}')
+                    logger.info(f'Patient Form Error:- {field} - {error}')
     else:
         form = PatientForm(instance=patient)
     return render(request, 'patients/create_patient.html', {'h_form': form})
@@ -114,7 +123,8 @@ def delete_patient(request, pat_id):
 
     patient = Patient.objects.get(pk=pat_id)
     if request.method == 'POST':
+        logger.info(f'Patient {patient.full_name} delete requested by {request.user}!')
         patient.delete()
         messages.success(request, 'Patient deleted')
+        logger.info('Patient deleted')
     return redirect('patients:listpatients')
-

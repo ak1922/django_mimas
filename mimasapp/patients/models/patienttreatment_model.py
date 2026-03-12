@@ -14,7 +14,7 @@ from mimascompany.models.employee_model import Employee
 class PatientTreatment(DateTimeAuditModel):
 
     treatment_title  = models.CharField(max_length=300)
-    teeth_number = models.IntegerField(null=True, blank=True)
+    teeth_number = models.CharField(null=True, blank=True)
     closed = models.BooleanField(default=False)
 
     notes = models.TextField()

@@ -1,6 +1,7 @@
+from datetime import date
+from django.db.models import Q
 from typing import List, Union
 from django.db.models import Max
-from datetime import date
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
@@ -45,55 +46,73 @@ def patientscenter(request):
     message_list.append(visit_today_count_msg)
 
     # ---- Patient details messages ----
+    PatientMessage.objects.filter(
+        Q(message__icontains='Patient Details Message:- ')
+    ).delete()
+
     details_message_text = 'Patient Details Message:- '
     number_without_details = Patient.patient_without_details.without_details().count()
-    missing_details_message, _ = PatientMessage.objects.get_or_create(
-        defaults={'is_active': True},
-        message=f'{details_message_text} {number_without_details} patient/s without detail record/s.'
-    )
-    message_list.append(missing_details_message)
 
-    without_detail = Patient.patient_without_details.without_details()
-    for patient in without_detail:
-        person_detail_message, _ = PatientMessage.objects.get_or_create(
+    if number_without_details > 0:
+        missing_details_message, _ = PatientMessage.objects.get_or_create(
             defaults={'is_active': True},
-            message=f'{details_message_text} {patient.full_name} missing Patient Details.'
+            message=f'{details_message_text} {number_without_details} patient/s without detail record/s.'
         )
-        message_list.append(person_detail_message)
+        message_list.append(missing_details_message)
+
+        without_detail = Patient.patient_without_details.without_details()
+        for patient in without_detail:
+            person_detail_message, _ = PatientMessage.objects.get_or_create(
+                defaults={'is_active': True},
+                message=f'{details_message_text} {patient.full_name} missing Patient Details.'
+            )
+            message_list.append(person_detail_message)
 
     # ---- Patient contact messages ----
+    PatientMessage.objects.filter(
+        Q(message__icontains='Patient Contacts Message:- ')
+    ).delete()
+
     contact_message_text = 'Patient Contacts Message:- '
     number_without_contact = Patient.patient_without_contact.without_contact().count()
-    missing_contact_message, _ = PatientMessage.objects.get_or_create(
-        defaults={'is_active': True},
-        message=f'{contact_message_text} {number_without_contact} patient/s without contact record/s.'
-    )
-    message_list.append(missing_contact_message)
 
-    without_contact = Patient.patient_without_contact.without_contact()
-    for patient in without_contact:
-        person_contact_message, _ = PatientMessage.objects.get_or_create(
+    if number_without_contact > 0:
+        missing_contact_message, _ = PatientMessage.objects.get_or_create(
             defaults={'is_active': True},
-            message=f'{contact_message_text} {patient.full_name} missing Patient Contact.'
+            message=f'{contact_message_text} {number_without_contact} patient/s without contact record/s.'
         )
-        message_list.append(person_contact_message)
+        message_list.append(missing_contact_message)
+
+        without_contact = Patient.patient_without_contact.without_contact()
+        for patient in without_contact:
+            person_contact_message, _ = PatientMessage.objects.get_or_create(
+                defaults={'is_active': True},
+                message=f'{contact_message_text} {patient.full_name} missing Patient Contact.'
+            )
+            message_list.append(person_contact_message)
 
     # ---- Patients insurance messages ----
+    PatientMessage.objects.filter(
+        Q(message__icontains='Patient Insurance Message:- ')
+    ).delete()
+
     insurance_message_text = 'Patient Insurance Message:- '
     number_without_insurance = Patient.patient_without_insurance.without_insurance().count()
-    missing_insuarnce_message, _ = PatientMessage.objects.get_or_create(
-        defaults={'is_active': True},
-        message=f'{insurance_message_text} {number_without_insurance} patient/s without insurance record/s.'
-    )
-    message_list.append(missing_insuarnce_message)
 
-    without_insurance = Patient.patient_without_insurance.without_insurance()
-    for patient in without_insurance:
-        person_insurance_message, _ = PatientMessage.objects.get_or_create(
+    if number_without_insurance > 0:
+        missing_insuarnce_message, _ = PatientMessage.objects.get_or_create(
             defaults={'is_active': True},
-            message=f'{insurance_message_text} {patient.full_name} missing Patient Insurance.'
+            message=f'{insurance_message_text} {number_without_insurance} patient/s without insurance record/s.'
         )
-        message_list.append(person_insurance_message)
+        message_list.append(missing_insuarnce_message)
+
+        without_insurance = Patient.patient_without_insurance.without_insurance()
+        for patient in without_insurance:
+            person_insurance_message, _ = PatientMessage.objects.get_or_create(
+                defaults={'is_active': True},
+                message=f'{insurance_message_text} {patient.full_name} missing Patient Insurance.'
+            )
+            message_list.append(person_insurance_message)
 
     # ---- Visit & Appointment messages ----
     appointment_message_ids = PatientMessage.objects.filter(

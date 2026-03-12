@@ -26,7 +26,6 @@ def create_visit_task_bill(sender, instance, created, **kwargs):
         2. Employee task for patient visit
         3. Bill for patient visit
     """
-    logger.info(f'Signal triggered for app: {instance.id}, Status: {instance.status}')
 
     if instance.status == AppointmentStatus.CONFIRMED:
         if not PatientVisit.objects.filter(appointment=instance).exists():
@@ -153,6 +152,7 @@ def prepare_visit_bill(sender, instance, created, **kwargs):
                 bill_title=f'Bill - {instance.visit_title}'
             )
 
+
 # Scrolling message for bill is ready
 @receiver(post_save, sender=PatientVisit)
 def bill_ready_message(sender, instance, created, **kwargs):
@@ -175,36 +175,35 @@ def bill_ready_message(sender, instance, created, **kwargs):
 
 # -------------------------- Treatment room signals ----------------------
 
-# Set treatment room to occupied
 @receiver(post_save, sender=PatientVisit)
-def occupied_treatment_room(sender, instance, created, **kwargs):
-    if instance.tracker.has_changed('visit_status') and instance.visit_status == 'Checked In':
-
-        try:
-            treatment_room = instance.treatmentroom_visit
-        except TreatmentRoom.DoesNotExist:
-            treatment_room = None
-
-        TreatmentRoom.objects.filter(id=treatment_room.id).update(
-            is_occupied = True
+def update_treatment_room_status(sender, instance, created, **kwargs):
+    # 1. Check if treatment_room exists
+    if instance.treatment_room is not None:
+        # Occupy the assigned room
+        TreatmentRoom.objects.filter(
+            room_number=instance.treatment_room.room_number
+        ).update(
+            is_occupied=True,
+            visit=instance
         )
-        logger.info(f'Treatment Room {treatment_room.room_name} is to occupied.')
+        logger.info(f'Treatment room number set to occupied')
 
-
-# Set treatment room to unoccupied
-@receiver(post_save, sender=PatientVisit)
-def release_treatment_room(sender, instance, created, **kwargs):
-    if instance.tracker.has_changed('visit_status') and instance.visit_status == 'Closed':
-
-        try:
-            treatment_room = instance.treatmentroom_visit
-        except TreatmentRoom.DoesNotExist:
-            treatment_room = None
-
-        TreatmentRoom.objects.filter(id=treatment_room.id).update(
-            is_occupied = False
+        # Free up any other rooms this visit might have been in
+        TreatmentRoom.objects.filter(
+            visit=instance
+        ).exclude(
+            room_number=instance.treatment_room.room_number
+        ).update(
+            is_occupied=False,
+            visit=None
         )
-        logger.info(f'Treatment Room {treatment_room.room_name} released after closed visit.')
+        logger.info(f'Treatment room released')
+    else:
+        TreatmentRoom.objects.filter(visit=instance).update(
+            is_occupied=False,
+            visit=None
+        )
+
 
 
 # ------------ Update models with foreginkey relationships ---------------

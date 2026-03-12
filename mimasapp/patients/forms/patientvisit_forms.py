@@ -109,5 +109,6 @@ class PatientVisitForm(forms.ModelForm):
             'services',
             'departments',
             'visit_status',
-            'visit_options'
+            'visit_options',
+            'treatment_room'
         ]

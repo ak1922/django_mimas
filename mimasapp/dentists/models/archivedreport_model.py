@@ -1,12 +1,12 @@
 from django.db import models
 
+from mimascompany.models.branch_model import Branch
+from mimascompany.models.dentist_model import Dentist
+from mimascompany.models.employee_model import Employee
 from patients.models.patients_model import Patient
 from patients.models.archivedvisit_model import ArchivedPatientVisit
 from patients.models.patientinsurance_model import PatientInsurance
 from patients.models.archivedappointment_model import ArchivedPatientAppointment
-from mimascompany.models.employee_model import Employee
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.dentist_model import Dentist
 
 
 # Archived report
@@ -19,7 +19,7 @@ class ArchivedDentistReport(models.Model):
     general_comments = models.TextField(null=True, blank=True)
     closed = models.BooleanField(default=True)
 
-    # ---- Related models ----
+    # ---- Audit fields ----
     archived = models.CharField(null=True, blank=True)
     updated = models.CharField(blank=True, null=True)
     updated_by = models.ForeignKey(

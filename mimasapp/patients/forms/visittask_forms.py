@@ -7,6 +7,8 @@ from patients.models.patientappointment_model import PatientAppointment
 # Employee task item
 class PatientVisitTaskForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     task_title = forms.CharField(label='Task Title')
     description = forms.CharField(
         label='Description',

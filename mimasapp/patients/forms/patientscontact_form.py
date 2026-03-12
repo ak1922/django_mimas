@@ -7,6 +7,8 @@ from patients.models.patientcontact_model import PatientContact
 # Patient contact form
 class PatientContactForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     contact_name = forms.CharField(label='Contact Name')
     contact_address = forms.CharField(label='Contact Address')
     contact_phone = forms.CharField(label='Contact Phone')

@@ -40,12 +40,22 @@ class PatientLab(DateTimeAuditModel):
 
     # ---- Lab info ----
     lab_title = models.CharField(max_length=300)
-    laboratory_name = models.CharField(max_length=200)
-    laboratory_address = models.CharField(max_length=300)
-    laboratory_phone = models.CharField(max_length=15)
-    due_date = models.DateField(blank=True, null=True)
-    instructions = models.TextField()
     closed = models.BooleanField(default=False)
+    due_date = models.DateField(blank=True, null=True)
+    instructions = models.TextField(blank=True, null=True)
+
+    laboratory_name = models.CharField(
+        max_length=200,
+        blank=True, null=True
+    )
+    laboratory_address = models.CharField(
+        max_length=300,
+        blank=True, null=True
+    )
+    laboratory_phone = models.CharField(
+        max_length=15,
+        blank=True, null=True
+    )
 
     # ---- Related models ----
     patient = models.ForeignKey(

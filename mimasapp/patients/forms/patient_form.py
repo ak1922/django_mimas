@@ -9,6 +9,8 @@ from patients.models.patients_model import Patient
 # Patient form
 class PatientForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     # ---- Patients Info ----
     first_name = forms.CharField(label='First Name')
     last_name = forms.CharField(label='Last Name')

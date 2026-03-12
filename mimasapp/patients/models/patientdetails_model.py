@@ -21,6 +21,7 @@ class PatientDetail(DateTimeAuditModel):
     address = models.CharField(max_length=200)
     blood_type = models.CharField(choices=BlodType.choices)
     allergies = models.CharField(blank=True, null=True)
+
     height = models.DecimalField(
         blank=True, null=True,
         max_digits=5, decimal_places=2
@@ -53,7 +54,7 @@ class PatientDetail(DateTimeAuditModel):
     )
 
     def __str__(self):
-        pass
+        return f'{self.patient.full_name}'
 
     class Meta(DateTimeAuditModel.Meta):
         ordering = ['created']

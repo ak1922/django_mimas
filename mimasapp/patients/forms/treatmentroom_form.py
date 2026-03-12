@@ -8,11 +8,9 @@ from patients.models.patientvisit_models import PatientVisit
 # Treatment room form
 class TreatmentRoomForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     room_name = forms.CharField(label='Room Name')
-    # room_number = forms.IntegerField(
-    #     label='Room Number',
-    #     required=False
-    # )
     is_occupied = forms.CharField(
         label='Is Occupied',
         required=False,
@@ -48,5 +46,6 @@ class TreatmentRoomForm(forms.ModelForm):
         fields = [
             'room_name',
             'visit',
-            'branch'
+            'branch',
+            'is_occupied'
         ]

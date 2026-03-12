@@ -1,15 +1,16 @@
 from django.db import models
 from model_utils import FieldTracker
+from django.core.exceptions import ValidationError
 
 from .auxiliary_models import DateTimeAuditModel
 from .patients_model import Patient
+from .treatmentroom_model import TreatmentRoom
 from .patientinsurance_model import PatientInsurance
 from .patientappointment_model import PatientAppointment
-from .treatmentroom_model import TreatmentRoom
-from mimascompany.models.employee_model import Employee
-from mimascompany.models.dentist_model import Dentist
 from mimascompany.models.branch_model import Branch
+from mimascompany.models.dentist_model import Dentist
 from mimascompany.models.service_model import Service
+from mimascompany.models.employee_model import Employee
 from mimascompany.models.department_model import Department
 
 
@@ -116,7 +117,7 @@ class PatientVisit(DateTimeAuditModel):
     treatment_room = models.ForeignKey(
         TreatmentRoom,
         on_delete=models.SET_NULL,
-        default='',
+        default=None,
         blank=True, null=True,
         related_name='patientvisit_treatmentroom'
     )
@@ -140,6 +141,16 @@ class PatientVisit(DateTimeAuditModel):
     # ---- Managers ----
     objects = models.Manager()
     visits = VisitManager()
+
+    def clean(self):
+        super().clean()
+        if self.branch and self.treatment_room and self.branch.branch_name != self.treatment_room.branch.branch_name:
+            raise ValidationError('There is a mismatch between Branch and Treatment Room')
+
+    def save(self, *args, **kwargs):
+        if not kwargs.pop('skip_validation', False):
+            self.full_clean()
+        super().save(*args, **kwargs)
 
     @property
     def all_treatments_closed(self):
@@ -187,7 +198,7 @@ class PatientVisit(DateTimeAuditModel):
         return self.open_labs.count()
 
     @property
-    def all_dentisreports_closed(self):
+    def all_closed_reports(self):
         dentistreports = self.dentistreport_visit.all()
         if not dentistreports.exists():
             return True

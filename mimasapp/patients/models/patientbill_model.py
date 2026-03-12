@@ -61,7 +61,7 @@ class PatientBill(DateTimeAuditModel):
 
 
 # Archived patient bill
-class ArchivedPatientBill(DateTimeAuditModel):
+class ArchivedPatientBill(models.Model):
 
     bill_title = models.CharField(max_length=300)
     is_paid = models.BooleanField(default=True)
@@ -69,6 +69,14 @@ class ArchivedPatientBill(DateTimeAuditModel):
         default=0.00,
         max_digits=10,
         decimal_places=2
+    )
+
+    archived = models.CharField(null=True, blank=True)
+    updated = models.CharField(blank=True, null=True)
+    updated_by = models.ForeignKey(
+        Employee,
+        null=True,
+        on_delete=models.SET_NULL,
     )
 
     patient = models.ForeignKey(
@@ -88,9 +96,8 @@ class ArchivedPatientBill(DateTimeAuditModel):
     )
 
     def __str__(self):
-        pass
+        return self.bill_title
 
-    class Meta(DateTimeAuditModel.Meta):
+    class Meta:
         verbose_name = 'Archived Patient Bill'
         verbose_name_plural = 'Archived Patients Bills'
-

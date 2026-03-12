@@ -17,7 +17,7 @@
             <div class="titleStatsDiv">
                 <h5 class="mb-0 text-gray-800">All Patients</h5>
                 <div>
-                    <span class="countStat">Total: {{ h_patientscount }}</span>
+                    <span class="countStat">Patients Total: {{ h_patientscount }}</span>
                 </div>
             </div>
 
@@ -86,36 +86,36 @@
                                         <div class="d-flex justify-content-center gap-1">
                                             {# Contacts #}
                                             {% if patient.has_contact %}
-                                                <a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                                <a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
                                                    title="Edit Contact:- {{ patient.full_name }}">
                                                     <i class="fas fa-user fa-fw"></i>
                                                 </a>
                                             {% else %}
-                                                <a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                                <a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
                                                    title="Add Contact:- {{ patient.full_name }}">
                                                     <i class="fas fa-user-plus fa-fw genericBlinker"></i>
                                                 </a>
                                             {% endif %}
                                             {# Details #}
                                             {% if patient.has_detail %}
-                                                <a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                                <a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
                                                    title="Edit Detail:- {{ patient.full_name }}">
                                                     <i class="fas fa-circle-info fa-fw"></i>
                                                 </a>
                                             {% else %}
-                                                <a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                                <a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
                                                    title="Add Detail:- {{ patient.full_name }}">
                                                     <i class="fas fa-circle-info fa-fw genericBlinker"></i>
                                                 </a>
                                             {% endif %}
                                             {# Insurance #}
                                             {% if patient.has_insurance %}
-                                                <a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                                <a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
                                                    title="Edit Insurance:- {{ patient.full_name }}">
                                                     <i class="fas fa-hand-holding-medical fa-fw"></i>
                                                 </a>
                                             {% else %}
-                                                <a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-info"
+                                                <a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
                                                    title="Add Insurance:- {{ patient.full_name }}">
                                                     <i class="fas fa-hand-holding-medical fa-fw genericBlinker"></i>
                                                 </a>

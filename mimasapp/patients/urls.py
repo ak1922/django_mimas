@@ -73,7 +73,7 @@ urlpatterns = [
     path('viewarchivedappointment/<int:app_id>/view/', view_archived_appointment, name='viewarchivedappointment'),
     # Patient Visit
     path('createpatientvisit/', create_patient_visit, name='createpatientvisit'),
-    path('listpatientvisits/', list_patient_visits, name='listpatientvisits'),
+    path('listpatientvisits/<int:pat_id>/list/', list_patient_visits, name='listpatientvisits'),
     path('listallpatientvisits/', list_all_patient_visits, name='listallpatientvisits'),
     path('editpatientvisit/<int:vis_id>/edit/', edit_patient_visit, name='editpatientvisit'),
     path('viewpatientvisit/<int:vis_id>/view/', view_patient_visit, name='viewpatientvisit'),

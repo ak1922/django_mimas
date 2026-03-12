@@ -109,6 +109,7 @@ h5 {
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 10px;
+    border: #003268;
 }
 
 /* Base styles for all action links */
@@ -144,9 +145,7 @@ h5 {
 }
 
 /* Archive Items */
-#archiveDiv {
-    border: 1px solid #ffc107;
-}
+
 
 #archiveDivTitle {
     color: #856404;
@@ -155,9 +154,42 @@ h5 {
 #archiveDivItem {
     background-color: #fff3cd;
     color: #856404;
-    border: 1px solid #ffeeba;
+    border: 1px solid #e1d7bc;
+    margin-top: 10px;
 }
 
 #archiveDivItem:hover {
     background-color: #ffeeba;
+}
+
+#listDiv {
+    border: 1px solid #d3dce4;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#createDiv {
+    border: 1px solid #92c7f8;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 0;
+}
+
+#archiveDiv {
+    border: 1px solid #ffc107;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#archiveItemsDiv {
+    margin-top: 20px;
+    margin-bottom: 10px;
 }

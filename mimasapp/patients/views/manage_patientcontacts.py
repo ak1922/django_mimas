@@ -1,3 +1,4 @@
+import logging
 from django.urls import reverse
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -9,6 +10,9 @@ from mimascompany.models.employee_model import Employee
 from patients.models.patients_model import Patient
 from patients.models.patientcontact_model import PatientContact
 from patients.forms.patientscontact_form import PatientContactForm
+
+
+logger = logging.getLogger(__name__)
 
 
 # Add patients contact
@@ -24,6 +28,7 @@ def create_patient_contact(request):
         if form.is_valid():
             new_contact = form.save()
             messages.success(request, f'New contact created for {new_contact.patient.full_name}')
+            logger.info(f'New contact created for {new_contact.patient.full_name} by {request.user}.')
             return redirect(next_url)
         else:
             messages.error(request, 'Issues creating new contact.')
@@ -59,7 +64,8 @@ def create_patient_contact_patient(request, pat_id=None):
 
         if form.is_valid():
             new_contact = form.save()
-            messages.success(request, f'Patient information for {new_contact.patient.full_name} updated.')
+            messages.success(request, f'Patient Contact for {new_contact.patient.full_name} updated.')
+            logger.info(f'Patient Contact for {new_contact.patient.full_name} updated by {request.user}.')
             return redirect(next_url)
         else:
             messages.error(request, 'Invalid form')
@@ -89,39 +95,13 @@ def list_patient_contacts(request):
     return render(request, 'patients/list_patientcontacts.html', context)
 
 
-# Update patient contact for patients only
-# @login_required
-# @group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
-# def update_contact_patient(request, pat_id):
-#     """ Update patient contact for patients """
-#
-#     patient = PatientContact.objects.get(pk=pat_id)
-#
-#     if request.method == 'POST':
-#         form = PatientContactForm(request.POST, instance=patient)
-#         form.fields['patient'].disabled = True
-#
-#         if form.is_valid():
-#             current_patient = Employee.objects.get(user=request.user)
-#             edited_contact = form.save()
-#             edited_contact.updated_ny = current_patient
-#             edited_contact.save()
-#             return redirect('patients:listpatients')
-#             # return redirect('patients:patientdashboard', patient.pk)
-#         else:
-#             messages.error(request, 'Issues with contact update.')
-#
-#     else:
-#         form = PatientContactForm(instance=patient)
-#     return render(request, 'patients/update_contact_patientonly.html', {'h_form': form})
-
-
 # Edit contact
 @login_required
 @group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
 def edit_patient_contact(request, con_id):
 
     contact = PatientContact.objects.get(pk=con_id)
+    next_url = request.GET.get('next', reverse('patients:listpatientcontacts'))
 
     if request.method == 'POST':
         form = PatientContactForm(request.POST, instance=contact)
@@ -131,7 +111,9 @@ def edit_patient_contact(request, con_id):
             edited_contact = form.save(commit=False)
             edited_contact.updated_by = current_user
             edited_contact.save()
-            return redirect('patients:listpatientcontacts')
+            messages.success(request, f'Contact for patient {edited_contact.patient.full_name} updated.')
+            logger.info(f'Contact for patient {edited_contact.patient.full_name} updated by {request.user}.')
+            return redirect(next_url)
         else:
             messages.error(request, 'Issues updating patient contact.')
 

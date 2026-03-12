@@ -14,9 +14,9 @@
         <h3>Dentist Office</h3>
         <div class="stats-container">
             <div class="stat-card general-stat">
-                <a href="" class="stat-item patient-item">Patients <span class="stat-value">{{ h_patientscount }}</span></a>
-                <a href="" class="stat-item appointment-item">Appointments <span class="stat-value">{{ h_appintmentcount }}</span></a>
-                <a href="" class="stat-item visit-item">Visits <span class="stat-value">{{ h_visitscount }}</span></a>
+                <a href="{% url 'patients:listpatients' %}" class="stat-item patient-item">Patients <span class="stat-value">{{ h_patientstotal }}</span></a>
+                <a href="{% url 'patients:listallappointments' %}" class="stat-item appointment-item">Appointments <span class="stat-value">{{ h_appointmentstotal }}</span></a>
+                <a href="{% url 'patients:listallpatientvisits' %}" class="stat-item visit-item">Visits <span class="stat-value">{{ h_visitstotal }}</span></a>
             </div>
         </div>
 
@@ -32,34 +32,34 @@
             </div>
         </div>
         <div id="workDiv">
-            <div>
+            <div id="createDiv">
                 <h5>Create Records</h5>
                 <div id="actionDiv">
-                    <a id="actionDivTop" href="" title="Create Patient Treatment">Patient Treatment</a>
-                    <a id="actionDivTop" href="" title="Create Patient Referral">Patient Referral</a>
-                    <a id="actionDivTop" href="" title="Create Patient Lab">Patient Laboratory</a>
+                    <a id="actionDivTop" href="{% url 'dentists:createtreatment' %}" title="Create Patient Treatment">Patient Treatment</a>
+                    <a id="actionDivTop" href="{% url 'dentists:createreferral' %}" title="Create Patient Referral">Patient Referral</a>
+                    <a id="actionDivTop" href="{% url 'dentists:createpatientlab' %}" title="Create Patient Lab">Patient Laboratory</a>
+                    <a id="actionDivTop" href="{% url 'dentists:createdentistreport' %}" title="Create Patient Lab">Dentist Report</a>
                 </div>
             </div>
-            <div id="lastDiv">
+            <div id="listDiv">
                 <h5>List Records</h5>
                 <div id="actionDiv">
-                    <a id="actionDivBel" href="" title="List Patients">Patients</a>
-                    <a id="actionDivBel" href="" title="List Patient Visits">Patient Visits</a>
-                    <a id="actionDivBel" href="" title="List Patient Treatments">Patient Treatments</a>
-                    <a id="actionDivBel" href="" title="List Patient Referrals">Patient Referrals</a>
-                    <a id="actionDivBel" href="" title="List Patient Labs">Patient Laboratories</a>
-                    <a id="actionDivBel" href="" title="List Dentists Reports">Dentist Reports</a>
+                    <a id="actionDivBel" href="{% url 'dentists:listalltreatments' %}" title="List Patient Treatments">Patient Treatments</a>
+                    <a id="actionDivBel" href="{% url 'dentists:listallpatientreferrals' %}" title="List Patient Referrals">Patient Referrals</a>
+                    <a id="actionDivBel" href="{% url 'dentists:listallpatientslabs' %}" title="List Patient Labs">Patient Laboratories</a>
+                    <a id="actionDivBel" href="{% url 'dentists:listalldentistreports' %}" title="List Dentists Reports">Dentist Reports</a>
                 </div>
             </div>
             <div id="archiveDiv">
-                <h5 id="archiveDivTitle">List Archived Records</h5>
+                <h5>List Archived Records</h5>
                 <div id="archiveItemsDiv">
-                    <a id="archiveDivItem" href="" title="List Archived Patient Treatments">Treatments</a>
-                    <a id="archiveDivItem" href="" title="List Archived Patient Referrals">Referrals</a>
-                    <a id="archiveDivItem" href="" title="List Archived Patient Labs">Labs</a>
-                    <a id="archiveDivItem" href="" title="List Archived Dentists Reports">Dentists Reports</a>
+                    <a id="archiveDivItem" href="{% url 'dentists:listallarchivedtreatments' %}" title="List Archived Patient Treatments">Patient Treatments</a>
+                    <a id="archiveDivItem" href="{% url 'dentists:listallarchivedreferrals' %}" title="List Archived Patient Referrals">Patient Referrals</a>
+                    <a id="archiveDivItem" href="{% url 'dentists:listallarchivedlabs' %}" title="List Archived Patient Labs">Patient Labs</a>
+                    <a id="archiveDivItem" href="{% url 'dentists:listallarchivedreports' %}" title="List Archived Dentists Reports">Dentists Reports</a>
                 </div>
             </div>
         </div>
     </div>
+
 {% endblock %}

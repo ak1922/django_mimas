@@ -50,11 +50,11 @@
                                 <th>TREATMENT ROOM</th>
                                 <th>VISIT STATUS</th>
                                 <th>NUMBER OF TASKS</th>
-                                <th class="text-center">VISIT ACTIONS</th>
-                                <th class="text-center">TREATMENT ACTIONS</th>
-                                <th class="text-center">LAB ACTIONS</th>
-                                <th class="text-center">REFERRAL ACTIONS</th>
-                                <th class="text-center">REPORT ACTIONS</th>
+                                <th class="text-center">VISIT</th>
+                                <th class="text-center">LAB</th>
+                                <th class="text-center">TREATMENT</th>
+                                <th class="text-center">REFERRAL</th>
+                                <th class="text-center">REPORT</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,11 +68,12 @@
                                     <td>{{ visit.treatment_room }}</td>
                                     <td>{{ visit.visit_status }}</td>
                                     <td>{{ visit.patientvisittask_visit.count }}</td>
-                                    <td>
+                                    <td class="text-center">
+                                        <!-- Visit Actions -->
                                         <div class="d-flex justify-content-center gap-1">
                                             <a href="{% url 'patients:viewpatientvisit' visit.pk %}" class="btn btn-sm btn-outline-primary"
                                                title="View Visit:- {{ visit.visit_title }}">
-                                                <i class="fas fa-eye fa-fw"></i>
+                                                <i class="fas fa-glasses fa-fw"></i>
                                             </a>
                                             <a href="{% url 'patients:editpatientvisit' visit.pk %}" class="btn btn-sm btn-outline-warning"
                                                title="Edit Visit:- {{ visit.visit_title }}">
@@ -90,6 +91,183 @@
                                                 <i class="fas fa-trash-alt fa-fw"></i>
                                             </button>
                                         </div>
+                                    </td>
+
+                                    <!-- Lab Actions -->
+                                    <td class="text-center">
+                                        {% if user.user_type == 'Administrators' or user.user_type == 'Dentists' or user.user_type == 'Employees' %}
+                                            {# Create lab #}
+                                            <a href="{% url 'dentists:createlabpatientvisit' visit.pk %}" class="btn btn-sm btn-outline-primary"
+                                                title="Create Lab:- {{ visit.visit_title }}">
+                                                <i class="fas fa-flask fa-fw"></i>
+                                            </a>
+                                            {% with labs=visit.patientlab_visit.all %}
+                                                {% if labs %}
+                                                    {% if visit.all_labs_closed %}
+                                                        <span class="btn btn-sm btn-outline-primary" title="All Lab/s Closed for {{ visit.visit_title }}">
+                                                            <i class="fas fa-clipboard-check fa-fw"></i>
+                                                        </span>
+                                                    {% elif visit.visit_status == 'Closed' and visit.open_labs_count == 1 %}
+                                                        <a href="{% url 'dentists:editpatientlab' lab_id=visit.open_labs.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                            title="Edit/Close Lab for Closed Visit {{ visit.visit_title }}">
+                                                            <i class="fas fa-glasses fa-fw genericBlinker"></i>
+                                                        </a>
+                                                    {% elif visit.visit_status == 'Closed' and visit.open_labs_count > 1 %}
+                                                        <a href="{% url 'dentists:listpatientlabs' pat_id=visit.patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                            title="Edit/Close Labs for Closed Visit {{ visit.visit_title }}">
+                                                            <i class="fas fa-list fa-fw genericBlinker"></i>
+                                                        </a>
+                                                    {% elif visit.open_labs_count == 1 %}
+                                                        <a href="{% url 'dentists:editpatientlab' lab_id=visit.open_labs.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                            title="View/Edit Lab for Visit {{ visit.visit_title }}">
+                                                            <i class="fas fa-glasses fa-fw"></i>
+                                                        </a>
+                                                    {% elif visit.open_labs_count > 1 %}
+                                                        <a href="{% url 'dentists:listpatientlabs' pat_id=visit.patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                            title="View/Edit Labs for Visit {{ visit.visit_title }}">
+                                                            <i class="fas fa-list fa-fw"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                {% else %}
+                                                	<span class="btn btn-sm btn-outline-primary" title="No Lab/s for {{ visit.visit_title }}">
+                                                        <i class="fas fa-eye-slash fa-fw"></i>
+                                                    </span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Treatment Actions -->
+                                    <td class="text-center">
+                                        {% if user.user_type == 'Administrators' or user.user_type == 'Dentists' or user.user_type == 'Employees' %}
+                                            <a href="{% url 'dentists:createtreatmentpatientvisit' visit.pk %}" class="btn btn-sm btn-outline-primary"
+                                                title="Create Treatment for Visit {{ visit.visit_title }}">
+                                                <i class="fas fa-file-medical fa-fw"></i>
+                                            </a>
+                                            {% with treatments=visit.patienttreatment_visit.all %}
+                                                {% if treatments %}
+                                                    {% if visit.all_treatments_closed %}
+                                                        <span title="Treatment/s Closed for Visit {{ visit.visit_title }}" class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-clipboard-check fa-fw"></i>
+                                                        </span>
+                                                    {% elif visit.visit_status == 'Closed' and visit.open_treatments_count == 1 %}
+                                                        <a href="{% url 'dentists:edittreatment' tre_id=visit.open_treatments.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                            title="View/Edit Treatment for Closed Visit {{ visit.visit_title }}">
+                                                            <i class="fas fa-glasses fa-fw genericBlinker"></i>
+                                                        </a>
+                                                    {% elif visit.visit_status == 'Closed' and visit.open_treatments_count > 1 %}
+                                                        <a href="{% url 'dentists:listpatienttreatments' pat_id=visit.patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                            title="View/Edit Treatments for Closed Visit {{ visit.visit_title }}">
+                                                            <i class="fas fa-list fa-fw genericBlinker"></i>
+                                                        </a>
+                                                    {% elif visit.open_treatments_count == 1 %}
+                                                        <a href="{% url 'dentists:edittreatment' tre_id=visit.open_treatments.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                            title="View/Edit Treatment for Visit {{ visit.visit_title }}">
+                                                            <i class="fas fa-glasses fa-fw"></i>
+                                                        </a>
+                                                    {% elif visit.open_treatments_count > 1 %}
+                                                        <a href="{% url 'dentists:listpatienttreatments' pat_id=visit.patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                            title="View/Edit Treatments for Visit {{ visit.visit_title }}">
+                                                            <i class="fas fa-list fa-fw"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span title="No Treatments for Visit {{ visit.visit_title }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye-slash fa-fw"></i>
+                                                    </span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Referral  -->
+                                    <td class="text-center">
+                                        {% if user.user_type == 'Administrators' or user.user_type == 'Dentists' or user.user_type == 'Employees' %}
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a href="{% url 'dentists:createreferralpatientvisit' visit.pk %}" class="btn btn-sm btn-outline-primary"
+                                                    title="Create Referral for Visit {{ visit.visit_title }}">
+                                                    <i class="fas fa-user-doctor fa-fw"></i>
+                                                </a>
+                                                {% with referrals=visit.patientreferral_visit.all %}
+                                                    {% if referrals %}
+                                                        {% if visit.all_referrals_closed %}
+                                                            <span title="All Referral/s Closed" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-clipboard-check fa-fw"></i>
+                                                            </span>
+                                                        {% elif visit.visit_status == 'Closed' and visit.open_referrals_count == 1 %}
+                                                            <a href="{% url 'dentists:editreferral' ref_id=visit.open_referrals.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                                title="View/Edit Referral for {{ visit.visit_title }}">
+                                                                <i class="fas fa-glasses fa-fw genericBlinker"></i>
+                                                            </a>
+                                                        {% elif visit.visit_status == 'Closed' and visit.open_referrals_count > 1 %}
+                                                            <a href="{% url 'dentists:listpatientreferrals' pat_id=visit.patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                                title="List Referrals for {{ visit.visit_title }}">
+                                                                <i class="fas fa-list fa-fw genericBlinker"></i>
+                                                            </a>
+                                                        {% elif visit.open_referrals_count == 1 %}
+                                                            <a href="{% url 'dentists:editreferral' ref_id=visit.open_referrals.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                                title="Edit Referrals for {{ visit.visit_title }}">
+                                                                <i class="fas fa-glasses fa-fw"></i>
+                                                            </a>
+                                                        {% elif visit.open_referrals_count > 1 %}
+                                                            <a href="{% url 'dentists:listpatientreferrals' pat_id=visit.patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                                title="List Referrals for {{ visit.visit_title }}">
+                                                                <i class="fas fa-list fa-fw"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span title="No Referrals for Visit" class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-eye-slash fa-fw"></i>
+                                                        </span>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Dentist reports -->
+                                    <td>
+                                        {% if user.user_type == 'Administrators' or user.user_type == 'Dentists' or user.user_type == 'Employees' %}
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a href="{% url 'dentists:createreportpatientvisit' visit.pk %}" class="btn btn-sm btn-outline-primary"
+                                                    title="Create Report for {{ visit.visit_title }}">
+                                                    <i class="fas fa-file-signature fa-fw"></i>
+                                                </a>
+                                                {% with reports=visit.dentistreport_visit.all %}
+                                                    {% if reports %}
+                                                        {% if visit.all_closed_reports %}
+                                                            <span title="Dentist Report/s Closed for Visit" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-clipboard-check fa-fw"></i>
+                                                            </span>
+                                                        {% elif visit.visit_status == 'Closed' and visit.open_reports_count == 1 %}
+                                                            <a href="{% url 'dentists:editdentistreport' rep_id=visit.open_reports.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                                title="Edit Report for {{ visit.visit_title }}">
+                                                                <i class="fas fa-glasses fa-fw genericBlinker"></i>
+                                                            </a>
+                                                        {% elif visit.visit_status == 'Closed' and visit.open_reports_count > 1 %}
+                                                            <a href="{% url 'dentists:listpatientreports' visit.patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                                title="List Reports for {{ visit.visit_title }}">
+                                                                <i class="fas fa-list fa-fw genericBlinker"></i>
+                                                            </a>
+                                                        {% elif visit.open_reports_count == 1 %}
+                                                            <a href="{% url 'dentists:editdentistreport' rep_id=visit.open_reports.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                                title="Edit Report for {{ visit.visit_title }}">
+                                                                <i class="fas fa-glasses fa-fw"></i>
+                                                            </a>
+                                                        {% elif visit.open_reports_count > 1 %}
+                                                            <a href="{% url 'dentists:listpatientreports' visit.patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                                title="List Reports for {{ visit.visit_title }}">
+                                                                <i class="fas fa-list fa-fw"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span title="No Reports for Visit" class="btn btn-sm btn-outline-primary">
+                                                             <i class="fas fa-eye-slash fa-fw"></i>
+                                                        </span>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                        {% endif %}
                                     </td>
                                 </tr>
 
@@ -121,6 +299,32 @@
                         </tbody>
                     </table>
                 </div>
+            
+                {% if page_allvisits.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if page_allvisits.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_allvisits.previous_page_number }}">&laquo; Previous</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+                            {% endif %}
+
+                            {% for i in page_allvisits.paginator.page_range %}
+                                {% if page_allvisits.number == i %}
+                                    <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_allvisits.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_allvisits.next_page_number }}">Next &raquo;</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}             
             </div>
         </div>
     </div>

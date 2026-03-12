@@ -1,13 +1,33 @@
 from django.db import models
+from django.db.models import Q
 
-from patients.models.patients_model import Patient
-from patients.models.auxiliary_models import DateTimeAuditModel
-from patients.models.patientvisit_models import PatientVisit
-from patients.models.patientinsurance_model import PatientInsurance
-from patients.models.patientappointment_model import PatientAppointment
-from mimascompany.models.employee_model import Employee
 from mimascompany.models.branch_model import Branch
 from mimascompany.models.dentist_model import Dentist
+from mimascompany.models.employee_model import Employee
+from patients.models.patients_model import Patient
+from patients.models.patientvisit_models import PatientVisit
+from patients.models.auxiliary_models import DateTimeAuditModel
+from patients.models.patientinsurance_model import PatientInsurance
+from patients.models.patientappointment_model import PatientAppointment
+
+
+class DentistReportQureySet(models.QuerySet):
+
+    def closed_reports(self):
+        return self.filter(closed=False)
+
+    def open_reports(self):
+        return self.filter(closed=True)
+
+    def dentist_with_reports(self):
+        return self.filter(
+            Q(dentistreport_dentist__in=self.open_reports())
+        ).distinct()
+
+
+class DentistReportManager(models.Manager):
+    def get_queryset(self):
+        return DentistReportQureySet(self.model, using=self._db)
 
 
 # Dentist report model
@@ -61,6 +81,9 @@ class DentistReport(DateTimeAuditModel):
         on_delete=models.SET_NULL,
         related_name='dentistreport_updatedby'
     )
+
+    objects = models.Manager()
+    allreports = DentistReportManager()
 
     def __str__(self):
         return self.report_title

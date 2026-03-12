@@ -7,6 +7,8 @@ from patients.models.patientinsurance_model import PatientInsurance
 # Patient insurance form
 class PatientInsuranceForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     company = forms.CharField(label='Company')
     policy_number = forms.CharField(label='Policy Number')
     group_name = forms.CharField(label='Group Name')
