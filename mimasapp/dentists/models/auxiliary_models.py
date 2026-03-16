@@ -2,7 +2,7 @@ from django.db import models
 
 from patients.models.archivedreferral_model import ArchivedPatientReferral
 from patients.models.archivedlab_model import ArchivedPatientLab
-from patients.models.arcivedtreatment_model import ArchivedPatientTreatment
+from patients.models.archivedtreatment_model import ArchivedPatientTreatment
 from patients.models.patientreferral_model import PatientReferral
 from patients.models.patienttreatment_model import PatientTreatment
 from patients.models.patientlab_model import PatientLab

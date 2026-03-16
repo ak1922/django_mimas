@@ -24,7 +24,7 @@ class PatientBill(DateTimeAuditModel):
     )
 
     # ---- Related models ----
-    patient = models.OneToOneField(
+    patient = models.ForeignKey(
         Patient,
         on_delete=models.CASCADE,
         related_name='patientbill_patient'
@@ -52,6 +52,11 @@ class PatientBill(DateTimeAuditModel):
             return sum(service.price for service in self.visit.services.all())
         return 0.00
 
+    @property
+    def totalcharge(self):
+        self.total_charge = self.calculate_total_charge()
+        return self.total_charge
+
     def __str__(self):
         return f'{self.bill_title}'
 
@@ -71,28 +76,33 @@ class ArchivedPatientBill(models.Model):
         decimal_places=2
     )
 
-    archived = models.CharField(null=True, blank=True)
-    updated = models.CharField(blank=True, null=True)
-    updated_by = models.ForeignKey(
-        Employee,
-        null=True,
-        on_delete=models.SET_NULL,
-    )
+    archived = models.DateTimeField()
+    updated = models.DateTimeField()
+
 
     patient = models.ForeignKey(
         Patient,
         null=True,
         on_delete=models.SET_NULL,
+        related_name='archivedbill_patient'
     )
     appointment = models.ForeignKey(
         ArchivedPatientAppointment,
         null=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        related_name='archivedbill_appointment'
     )
     visit = models.ForeignKey(
         ArchivedPatientVisit,
         null=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        related_name='archivedbill_visit'
+    )
+    updated_by = models.ForeignKey(
+        Employee,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='archivedbill_updatedby'
     )
 
     def __str__(self):

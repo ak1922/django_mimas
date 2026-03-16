@@ -7,16 +7,10 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-
 from accounts.decorators import group_required
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.employee_model import Employee
-from patients.models.patients_model import Patient
-from patients.models.patientinsurance_model import PatientInsurance
-from patients.forms.patientappointment_form import PatientAppointmentForm
-from patients.models.patientappointment_model import PatientAppointment
-from patients.models.archivedappointment_model import ArchivedPatientAppointment
-from patients.forms.archived_readonly_forms import ArchivedAppointmentsReadOnlyForm
+from mimascompany.models import Dentist, Employee
+from patients.forms import PatientAppointmentForm, ArchivedAppointmentsReadOnlyForm
+from patients.models import Patient, PatientInsurance, PatientAppointment, ArchivedPatientAppointment
 
 
 logger = logging.getLogger(__name__)
@@ -309,9 +303,10 @@ def list_archived_appointments(request):
     page_archivedappointments = paginator.get_page(page_number)
 
     context = {
-        'page_archivedappointments': page_archivedappointments
+        'page_archivedappointments': page_archivedappointments,
+        'h_archivedcount': archived_appointments.count()
     }
-    return render(request, 'patients/list_archivedvisits.html', context)
+    return render(request, 'patients/list_archivedappointments.html', context)
 
 
 # View archived appointment
@@ -322,4 +317,6 @@ def view_archived_appointment(request, app_id):
     appointment = get_object_or_404(ArchivedPatientAppointment, pk=app_id)
     form = ArchivedAppointmentsReadOnlyForm(instance=appointment)
 
+    for field in form.fields.values():
+        field.disabled = True
     return render(request, 'patients/view_archived_appointment.html', {'h_form': form})

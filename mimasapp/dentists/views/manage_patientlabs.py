@@ -8,12 +8,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.decorators import group_required
 from mimascompany.models.employee_model import Employee
-from dentists.forms.patientlab_forms import PatientLabForm
-from dentists.forms.archived_forms import ArchivedPatientLabForm
-from patients.models.patients_model import Patient
-from patients.models.patientvisit_models import PatientVisit
-from patients.models.patientlab_model import PatientLab
-from patients.models.archivedlab_model import ArchivedPatientLab
+from dentists.forms import PatientLabForm, ArchivedPatientLabForm
+from patients.models import (
+    Patient,
+    PatientLab,
+    PatientVisit,
+    ArchivedPatientLab
+)
 
 
 logger = logging.getLogger(__name__)
@@ -212,7 +213,7 @@ def delete_patient_lab(request, lab_id):
     if request.method == 'POST':
         lab.delete()
         messages.success(request, 'Lab information deleted.')
-    return redirect('dentists:listallpatientlabs')
+    return redirect('dentists:listallpatientslabs')
 
 
 
@@ -242,7 +243,7 @@ def view_archived_lab(request, lab_id):
 def list_all_archived_labs(request):
 
     query = request.POST.get('item_name')
-    allarchivedlabs = ArchivedPatientLab.objects.all().order_by('-archived_on')
+    allarchivedlabs = ArchivedPatientLab.objects.all().order_by('archived')
 
     if query:
         allarchivedlabs = allarchivedlabs.filter(
@@ -252,7 +253,7 @@ def list_all_archived_labs(request):
             Q(patient__last_name__icontains=query)
         ).distinct()
     else:
-        allarchivedlabs = ArchivedPatientLab.objects.all().order_by('-archived_on')
+        allarchivedlabs = ArchivedPatientLab.objects.all().order_by('archived')
 
     paginator = Paginator(allarchivedlabs, 10)
     page_number = request.GET.get('page')
@@ -260,6 +261,6 @@ def list_all_archived_labs(request):
 
     context = {
         'page_allarchivedlabs': page_allarchivedlabs,
-        'h_allarchicedcount': allarchivedlabs.count(),
+        'h_allarchivedlabscount': allarchivedlabs.count(),
     }
     return render(request, 'dentists/list_archivedlabs.html', context)

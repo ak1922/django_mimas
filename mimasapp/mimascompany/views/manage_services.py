@@ -9,7 +9,6 @@ from accounts.decorators import group_required
 from mimascompany.models.service_model import Service
 from mimascompany.forms.company_forms import ServiceForm
 
-
 # Create service
 @login_required
 @group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])

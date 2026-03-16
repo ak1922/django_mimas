@@ -27,6 +27,10 @@ class TreatmentRoomReadOnlyForm(forms.ModelForm):
 class ArchivedAppointmentsReadOnlyForm(forms.ModelForm):
 
     confirmed = forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    appointment_date = forms.DateField(
+        label='Appointment Date',
+        widget= forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'})
+    )
 
     class Meta:
         model = ArchivedPatientAppointment
@@ -35,10 +39,11 @@ class ArchivedAppointmentsReadOnlyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ArchivedAppointmentsReadOnlyForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.widget.attrs['readonly'] = 'readonly'
-            field.widget.attrs['class'] = 'readonly-field, form-control'
-            field.widget.attrs['style'] = 'width: 400px'
             field.label_suffix = ''
+
+            if not isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs['class'] = 'form-control'
+                field.widget.attrs['style'] = 'width: 400px'
 
 
 # Archived visit form
@@ -51,10 +56,11 @@ class ArchivedPatientVisitReadOnlyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ArchivedPatientVisitReadOnlyForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.widget.attrs['readonly'] = 'readonly'
-            field.widget.attrs['class'] = 'readonly-field, form-control'
-            field.widget.attrs['style'] = 'width: 400px'
             field.label_suffix = ''
+
+            if not isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs['class'] = 'form-control'
+                field.widget.attrs['style'] = 'width: 400px'
 
 
 # Archived bill form
@@ -69,7 +75,8 @@ class ArchivedPatientBillReadOnlyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ArchivedPatientBillReadOnlyForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.widget.attrs['readonly'] = 'readonly'
-            field.widget.attrs['class'] = 'readonly-field, form-control'
-            field.widget.attrs['style'] = 'width: 400px'
             field.label_suffix = ''
+
+            if not isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs['class'] = 'form-control'
+                field.widget.attrs['style'] = 'width: 400px'

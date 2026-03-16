@@ -1,14 +1,15 @@
 from django import forms
+from django.db.models import Q
 
-from mimascompany.models.service_model import Service
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.department_model import Department
-from patients.models.patients_model import Patient
-from patients.models.patientinsurance_model import PatientInsurance
-from patients.models.patientappointment_model import PatientAppointment
-from patients.models.patientvisit_models import PatientVisit, PostVisitOption
-from patients.models.treatmentroom_model import TreatmentRoom
+from mimascompany.models import Branch, Service, Dentist, Department
+from patients.models import (
+    Patient,
+    PatientVisit,
+    PatientInsurance,
+    TreatmentRoom,
+    PostVisitOption,
+    PatientAppointment
+)
 
 
 # Patient visit form
@@ -63,7 +64,7 @@ class PatientVisitForm(forms.ModelForm):
     )
     treatment_room = forms.ModelChoiceField(
         label='Treatment Room',
-        queryset=TreatmentRoom.cust_treatments.is_available().all(),
+        queryset=TreatmentRoom. treatments.is_available().all(),
         widget=forms.Select(),
         required=False,
     )
@@ -89,6 +90,14 @@ class PatientVisitForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        if self.instance and self.instance.pk:
+            self.fields['treatment_room'].queryset = TreatmentRoom.objects.filter(
+                Q(pk=self.instance.treatment_room_id) |
+                Q(id__in=TreatmentRoom.treatments.is_available().values('id'))
+            ).distinct()
+        else:
+            self.fields['treatment_room'].queryset = TreatmentRoom.treatments.is_available().all()
+
         for field_name, field in self.fields.items():
             field.label_suffix = ''
 
@@ -110,5 +119,6 @@ class PatientVisitForm(forms.ModelForm):
             'departments',
             'visit_status',
             'visit_options',
-            'treatment_room'
+            'insurance',
+            'treatment_room',
         ]

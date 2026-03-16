@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Archived Bill for {{ h_archivedbill.patient }}{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <p class="formTitle">Archived Bill For {{ h_archivedbill.patient }}</p>
+            {{ h_form.as_p }}
+
+            <div class="buttomsDiv">
+                {% if user.user_type == 'Employees' or user.user_type == 'Administrators' or user.user_type == 'Dentists' %}
+                    <a class="backToListLink" href="{% url 'patients:listarchivedbills' %}">Back to List</a>
+                    <a class="backToListLink" href="{% url 'patients:patientscenter' %}">Patients Center</a>
+                {% else %}
+                    <a class="backToListLink" href="{% url 'patients:patientdashbaord' %}">Patient Dashboard</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+<br><br><br><br>
+{% endblock %}

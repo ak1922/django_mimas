@@ -21,11 +21,11 @@ urlpatterns = [
     # Dentist dashboard
     path('dentistdashboard/', dentist_dashboard, name='dentistdashboard'),
     # Patient labs
-    path('listallpatientslabs/', list_all_patients_labs, name='listallpatientslabs'),
-    path('listpatientlabs/<int:pat_id>/list/', list_patient_labs, name='listpatientlabs'),
     path('createpatientlab/', create_patient_lab, name='createpatientlab'),
+    path('listallpatientslabs/', list_all_patients_labs, name='listallpatientslabs'),
     path('viewpatientlab/<int:lab_id>/view/', view_patient_lab, name='viewpatientlab'),
     path('editpatientlab/<int:lab_id>/edit/', edit_patient_lab, name='editpatientlab'),
+    path('listpatientlabs/<int:pat_id>/list/', list_patient_labs, name='listpatientlabs'),
     path('deletepatientlab/<int:lab_id>/delete/', delete_patient_lab, name='deletepatientlab'),
     path('createlabpatientvisit/<int:vis_id>/create/', create_lab_patient_visit, name='createlabpatientvisit'),
     # Archived Labs
@@ -36,8 +36,8 @@ urlpatterns = [
     path('viewreferral/<int:ref_id>/view/', view_referral, name='viewreferral'),
     path('editreferral/<int:ref_id>/edit/', edit_referral, name='editreferral'),
     path('deletereferral/<int:ref_id>/delete/', delete_referral, name='deletereferral'),
-    path('listpatientreferrals/<int:pat_id>/list/', list_patient_referrals, name='listpatientreferrals'),
     path('listallpatientreferrals/', list_all_patient_referrals, name='listallpatientreferrals'),
+    path('listpatientreferrals/<int:pat_id>/list/', list_patient_referrals, name='listpatientreferrals'),
     path('createreferralpatientvisit/<int:vis_id>/create/', create_referral_patient_visit, name='createreferralpatientvisit'),
     # Archived referrals
     path('listallarchivedreferrals/', list_all_archived_referrals, name='listallarchivedreferrals'),
@@ -45,10 +45,10 @@ urlpatterns = [
     # Patient treatments
     path('createtreatment/', create_treatment, name='createtreatment'),
     path('listalltreatments/', list_all_treatments, name='listalltreatments'),
-    path('listpatienttreatments/<int:pat_id>/list/', list_patient_treatments, name='listpatienttreatments'),
     path('viewtreatment/<int:tre_id>/view/', view_treatment, name='viewtreatment'),
     path('edittreatment/<int:tre_id>/edit/', edit_treatment, name='edittreatment'),
     path('deletetreatment/<int:tre_id>/delete', delete_treatment, name='deletetreatment'),
+    path('listpatienttreatments/<int:pat_id>/list/', list_patient_treatments, name='listpatienttreatments'),
     path('createtreatmentpatientvisit/<int:vis_id>/create/', create_treatment_patient_visit, name='createtreatmentpatientvisit'),
     # Archived Treatments
     path('viewarchivedtreatment/<int:tre_id>/view/', view_archived_treatment, name='viewarchivedtreatment'),

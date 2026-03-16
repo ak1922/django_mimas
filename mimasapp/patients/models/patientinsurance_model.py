@@ -33,7 +33,7 @@ class PatientInsurance(DateTimeAuditModel):
     )
 
     def __str__(self):
-        return self.patient.full_name
+        return f'Insurance - {self.patient.full_name}'
 
     class Meta(DateTimeAuditModel.Meta):
         ordering = ['created']

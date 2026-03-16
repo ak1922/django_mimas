@@ -72,15 +72,15 @@
                                         {% if user.user_type == 'Administrators' or user.user_type == 'Dentists' or user.user_type == 'Employees'  %}
                                             <div class="d-flex justify-content-center gap-1">
                                                 <a href="{% url 'dentists:viewpatientlab' lab.pk %}" class="btn btn-sm btn-outline-primary"
-                                                    title="View Lab:- {{ lab.patient }}">
+                                                    title="View Lab For {{ lab.lab_title }}">
                                                     <i class="fas fa-glasses fa-fw"></i>
                                                 </a>
                                                 <a href="{% url 'dentists:editpatientlab' lab.pk %}" class="btn btn-sm btn-outline-warning"
-                                                    title="Edit Lab:- {{ lab.patient }}">
+                                                    title="Edit Lab For {{ lab.lab_title }}">
                                                     <i class="fas fa-edit fa-fw"></i>
                                                 </a>
                                                 {% if lab.closed %}
-                                                    <span>
+                                                    <span title="Lab Closed, Delete Unavailable." class="btn btn-sm btn-outline-secondary">
                                                         <i class="fa-solid fa-trash fa-fw" id="readOnlyIcon"></i>
                                                     </span>
                                                 {% else %}

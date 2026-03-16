@@ -6,14 +6,15 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
+from mimascompany.models import Employee
 from accounts.decorators import group_required
-from mimascompany.models.employee_model import Employee
-from dentists.forms.patientreferral_forms import PatientReferralForm
-from dentists.forms.archived_forms import ArchivedPatientReferralForm
-from patients.models.patients_model import Patient
-from patients.models.patientvisit_models import PatientVisit
-from patients.models.patientreferral_model import PatientReferral
-from patients.models.archivedreferral_model import ArchivedPatientReferral
+from dentists.forms import PatientReferralForm, ArchivedPatientReferralForm
+from patients.models import (
+    Patient,
+    PatientVisit,
+    PatientReferral,
+    ArchivedPatientReferral
+)
 
 
 logger = logging.getLogger(__name__)
@@ -247,9 +248,9 @@ def view_archived_referral(request, ref_id):
 def list_all_archived_referrals(request):
     """ List all archived patient referrals """
 
-    allarchivedreferrals = ArchivedPatientReferral.objects.all().order_by('-archived_on')
-    archivedcount = ArchivedPatientReferral.objects.all().count()
     query = request.GET.get('item_name')
+    allarchivedreferrals = ArchivedPatientReferral.objects.all().order_by('archived')
+
 
     # Search
     if query:
@@ -259,7 +260,7 @@ def list_all_archived_referrals(request):
             Q(patient__last_name=query)
         ).distinct()
     else:
-        allarchivedreferrals = ArchivedPatientReferral.objects.all().order_by('-archived_on')
+        allarchivedreferrals = ArchivedPatientReferral.objects.all().order_by('archived')
 
     # Pagination
     paginator = Paginator(allarchivedreferrals, 10)
@@ -267,7 +268,7 @@ def list_all_archived_referrals(request):
     page_allarchivedreferrals = paginator.get_page(page_number)
 
     context = {
-        'h_archivedcount': archivedcount,
+        'h_archivedcount': allarchivedreferrals.count(),
         'page_allarchivedreferrals': page_allarchivedreferrals
     }
     return render(request, 'dentists/list_archivedreferrals.html', context)

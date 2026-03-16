@@ -1,17 +1,11 @@
 from django.db import models
+from django.db.models import Index
 from model_utils import FieldTracker
 from django.core.exceptions import ValidationError
 
-from .auxiliary_models import DateTimeAuditModel
-from .patients_model import Patient
+from mimascompany.models import Branch, Service, Dentist, Employee, Department
+from patients.models import Patient, PatientInsurance, PatientAppointment, DateTimeAuditModel
 from .treatmentroom_model import TreatmentRoom
-from .patientinsurance_model import PatientInsurance
-from .patientappointment_model import PatientAppointment
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.service_model import Service
-from mimascompany.models.employee_model import Employee
-from mimascompany.models.department_model import Department
 
 
 POST_VISIT_CHOICES = [
@@ -21,7 +15,7 @@ POST_VISIT_CHOICES = [
     ('Dentist Report', 'Dentist Report')
 ]
 
-# 1. Define the PostVisitOption model first
+
 class PostVisitOption(models.Model):
     name = models.CharField(max_length=50, choices=POST_VISIT_CHOICES, unique=True)
 
@@ -71,11 +65,13 @@ class PatientVisit(DateTimeAuditModel):
     visit_date = models.DateField()
     visit_time = models.CharField(
         choices=VISIT_TIME,
-        blank=True, null=True
+        blank=True, null=True,
+        max_length=10
     )
     visit_status = models.CharField(
         choices=VISIT_STATUS,
-        default='Created'
+        default='Created',
+        max_length=15
     )
 
     # ---- Related models ----
@@ -226,3 +222,9 @@ class PatientVisit(DateTimeAuditModel):
         ordering = ['-visit_date', '-visit_time']
         verbose_name = 'Patient Visit'
         verbose_name_plural = 'Patients Visits'
+        indexes = [
+            Index(fields=['visit_date'], name='visit_date_idx'),
+            Index(fields=['visit_status'], name='visit_status_idx'),
+            Index(fields=['patient', 'visit_date'], name='patient_visitdate_idx'),
+            Index(fields=['dentist', 'visit_status'], name='dentist_visitstatus_idx')
+        ]

@@ -1,23 +1,45 @@
 from django.db import models
+from django.db.models import Q
 
-from .patients_model import Patient
-from .patientinsurance_model import PatientInsurance
-from .patientappointment_model import PatientAppointment
-from .patientvisit_models import PatientVisit
-from .auxiliary_models import DateTimeAuditModel
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.employee_model import Employee
+from mimascompany.models import Branch, Dentist, Employee
+from patients.models import (
+    Patient,
+    PatientVisit,
+    PatientInsurance,
+    PatientAppointment,
+    DateTimeAuditModel
+)
+
+
+# ----- Custom queryset
+class PatientTreatmentQuerySet(models.QuerySet):
+
+    def open_treatments(self):
+        return self.filter(closed=False)
+
+    def closed_treatments(self):
+        return self.filter(closed=True)
+
+    def with_related(self):
+        return self.select_related('patient', 'dentist')
+
+
+# ----- Custom manager
+class PatientTreatmentManager(models.Manager.from_queryset(PatientTreatmentQuerySet)):
+    pass
 
 
 # Patient treatment model
 class PatientTreatment(DateTimeAuditModel):
 
     treatment_title  = models.CharField(max_length=300)
-    teeth_number = models.CharField(null=True, blank=True)
+    teeth_number = models.CharField(
+        null=True, blank=True,
+        max_length=5
+    )
     closed = models.BooleanField(default=False)
 
-    notes = models.TextField()
+    notes = models.TextField(null=True, blank=True)
     medication = models.CharField(
         max_length=300,
         blank=True, null=True
@@ -64,6 +86,9 @@ class PatientTreatment(DateTimeAuditModel):
         on_delete=models.CASCADE,
         related_name='patienttreatment_updatedby'
     )
+
+    # ------- Managers ---------
+    objects = PatientTreatmentQuerySet.as_manager()
 
     @property
     def closed_visit(self):

@@ -75,21 +75,51 @@
                                                title="View Visit:- {{ visit.visit_title }}">
                                                 <i class="fas fa-glasses fa-fw"></i>
                                             </a>
+                                            {# Edit patient visit #}
                                             <a href="{% url 'patients:editpatientvisit' visit.pk %}" class="btn btn-sm btn-outline-warning"
                                                title="Edit Visit:- {{ visit.visit_title }}">
                                                 <i class="fas fa-edit fa-fw"></i>
                                             </a>
-                                            <a href="{% url 'patients:viewvisitcost' visit.pk %}" class="btn btn-sm btn-outline-secondary"
-                                                title="View Visit Cost:- {{ visit.visit_title }}">
-                                                <i class="fas fa-dollar fa-fw"></i>
-                                            </a>
+                                            {# Create visit task #}
                                             <a href="{% url 'patients:createvisittaskvisit' visit.pk %}" class="btn btn-sm btn-outline-success"
                                                 title="Add Visit Task: {{ visit.visit_title }}">
                                                 <i class="fas fa-folder-plus fa-fw"></i>
                                             </a>
+                                            {# Visit billing #}
+                                            {% if visit.allpaid_bills %}
+                                                <span class="btn btn-sm btn-outline-success">
+                                                    <i class="fa-solid fa-person-circle-check fa-fw" title="Patient Visit Bill Paid"></i>
+                                                </span>
+                                            {% elif not visit.allpaid_bills and visit.visit_status == 'Completed' %}
+                                                <a href="{% url 'patients:listallbills' %}" class="btn btn-sm btn-outline-success" title="Pay Patient Bill">
+                                                    <i class="fas fa-cash-register fa-fw genericBlinker"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'patients:viewvisitcost' visit.pk %}" class="btn btn-sm btn-outline-secondary"
+                                                    title="View Visit Cost:- {{ visit.visit_title }}">
+                                                    <i class="fas fa-dollar fa-fw"></i>
+                                                </a>
+                                            {% endif %}
+                                            {# Delete visit #}
                                             <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ visit.pk }}">
                                                 <i class="fas fa-trash-alt fa-fw"></i>
                                             </button>
+                                            {# Visit archiving options #}
+                                            {% if visit.visit_status == 'Closed' %}
+                                                {% if not visit.all_treatments_closed or not visit.all_referrals_closed or not visit.all_labs_closed or not visit.all_closed_reports %}
+                                                    <span title="Contains open items" class="btn btn-sm btn-outline-secondary">
+                                                        <i class="fa-solid fa-box-archive fa-fw" id="readOnlyIcon"></i>
+                                                    </span>
+                                                {% else %}
+                                                    <a href="{% url 'patients:archivepatientvisit' visit.pk %}" class="btn btn-sm btn-outline-dark">
+                                                        <i class="fa-solid fa-box-archive fa-fw" title="Archive Patient Visit"></i>
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <span title="Open Patient Visit" class="btn btn-sm btn-outline-dark">
+                                                    <i class="fa-solid fa-folder-open fa-fw"></i>
+                                                </span>
+                                            {% endif %}
                                         </div>
                                     </td>
 

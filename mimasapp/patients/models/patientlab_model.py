@@ -1,13 +1,7 @@
 from django.db import models
 
-from .auxiliary_models import DateTimeAuditModel
-from .patients_model import Patient
-from .patientvisit_models import PatientVisit
-from .patientappointment_model import PatientAppointment
-from .patientinsurance_model import PatientInsurance
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.employee_model import Employee
+from mimascompany.models import Employee, Dentist, Branch
+from patients.models import Patient, PatientInsurance, PatientVisit, PatientAppointment, DateTimeAuditModel
 
 
 # --------- Custom queryset -----------
@@ -24,15 +18,8 @@ class PatientLabQuerySet(models.QuerySet):
 
 
 # --------- Custom manager -----------
-class PatientLabManager(models.Manager):
-    def get_queryset(self):
-        return PatientLabQuerySet(self.model, using=self._db)
-
-    def open_labs(self):
-        return self.get_queryset().open_labs()
-
-    def closed_labs(self):
-        return self.get_queryset().closed_labs()
+class PatientLabManager(models.Manager.from_queryset(PatientLabQuerySet)):
+    pass
 
 
 # Patient lab model
@@ -90,7 +77,8 @@ class PatientLab(DateTimeAuditModel):
     visit = models.ForeignKey(
         PatientVisit,
         on_delete=models.CASCADE,
-        related_name='patientlab_visit'
+        related_name='patientlab_visit',
+        db_index=True
     )
     updated_by = models.ForeignKey(
         Employee,
@@ -101,7 +89,7 @@ class PatientLab(DateTimeAuditModel):
 
     # ---- Managers ----
     objects = models.Manager()
-    all_patientlabs = PatientLabManager()
+    laboratories = PatientLabManager()
 
     @property
     def closed_visit(self):

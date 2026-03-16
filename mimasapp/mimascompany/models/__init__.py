@@ -1,6 +1,6 @@
 from .auxiliary_models import AuditModel
 from .employee_model import Employee, CompanyPositions
-from .employeetasks_model import EmployeeTask, TaskCategory
+from .employeetasks_model import EmployeeTask, TaskCategory, EmployeeTaskItem
 from .leaverequests_model import LeaveRequest
 from .branch_model import Branch
 from .bookings_model import PatientBooking

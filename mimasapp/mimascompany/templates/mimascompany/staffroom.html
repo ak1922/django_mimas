@@ -61,8 +61,8 @@
             <div class="card text-white bg-secondary mb-3 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Bills</h5>
-                    <p class="card-text fs-4">{{ h_billscount }}</p>
-                    <a href="" class="stretched-link text-white">[View All]</a>
+                    <p class="card-text fs-4">{{ h_allbills }}</p>
+                    <a href="{% url 'patients:listallbills' %}" class="stretched-link text-white">[View All]</a>
                 </div>
             </div>
         </div>
@@ -113,7 +113,7 @@
                         <a href="{% url 'mimascompany:listtasks' %}" class="btn btn-secondary" title="List Employee Tasks">Tasks</a>
                         <a href="{% url 'mimascompany:listtaskitems' %}" class="btn btn-secondary" title="List Employee Tasks Items">Tasks Items</a>
                         <a href="{% url 'mimascompany:listallleaverequests' %}" class="btn btn-secondary" title="List All Leave Requests">Leave Request</a>
-                        <a href="" class="btn btn-secondary" title="List Bills">Bills</a>
+                        <a href="{% url 'patients:listallbills' %}" class="btn btn-secondary" title="List Bills">Bills</a>
                         <a href="{% url 'patients:listtreatmentrooms' %}" class="btn btn-secondary" title="List Treatment Rooms">Treatment Rooms</a>
                     </div>
                 </div>

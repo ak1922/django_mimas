@@ -58,7 +58,7 @@ class CompanyPositionsAdmin(admin.ModelAdmin):
 
 @admin.register(PatientBooking)
 class PatientBookingAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email', 'created', 'updated', 'updated_by']
+    list_display = ['username','first_name', 'last_name', 'email', 'created', 'updated', 'updated_by']
     search_fields = ['first_name', 'last_name', 'email']
 
 

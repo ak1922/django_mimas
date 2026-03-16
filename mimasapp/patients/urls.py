@@ -14,11 +14,14 @@ from .views.manage_patientappointments import create_appointment, create_reocurr
     view_appointment, list_archived_appointments, view_archived_appointment
 from .views.manage_patientvisits import create_patient_visit, list_patient_visits, list_all_patient_visits, \
     edit_patient_visit, view_patient_visit, view_archived_visit, view_visit_cost, delete_patient_visit, \
-    list_archived_visits
+    list_archived_visits, archive_patient_visit
 from .views.manage_treatmentroom import create_treatment_room, list_treatment_rooms, edit_treatment_room, \
     view_treatment_room, delete_treatment_room
 from .views.manage_visittasks import create_visit_task, delete_visit_task, edit_visit_task, list_visit_task, \
     view_visit_task, create_visit_task_visit
+from .views.manage_patientbill import pay_patient_bill, view_patient_bill, view_archived_bill, list_all_bills, \
+    list_archived_bills
+
 
 app_name = 'patients'
 
@@ -79,6 +82,10 @@ urlpatterns = [
     path('viewpatientvisit/<int:vis_id>/view/', view_patient_visit, name='viewpatientvisit'),
     path('viewvisitcost/<int:vis_id>/view/', view_visit_cost, name='viewvisitcost'),
     path('deletepatientvisit/<int:vis_id>/delete/', delete_patient_visit, name='deletepatientvisit'),
+    path('archivepatientvisit/<int:vis_id>/archive/', archive_patient_visit, name='archivepatientvisit'),
+    # Archived Visits
+    path('listarchivedvisits/', list_archived_visits, name='listarchivedvisits'),
+    path('viewarchivedvisit/<int:vis_id>/view/', view_archived_visit, name='viewarchivedvisit'),
     # Patient visit tasks
     path('createvisittask/', create_visit_task, name='createvisittask'),
     path('deletevisittask/<int:task_id>/delete/', delete_visit_task, name='deletevisittask'),
@@ -86,9 +93,11 @@ urlpatterns = [
     path('listvisittask/', list_visit_task, name='listvisittasks'),
     path('viewvisittask/<int:task_id>/view/', view_visit_task, name='viewvisittask'),
     path('createvisittaskvisit/<int:vis_id>/create/', create_visit_task_visit, name='createvisittaskvisit'),
-    # Archived Visits
-    path('listarchivedvisits/', list_archived_visits, name='listarchivedvisits'),
-    path('viewarchivedvisit/<int:vis_id>/view/', view_archived_visit, name='viewarchivedvisit'),
     # Patient Billing
+    path('listallbills/', list_all_bills, name='listallbills'),
+    path('editpatientbill/<int:bill_id>/edit/', pay_patient_bill, name='paypatientbill'),
+    path('viewpatientbill/<int:bill_id>/view/', view_patient_bill, name='viewpatientbill'),
     # Archived Bills
+    path('listarchivedbills/', list_archived_bills, name='listarchivedbills'),
+    path('viewarchivedbill/<int:bill_id>/view/', view_archived_bill, name='viewarchivedbill'),
 ]

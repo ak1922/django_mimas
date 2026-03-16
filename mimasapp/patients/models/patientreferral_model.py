@@ -26,19 +26,8 @@ class PatientReferralQuerySet(models.QuerySet):
 
 
 # ------ Custom manager -------
-class PatientReferralManager(models.Manager):
-
-    def get_queryset(self):
-        return PatientReferralQuerySet(self.model, using=self._db)
-
-    def open_referrals(self):
-        return self.get_queryset().open_referrals()
-
-    def closed_referrals(self):
-        return self.get_queryset().closed_referrals()
-
-    def dentist_open_referrals(self):
-        return self.get_queryset().dentists_with_openreferrals()
+class PatientReferralManager(models.Manager.from_queryset(PatientReferralQuerySet)):
+    pass
 
 
 # Patient referral
@@ -95,7 +84,7 @@ class PatientReferral(DateTimeAuditModel):
 
     # ---- Managers ----
     objects = models.Manager()
-    all_patientreferrals = PatientReferralManager()
+    referrals = PatientReferralManager()
 
     @property
     def closed_visit(self):

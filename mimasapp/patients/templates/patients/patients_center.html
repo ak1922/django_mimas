@@ -13,21 +13,21 @@
         <h3>Patients Center</h3>
         <!-- Show appointments and visits -->
         <div class="totalsDivStaff">
-            <h6>Patients: <a href="">{{ h_allpatients }}</a></h6>
-            <h6>Appointments: <a href="">{{ h_appointmentstotal }}</a></h6>
-            <h6>Visits: <a href="">{{ h_visitstotal }}</a></h6>
+            <h6>Patients: <a href="{% url 'patients:listpatients' %}">{{ h_allpatients }}</a></h6>
+            <h6>Appointments: <a href="{% url 'patients:listallappointments' %}">{{ h_appointmentstotal }}</a></h6>
+            <h6>Visits: <a href="{% url 'patients:listallpatientvisits' %}">{{ h_visitstotal }}</a></h6>
         </div>
 
-        <!-- Scrolling messages section -->
-        <div class="message-container">
-            <div class="scrolling-messages">
-                <div class="marquee-content">
-                    {% for message in h_messages %}
-                    <span>{{ message.message }}</span>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+{#        <!-- Scrolling messages section -->#}
+{#        <div class="message-container">#}
+{#            <div class="scrolling-messages">#}
+{#                <div class="marquee-content">#}
+{#                    {% for message in h_messages %}#}
+{#                    <span>{{ message.message }}</span>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
 
         <!-- Links to tasks -->
         <div id="workDiv">
@@ -54,7 +54,7 @@
                     <a href="{% url 'patients:listallappointments' %}" title="List Patient Appointments">Appointments</a>
                     <a href="{% url 'patients:listallpatientvisits' %}" title="List Patient Visits">Patients Visits</a>
                     <a href="{% url 'patients:listvisittasks' %}" title="List Patient Visits">Visits Tasks</a>
-                    <a href="" title="List Patient Bookings">Bookings</a>
+                    <a href="{% url 'mimascompany:listcustomersbookookings' %}" title="List Patient Bookings">Bookings</a>
                 </div>
             </div>
 
@@ -63,9 +63,12 @@
                 <div class="action-links" id="archiveItemsDiv">
                     <a href="{% url 'patients:listarchivedappointments' %}" title="List Archived Patient Appointments">Appointments</a>
                     <a href="{% url 'patients:listarchivedvisits' %}" title="List Archived Patient Visits">Visits</a>
-                    <a href="" title="List Archived Patient Bills">Bills</a>
+                    <a href="{% url 'patients:listarchivedbills' %}" title="List Archived Patient Bills">Bills</a>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="{% static 'js/scrolling_speed.js' %}"></script>
+
 {% endblock %}

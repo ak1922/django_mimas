@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Treatment/s for {{ h_patient }}{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container-fluid mt-4">
+        <div class="card shadow-sm custom-table-container">
+
+            <div class="titleStatsDiv">
+                <h5 class="mb-0 text-gray-800">Treatments For {{ h_patient }}</h5>
+                <div>
+                    <span class="countStat">Treatments Total: {{ h_treatmentscount }}</span>
+                </div>
+            </div>
+
+            <div class="searchAddDiv">
+                <div class="searchDiv">
+                    <form method="GET" class="d-flex w-100">
+                        <input class="form-control form-control-sm me-2" type="search" name="item_name" placeholder="Search Treatment Title, First Name, Last Name...">
+                        <button class="btn btn-sm btn-success" type="submit">
+                            Submit
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+{#                <a href="{% url 'dentists:createtreatment' %}" id="tableTopRightDiv" class="btn btn-sm btn-primary" title="Add Patient Treatment">#}
+{#                    <i class="fas fa-plus fa-fw"></i> Add Patient Treatment#}
+{#                </a>#}
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>PATIENT</th>
+                                <th>DENTIST</th>
+                                <th>VISIT</th>
+                                <th>TREATMENT TITLE</th>
+                                <th>CLOSED</th>
+                                <th>CREATED</th>
+                                <th>UPDATED</th>
+                                <th>UPDATED BY</th>
+                                <th class="text-center">TREATMENT</th>
+                                <th class="text-center">VISIT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for treatment in page_treatments %}
+                            	<tr>
+                                    <td>{{ treatment.patient }}</td>
+                                    <td>{{ treatment.dentist }}</td>
+                                    <td>{{ treatment.visit }}</td>
+                                    <td>{{ treatment.treatment_title }}</td>
+                                    <td>{{ treatment.closed }}</td>
+                                    <td>{{ treatment.created }}</td>
+                                    <td>{{ treatment.updated }}</td>
+                                    <td>{{ treatment.updated_by }}</td>
+                                    <td class="text-center">
+                                        {% if user.user_type == 'Administrators' or user.user_type == 'Dentists' or user.user_type == 'Employees' %}
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a href="{% url 'dentists:viewtreatment' treatment.pk %}" class="btn btn-sm btn-outline-primary"
+                                                    title="View Treatment for Visit {{ treatment.visit }}">
+                                                    <i class="fas fa-glasses fa-fw"></i>
+                                                </a>
+                                                <a href="{% url 'dentists:edittreatment' treatment.pk %}" class="btn btn-sm btn-outline-warning"
+                                                    title="Edit Treatment for Visit {{ treatment.visit }}">
+                                                    <i class="fas fa-edit fa-fw"></i>
+                                                </a>
+                                                {% if treatment.closed %}
+                                                    <span class="btn btn-sm btn-outline-secondary" title="Closed Treatment, Delete Unavailable">
+                                                        <i class="fa-solid fa-trash fa-fw" id="readOnlyIcon"></i>
+                                                    </span>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ treatment.pk }}">
+                                                        <i class="fas fa-trash fa-fw"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if not treatment.closed and treatment.visit.visit_status != 'Closed' %}
+                                        {% else %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                                <div class="modal fade" id="deleteModal{{ treatment.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ treatment.pk }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ treatment.pk }}">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete Lab <strong>{{ treatment.treatment_title }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{% url 'dentists:deletetreatment' treatment.pk %}" method="POST" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">No Patient Treatments found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if page_treatments.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if page_treatments.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_treatments.previous_page_number }}">&laquo; Previous</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+                            {% endif %}
+
+                            {% for i in page_treatments.paginator.page_range %}
+                                {% if page_treatments.number == i %}
+                                    <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_treatments.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_treatments.next_page_number }}">Next &raquo;</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

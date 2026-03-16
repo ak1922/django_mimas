@@ -12,7 +12,7 @@ from .patientbill_model import PatientBill, ArchivedPatientBill
 from .patientlab_model import PatientLab
 from .archivedlab_model import ArchivedPatientLab
 from .patienttreatment_model import PatientTreatment
-from .arcivedtreatment_model import ArchivedPatientTreatment
+from .archivedtreatment_model import ArchivedPatientTreatment
 from .patientreferral_model import PatientReferral
 from .archivedreferral_model import ArchivedPatientReferral
 from .patientmessage_model import PatientMessage

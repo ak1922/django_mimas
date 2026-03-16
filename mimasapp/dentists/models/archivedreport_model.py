@@ -1,12 +1,7 @@
 from django.db import models
 
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.employee_model import Employee
-from patients.models.patients_model import Patient
-from patients.models.archivedvisit_model import ArchivedPatientVisit
-from patients.models.patientinsurance_model import PatientInsurance
-from patients.models.archivedappointment_model import ArchivedPatientAppointment
+from mimascompany.models import Employee, Dentist, Branch
+from patients.models import Patient, PatientInsurance, ArchivedPatientVisit, ArchivedPatientAppointment
 
 
 # Archived report
@@ -20,44 +15,51 @@ class ArchivedDentistReport(models.Model):
     closed = models.BooleanField(default=True)
 
     # ---- Audit fields ----
-    archived = models.CharField(null=True, blank=True)
-    updated = models.CharField(blank=True, null=True)
-    updated_by = models.ForeignKey(
-        Employee,
-        null=True,
-        on_delete=models.SET_NULL,
-    )
+    archived = models.DateTimeField(null=True, blank=True)
+    updated = models.DateTimeField(blank=True, null=True)
 
     # ---- ForeignKeys ----
     patient = models.ForeignKey(
         Patient,
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        related_name='archivedreport_patient'
     )
     dentist = models.ForeignKey(
         Dentist,
         null=True,
         on_delete=models.SET_NULL,
+        related_name='archivedreport_dentist'
     )
     branch = models.ForeignKey(
         Branch,
         null=True,
         on_delete=models.SET_NULL,
+        related_name='archivedreport_branch'
     )
     insurance = models.ForeignKey(
         PatientInsurance,
         null=True,
         on_delete=models.SET_NULL,
+        related_name='archivedreport_insurance'
     )
     appointment = models.ForeignKey(
         ArchivedPatientAppointment,
         null=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        related_name='archivedreport_appointment'
     )
     visit = models.ForeignKey(
         ArchivedPatientVisit,
         null=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        related_name='archivedreport_visit'
+    )
+    updated_by = models.ForeignKey(
+        Employee,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='archivedreport_updatedby'
     )
 
     def __str__(self):

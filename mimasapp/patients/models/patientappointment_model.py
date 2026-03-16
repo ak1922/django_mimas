@@ -4,12 +4,8 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from datetime import time, datetime, timedelta
 
-from patients.models.auxiliary_models import DateTimeAuditModel
-from patients.models.patients_model import Patient
-from patients.models.patientinsurance_model import PatientInsurance
-from mimascompany.models.employee_model import Employee
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.branch_model import Branch
+from mimascompany.models import Dentist, Branch, Employee
+from patients.models import Patient, PatientInsurance, DateTimeAuditModel
 
 
 # Custom manager class

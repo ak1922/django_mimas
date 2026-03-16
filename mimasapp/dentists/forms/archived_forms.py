@@ -1,6 +1,6 @@
 from django import forms
 
-from patients.models.arcivedtreatment_model import ArchivedPatientTreatment
+from patients.models.archivedtreatment_model import ArchivedPatientTreatment
 from patients.models.archivedlab_model import ArchivedPatientLab
 from patients.models.archivedreferral_model import ArchivedPatientReferral
 from dentists.models.archivedreport_model import ArchivedDentistReport

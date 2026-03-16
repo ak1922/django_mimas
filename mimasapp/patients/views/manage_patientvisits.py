@@ -5,26 +5,22 @@ from django.db import transaction
 from django.contrib import messages
 from django.db.models import Sum, Q
 from django.core.paginator import Paginator
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
-from dentists.models import DentistReport
+from patients.utils import perform_archiving
 from accounts.decorators import group_required
-from mimascompany.models.employee_model import Employee
-from mimascompany.models.department_model import Department
-from patients.models.patients_model import Patient
-from patients.models.patientlab_model import PatientLab
-from patients.models.patientbill_model import PatientBill
-from patients.models.patientmessage_model import PatientMessage
-from patients.models.patientreferral_model import PatientReferral
-from patients.models.patienttreatment_model import PatientTreatment
-from patients.forms.patientvisit_forms import PatientVisitForm
-from patients.models.patientvisit_models import PatientVisit
-from patients.forms.archived_readonly_forms import ArchivedPatientVisitReadOnlyForm
-from patients.models.archivedvisit_model import ArchivedPatientVisit
-from patients.models.treatmentroom_model import TreatmentRoom
-from patients.models.visittask_model import PatientVisitTask
+from mimascompany.models import Employee, Department
+from patients.forms import PatientVisitForm, ArchivedPatientVisitReadOnlyForm
+from patients.models import (
+    Patient,
+    PatientVisit,
+    PatientBill,
+    PatientVisitTask,
+    ArchivedPatientVisit,
+    PatientMessage
+)
 
 
 logger = logging.getLogger(__name__)
@@ -36,7 +32,6 @@ logger = logging.getLogger(__name__)
 def create_patient_visit(request):
 
     next_url = request.GET.get('next', reverse('patients:listallpatientvisits'))
-
 
     if request.method == 'POST':
         form = PatientVisitForm(request.POST)
@@ -87,7 +82,7 @@ def create_patient_visit(request):
 @login_required
 @group_required(allowed_groups=['Dentists', 'Administrators', 'Employees'])
 def edit_patient_visit(request, vis_id):
-    """ Manage visitts """
+    """ Manage visits """
 
     visit = get_object_or_404(PatientVisit, pk=vis_id)
     original_status = visit.visit_status
@@ -113,7 +108,6 @@ def edit_patient_visit(request, vis_id):
                             edited_visit.save()
                             form.save_m2m()
                     else:
-                        # General case, save the instance and M2M data
                         edited_visit.save()
                         form.save_m2m()
                         PatientMessage.objects.create(
@@ -206,41 +200,6 @@ def view_visit_cost(request, vis_id):
     return render(request,'patients/visit_cost.html', context)
 
 
-# # Archive visit
-# @login_required
-# @role_required(allowed_roles=['Employee', 'Dentist', 'Admin', 'Patient'])
-# def archive_patient_visit(request, vis_id):
-#     """ Archive patient visit"""
-#
-#     visit = get_object_or_404(PatientVisit, pk=vis_id)
-#
-#         # --- NEW VALIDATION LOGIC ---
-#     open_post_actions = []
-#     if PatientLab.objects.filter(visit_title=visit, closed=False).exists():
-#         open_post_actions.append('Labs')
-#     if DentistReport.objects.filter(visit_title=visit, closed=False).exists():
-#         open_post_actions.append('Reports')
-#     if PatientReferral.objects.filter(visit_title=visit, closed=False).exists():
-#         open_post_actions.append('Referrals')
-#     if PatientTreatment.objects.filter(visit_title=visit, closed=False).exists():
-#         open_post_actions.append('Treatments')
-#
-#     if open_post_actions:
-#         messages.error(request, 'Patient visit has open items')
-#         return redirect(request.path)
-#
-#     if request.method == 'POST':
-#         try:
-#             # Pass the object, not just ID
-#             perform_archive_tasks(visit.id)
-#             messages.success(request, 'Visit closed and archived successfully.')
-#             return redirect('patients:listallpatientvisits') # Redirect away
-#         except ValidationError as e:
-#             messages.error(request, f'Error: {e}')
-#             return redirect(request.path)
-#     return render(request, 'patients/archive_patient_visit.html', {'h_visit': visit})
-
-
 # List all visits
 @login_required
 @group_required(allowed_groups=['Dentists', 'Administrators', 'Employees'])
@@ -297,7 +256,8 @@ def list_patient_visits(request, pat_id):
 
     context = {
         'h_patient': patient,
-        'page_patientvisits': page_patientvisits
+        'page_patientvisits': page_patientvisits,
+        'h_visitstotal': patient_visits.count()
     }
     return render(request, 'patients/listvisits_onepatient.html', context)
 
@@ -316,6 +276,31 @@ def delete_patient_visit(request, vis_id):
 
 
 # -------------------------- ARCHIVED VISITS ----------------------------------
+
+# Archive visit
+@login_required
+@group_required(allowed_groups=['Dentists', 'Administrators', 'Employees'])
+def archive_patient_visit(request, vis_id):
+
+    visit = get_object_or_404(PatientVisit, pk=vis_id)
+
+    if (visit.patientlab_visit.filter(closed=False).exists() or
+        visit.patientreferral_visit.filter(closed=False).exists() or
+        visit.dentistreport_visit.filter(closed=False).exists() or
+        visit.patienttreatment_visit.filter(closed=False).exists()):
+        messages.error(request, 'Patient visit has open items')
+        return redirect('patients:listallpatientvisits')
+
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                perform_archiving(visit.id)
+            messages.success(request, 'Patient visit archived')
+            return redirect('patients:listallpatientvisits')
+        except Exception as e:
+            messages.error(request, f'Error:- {e}')
+            return redirect(request.path)
+    return render(request, 'patients/archive_visit.html', {'h_visit': visit})
 
 # View archived visit
 @login_required

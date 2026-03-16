@@ -6,14 +6,15 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-from mimascompany.models.employee_model import Employee
+from mimascompany.models import Employee
 from accounts.decorators import group_required
-from dentists.forms.patienttreatment_forms import PatientTreatmentForm
-from dentists.forms.archived_forms import ArchivedPatientTreatmentForm
-from patients.models.patients_model import Patient
-from patients.models.patientvisit_models import PatientVisit
-from patients.models.patienttreatment_model import PatientTreatment
-from patients.models.arcivedtreatment_model import ArchivedPatientTreatment
+from dentists.forms import PatientTreatmentForm, ArchivedPatientTreatmentForm
+from patients.models import (
+    Patient,
+    PatientVisit,
+    PatientTreatment,
+    ArchivedPatientTreatment
+)
 
 
 logger = logging.getLogger(__name__)
@@ -105,6 +106,7 @@ def create_treatment_patient_visit(request, vis_id=None):
 def edit_treatment(request, tre_id):
 
     treatment = PatientTreatment.objects.get(pk=tre_id)
+    next_url = request.GET.get('next', reverse('dentists:listalltreatments'))
 
     if request.method == 'POST':
         form = PatientTreatmentForm(request.POST, instance=treatment)
@@ -116,7 +118,7 @@ def edit_treatment(request, tre_id):
             edited_treatment.save()
             messages.success(request, f'{edited_treatment.treatment_title} information updated.')
             logger.info(f'{edited_treatment.treatment_title} information updated by {request.user}.')
-            return redirect('dentists:listalltreatments')
+            return redirect(next_url)
         else:
             for field, errors in form.errors.items():
                 for error in errors:

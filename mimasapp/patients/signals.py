@@ -83,49 +83,49 @@ def track_patient_visit_options(sender, instance, action, pk_set, **kwargs):
         Referral, Treatment, Lab, Dentist Report
     """
 
-    if action == 'post_add':
-        if instance.visit_status != 'CHECKED_IN':
-            return
+    # if action == 'post_add':
+    #     if instance.visit_status != 'CHECKED_IN':
+    #         return
 
-        for option_id in pk_set:
-            option = PostVisitOption.objects.get(pk=option_id)
+    for option_id in pk_set:
+        option = PostVisitOption.objects.get(pk=option_id)
 
-            base_data = {
-                'patient': instance.patient,
-                'dentist': instance.dentist,
-                'branch': instance.branch,
-                'insurance': instance.insurance,
-                'appointment': instance.appointment,
-                'visit': instance
-            }
+        base_data = {
+            'patient': instance.patient,
+            'dentist': instance.dentist,
+            'branch': instance.branch,
+            'insurance': instance.insurance,
+            'appointment': instance.appointment,
+            'visit': instance
+        }
 
-            if option.name == OPTION_LAB:
-                if not PatientLab.objects.filter(visit=instance).exists():
-                    PatientLab.objects.create(
-                        **base_data,
-                        lab_title=f'Lab - {instance.visit_title}'
-                    )
+        if option.name == OPTION_LAB:
+            if not PatientLab.objects.filter(visit=instance).exists():
+                PatientLab.objects.create(
+                    **base_data,
+                    lab_title=f'Lab - {instance.visit_title}'
+                )
 
-            elif option.name == OPTION_REPORT:
-                if not DentistReport.objects.filter(visit=instance).exists():
-                    DentistReport.objects.create(
-                        **base_data,
-                        report_title=f'Report - {instance.visit_title}'
-                    )
+        elif option.name == OPTION_REPORT:
+            if not DentistReport.objects.filter(visit=instance).exists():
+                DentistReport.objects.create(
+                    **base_data,
+                    report_title=f'Report - {instance.visit_title}'
+                )
 
-            elif option.name == OPTION_REFERRAL:
-                if not PatientReferral.objects.filter(visit=instance).exists():
-                    PatientReferral.objects.create(
-                        **base_data,
-                        referral_title=f'Referral - {instance.visit_title}'
-                    )
+        elif option.name == OPTION_REFERRAL:
+            if not PatientReferral.objects.filter(visit=instance).exists():
+                PatientReferral.objects.create(
+                    **base_data,
+                    referral_title=f'Referral - {instance.visit_title}'
+                )
 
-            elif option.name == OPTION_TREATMENT:
-                if not PatientTreatment.objects.filter(visit=instance).exists():
-                    PatientTreatment.objects.create(
-                        **base_data,
-                        treatment_title=f'Treatment - {instance.visit_title}'
-                    )
+        elif option.name == OPTION_TREATMENT:
+            if not PatientTreatment.objects.filter(visit=instance).exists():
+                PatientTreatment.objects.create(
+                    **base_data,
+                    treatment_title=f'Treatment - {instance.visit_title}'
+                )
 
 
 # ----------------------------- Manage patient bill -----------------------
@@ -146,6 +146,7 @@ def prepare_visit_bill(sender, instance, created, **kwargs):
         except PatientBill.DoesNotExist:
             PatientBill.objects.create(
                 patient=instance.patient,
+                appointment=instance.appointment,
                 visit=instance,
                 is_paid=False,
                 total_charge=total_charge,
@@ -173,6 +174,23 @@ def bill_ready_message(sender, instance, created, **kwargs):
         )
 
 
+# Recalculate patient bill
+@receiver(m2m_changed, sender=PatientVisit.services.through)
+def recalculate_bill(sender, instance, action, pk_set, **kwargs):
+    if action in ['post_add', 'post_remove', 'post_clear']:
+        try:
+            bill = PatientBill.objects.get(visit=instance)
+
+            new_total = bill.calculate_total_charge()
+            if bill.total_charge != new_total:
+                bill.total_charge = new_total
+                bill.save()
+        except PatientBill.DoesNotExist:
+            logger.info(f'No bill found for visit {instance.id}. A bill should be created first.')
+        except Exception as e:
+            logger.info(f'An error occurred during bill recalculation: {e}')
+
+
 # -------------------------- Treatment room signals ----------------------
 
 @receiver(post_save, sender=PatientVisit)
@@ -188,7 +206,6 @@ def update_treatment_room_status(sender, instance, created, **kwargs):
         )
         logger.info(f'Treatment room number set to occupied')
 
-        # Free up any other rooms this visit might have been in
         TreatmentRoom.objects.filter(
             visit=instance
         ).exclude(

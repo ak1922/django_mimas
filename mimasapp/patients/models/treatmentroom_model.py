@@ -1,11 +1,10 @@
 from django.db import models
 from django.db.models import Max
-from django.template.defaultfilters import upper
 from django.utils.text import slugify
+from django.template.defaultfilters import upper
 
 from .auxiliary_models import DateTimeAuditModel
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.employee_model import Employee
+from mimascompany.models import Branch, Employee
 
 
 # ---- Custom manager ------
@@ -57,7 +56,7 @@ class TreatmentRoom(DateTimeAuditModel):
 
     # ---- Managers ----
     objects = models.Manager()
-    cust_treatments = TreatmentRoomManager()
+    treatments = TreatmentRoomManager()
 
     def save(self, *args, **kwargs):
         if not self.room_number:

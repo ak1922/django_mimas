@@ -76,12 +76,12 @@
                                                     <i class="fas fa-edit fa-fw"></i>
                                                 </a>
                                                 {% if report.closed %}
-                                                    <span>
+                                                    <span class="btn btn-sm btn-outline-secondary" title="Closed Report, Delete Unavailable">
                                                         <i class="fa-solid fa-trash fa-fw" id="readOnlyIcon"></i>
                                                     </span>
                                                 {% else %}
                                                      <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ report.pk }}">
-                                                        <i class="fas fa-trash-alt"></i>
+                                                        <i class="fas fa-trash-alt fa-fw"></i>
                                                     </button>
                                                 {% endif %}
                                             </div>

@@ -1,2 +1,7 @@
-from .forms import DentistReportForm, ArchivedDentistReportForm, ArchivedPatientLabForm, ArchivedPatientReferralForm, \
+from dentists.forms import (
+    DentistReportForm,
+    ArchivedPatientLabForm,
+    ArchivedDentistReportForm,
+    ArchivedPatientReferralForm,
     ArchivedPatientTreatmentForm
+)

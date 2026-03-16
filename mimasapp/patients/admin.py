@@ -64,7 +64,6 @@ class PatientDetailAdmin(admin.ModelAdmin):
     ]
 
 
-
 # Patient insurance admin
 @admin.register(PatientInsurance)
 class PatientInsuranceAdmin(admin.ModelAdmin):
@@ -173,10 +172,10 @@ class PatientLabAdmin(admin.ModelAdmin):
 
 @admin.register(ArchivedPatientLab)
 class ArchivedPatientLabAdmin(admin.ModelAdmin):
-    list_display = ['patient', 'dentist', 'appointment', 'visit', 'insurance', 'lab_title', 'archived', 'updated_by']
+    list_display = ['patient', 'dentist', 'appointment', 'visit', 'insurance', 'archived_title', 'archived', 'updated_by']
     ordering = ['archived']
     search_fields = [
-        'lab_title',
+        'archived_title',
         'appointment__patient__first_name',
         'appointment__patient__last_name',
         'dentist__employee__last_name',
