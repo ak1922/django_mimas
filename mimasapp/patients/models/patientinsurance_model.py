@@ -33,9 +33,9 @@ class PatientInsurance(DateTimeAuditModel):
     )
 
     def __str__(self):
-        return self.patient.full_name
+        return f'Insurance - {self.patient.full_name}'
 
     class Meta(DateTimeAuditModel.Meta):
         ordering = ['created']
-        verbose_name = 'PatientInsurance'
-        verbose_name_plural = 'PatientsInsurance'
+        verbose_name = 'Patient Insurance'
+        verbose_name_plural = 'Patients Insurance'

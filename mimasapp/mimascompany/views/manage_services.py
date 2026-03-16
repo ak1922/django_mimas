@@ -9,7 +9,6 @@ from accounts.decorators import group_required
 from mimascompany.models.service_model import Service
 from mimascompany.forms.company_forms import ServiceForm
 
-
 # Create service
 @login_required
 @group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
@@ -52,7 +51,7 @@ def list_services(request):
         allservices = Service.objects.all().order_by('-created')
 
     # Add pagination
-    paginator = Paginator(allservices, per_page=5)
+    paginator = Paginator(allservices, per_page=10)
     page_number = request.GET.get('page')
     page_services = paginator.get_page(page_number)
 

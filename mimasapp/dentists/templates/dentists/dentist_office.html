@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title_content %}Dentist Office{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/dentistoffice.css' %}">
+{% endblock %}
+
+{% block body_content %}
+    <div class="container">
+        <h3>Dentist Office</h3>
+        <div class="stats-container">
+            <div class="stat-card general-stat">
+                <a href="{% url 'patients:listpatients' %}" class="stat-item patient-item">Patients <span class="stat-value">{{ h_patientstotal }}</span></a>
+                <a href="{% url 'patients:listallappointments' %}" class="stat-item appointment-item">Appointments <span class="stat-value">{{ h_appointmentstotal }}</span></a>
+                <a href="{% url 'patients:listallpatientvisits' %}" class="stat-item visit-item">Visits <span class="stat-value">{{ h_visitstotal }}</span></a>
+            </div>
+        </div>
+
+        <!-- Scrolling messages section -->
+        <div class="message-container">
+            <div class="scrolling-messages">
+                <div class="marquee-content">
+                    {% for message in h_messages %}
+                        <span>{{ message.message }}</span>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+        <div id="workDiv">
+            <div id="createDiv">
+                <h5>Create Records</h5>
+                <div id="actionDiv">
+                    <a id="actionDivTop" href="{% url 'dentists:createtreatment' %}" title="Create Patient Treatment">Patient Treatment</a>
+                    <a id="actionDivTop" href="{% url 'dentists:createreferral' %}" title="Create Patient Referral">Patient Referral</a>
+                    <a id="actionDivTop" href="{% url 'dentists:createpatientlab' %}" title="Create Patient Lab">Patient Laboratory</a>
+                    <a id="actionDivTop" href="{% url 'dentists:createdentistreport' %}" title="Create Patient Lab">Dentist Report</a>
+                </div>
+            </div>
+            <div id="listDiv">
+                <h5>List Records</h5>
+                <div id="actionDiv">
+                    <a id="actionDivBel" href="{% url 'dentists:listalltreatments' %}" title="List Patient Treatments">Patient Treatments</a>
+                    <a id="actionDivBel" href="{% url 'dentists:listallpatientreferrals' %}" title="List Patient Referrals">Patient Referrals</a>
+                    <a id="actionDivBel" href="{% url 'dentists:listallpatientslabs' %}" title="List Patient Labs">Patient Laboratories</a>
+                    <a id="actionDivBel" href="{% url 'dentists:listalldentistreports' %}" title="List Dentists Reports">Dentist Reports</a>
+                </div>
+            </div>
+            <div id="archiveDiv">
+                <h5>List Archived Records</h5>
+                <div id="archiveItemsDiv">
+                    <a id="archiveDivItem" href="{% url 'dentists:listallarchivedtreatments' %}" title="List Archived Patient Treatments">Patient Treatments</a>
+                    <a id="archiveDivItem" href="{% url 'dentists:listallarchivedreferrals' %}" title="List Archived Patient Referrals">Patient Referrals</a>
+                    <a id="archiveDivItem" href="{% url 'dentists:listallarchivedlabs' %}" title="List Archived Patient Labs">Patient Labs</a>
+                    <a id="archiveDivItem" href="{% url 'dentists:listallarchivedreports' %}" title="List Archived Dentists Reports">Dentists Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

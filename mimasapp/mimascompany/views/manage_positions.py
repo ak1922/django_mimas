@@ -56,7 +56,7 @@ def list_positions(request):
     else:
         all_positions = CompanyPositions.objects.all().order_by('title')
 
-    paginator = Paginator(all_positions, per_page=5)
+    paginator = Paginator(all_positions, per_page=10)
     page_number = request.GET.get('page')
     page_allpositions = paginator.get_page(page_number)
 

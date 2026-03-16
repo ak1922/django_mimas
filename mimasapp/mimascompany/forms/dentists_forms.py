@@ -20,8 +20,8 @@ class DentistForm(forms.ModelForm):
         label='Supervisor',
         queryset=Employee.objects.all()
     )
-    branch_name = forms.ModelChoiceField(
-        label='Branch Name',
+    branch = forms.ModelChoiceField(
+        label='Branch',
         queryset=Branch.objects.all()
     )
 
@@ -53,6 +53,6 @@ class DentistForm(forms.ModelForm):
         fields = [
             'employee',
             'supervisor',
-            'branch_name',
+            'branch',
             'specialty'
         ]

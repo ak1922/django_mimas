@@ -34,5 +34,5 @@ class PatientContact(DateTimeAuditModel):
 
     class Meta(DateTimeAuditModel.Meta):
         ordering = ['created']
-        verbose_name = _('PatientContact')
-        verbose_name_plural = _('PatientContacts')
+        verbose_name = _('Patient Contact')
+        verbose_name_plural = _('Patient Contacts')

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Patient Treatment{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST" action="{{ request.path }}?next={{ request.META.HTTP_REFERER|urlencode }}">
+            {% csrf_token %}
+            <h4 class="formTitle">
+                {% if h_exisitng_treatment %}
+                    View Treatment {{ h_exisitng_treatment.treatment_title }}
+                {% else %}
+                    Patient Treatment
+                {% endif %}
+            </h4>
+            {{ h_form.as_p }}
+            <div class="buttomsDiv">
+                {% if h_exisitng_treatment %}
+                    <a href="{% url 'dentists.listalltreatments' %}" class="backToListLink">Back To Treatments</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Treatment</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+<br><br><br><br>
+{% endblock %}

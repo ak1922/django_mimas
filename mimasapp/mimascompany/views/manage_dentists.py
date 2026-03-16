@@ -8,7 +8,7 @@ from accounts.models import AccountUser
 from accounts.decorators import group_required
 from mimascompany.models.dentist_model import Dentist
 from mimascompany.models.employee_model import Employee
-from mimascompany.forms.dentists_froms import DentistForm
+from mimascompany.forms.dentists_forms import DentistForm
 from mimascompany.forms.employee_form import EmployeeForm
 
 

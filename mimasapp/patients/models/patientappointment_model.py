@@ -2,13 +2,10 @@ from django.db import models
 from django.db.models import Manager
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from datetime import time, datetime, timedelta
 
-from patients.models.auxiliary_models import DateTimeAuditModel
-from patients.models.patients_model import Patient
-from patients.models.patientinsurance_model import PatientInsurance
-from mimascompany.models.employee_model import Employee
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.branch_model import Branch
+from mimascompany.models import Dentist, Branch, Employee
+from patients.models import Patient, PatientInsurance, DateTimeAuditModel
 
 
 # Custom manager class
@@ -71,11 +68,11 @@ class PatientAppointment(DateTimeAuditModel):
         on_delete=models.SET_NULL,
         related_name='patientappointment_dentist'
     )
-    branch_name = models.ForeignKey(
+    branch = models.ForeignKey(
         Branch,
         null=True,
         on_delete=models.SET_NULL,
-        related_name='patientappointment_branchname'
+        related_name='patientappointment_branch'
     )
     insurance = models.ForeignKey(
         PatientInsurance,
@@ -97,30 +94,53 @@ class PatientAppointment(DateTimeAuditModel):
 
     def clean(self):
         # Match Dentist and Branch
-        if self.dentist and self.branch_name:
-            if self.dentist.branch_name != self.branch_name:
+        if self.dentist and self.branch:
+            if self.dentist.branch != self.branch:
                 raise ValidationError(
-                    f'Dentist {self.dentist.dentist_name} does not work at {self.branch_name}, choose {self.dentist.branch_name}.'
+                    f'Dentist {self.dentist.dentist_name} does not work at {self.branch}, choose {self.dentist.branch}.'
                 )
-
-        # Prevent bookings in the past.
-        if self.appointment_date and self.dentist:
-            if self.appointment_date < timezone.now().date():
-                raise ValidationError('Cannot book appointments in the past')
-
+    #
+    #     # Prevent bookings for the same day if it's already 6 PM (18:00) or later.
+    #     if self.appointment_date and self.appointment_date == timezone.now().date():
+    #         # Define the cutoff time (6 PM)
+    #         cutoff_time = time(18, 0, 0)
+    #         # Combine appointment date with 6 PM
+    #         deadline = timezone.make_aware(datetime.combine(self.appointment_date, cutoff_time))
+    #
+    #         if timezone.now() > deadline:
+    #             raise ValidationError('Cannot book appointments in the past or after 6 PM on the same day.')
+    #
+    #     # General past date check (prevents picking yesterday)
+    #     if self.appointment_date and self.appointment_date < timezone.now().date():
+    #         raise ValidationError('Cannot book appointments in the past')
+    #
         super().clean()
 
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
 
+    @property
+    def confirmed_appointment(self):
+        return self.status == AppointmentStatus.CONFIRMED
+
+    @property
+    def unconfirmed_within_three_days(self):
+        """ Check if appointment is confirmed within 3 days """
+        today = timezone.now().date()
+        three_days_to = today + timedelta(days=3)
+        return (
+            self.status == AppointmentStatus.SCHEDULED and
+            today <= self.appointment_date <= three_days_to
+        )
+
     def __str__(self):
         return f'{self.patient.full_name} - {self.appointment_title}'
 
     class Meta(DateTimeAuditModel.Meta):
         ordering = ['-appointment_date', '-appointment_time']
-        verbose_name = 'PatientAppointment'
-        verbose_name_plural = 'PatientAppointments'
+        verbose_name = 'Patient Appointment'
+        verbose_name_plural = 'Patient Appointments'
 
         # Model constraints
         constraints = [
@@ -131,3 +151,23 @@ class PatientAppointment(DateTimeAuditModel):
                 violation_error_message='The chosen time is already booked by another appointment.'
             )
         ]
+
+
+# Patient booking model
+class PatientBooking(DateTimeAuditModel):
+
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    email = models.EmailField(max_length=300)
+    message = models.TextField()
+
+    def person_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    def __str__(self):
+        return f'{self.person_name()} - Booking'
+
+    class Meta:
+        ordering = ['created']
+        verbose_name = 'Patient Booking'
+        verbose_name_plural = 'Patient Bookings'

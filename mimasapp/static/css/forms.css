@@ -32,6 +32,7 @@
     background-color: #3b575c;
     color: white;
     border: none;
+    text-decoration: none;
 }
 
 .formSubmitButton:hover {

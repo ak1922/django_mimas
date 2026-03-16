@@ -2,22 +2,32 @@
 
 {% load static %}
 
-{% block title_content %}Create Patient Contact{% endblock %}
+{% block title_content %}Patient Contact{% endblock %}
 
 {% block css_content %}
-    <link rel="stylesheet" href="{% static 'css/patient_forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
 {% endblock %}
 
 {% block body_content %}
 
     <div class="container">
 
-        <form method="POST">
+        <form method="POST" action="{{ request.path }}?next={{ request.META.HTTP_REFERER|urlencode }}">
             {% csrf_token %}
-            <h4 class="formTitle">Create Patient Contact</h4>
+            <h4 class="formTitle">
+                {% if h_exists_contact %}
+                    View Contact for {{ h_exists_contact.patient.full_name }}
+                {% else %}
+                    Create Patient Contact
+                {% endif %}
+            </h4>
             {{ h_form.as_p }}
             <div class="buttomsDiv">
-                <button class="formSubmitButton" type="submit">Submit Contact</button>
+                {% if h_exists_contact %}
+                    <a href="{% url 'patients:listpatientcontacts' %}" class="backToListLink">Back To Contacts</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Contact</button>
+                {% endif %}
             </div>
         </form>
     </div>

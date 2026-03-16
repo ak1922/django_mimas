@@ -17,7 +17,7 @@
             <div class="titleStatsDiv">
                 <h5 class="mb-0 text-gray-800">All Patients</h5>
                 <div>
-                    <span class="countStat">Total: {{ h_patientscount }}</span>
+                    <span class="countStat">Patients Total: {{ h_patientscount }}</span>
                 </div>
             </div>
 
@@ -33,7 +33,7 @@
                 </div>
 
                 <a href="{% url 'patients:createpatient' %}" id="tableTopRightDiv" class="btn btn-sm btn-primary" title="Create Patient">
-                    <i class="fas fa-plus fa-fw"></i> Add Patient
+                    <i class="fas fa-plus fa-fw"></i> <strong>ADD PATIENT</strong>
                 </a>
             </div>
 
@@ -41,81 +41,154 @@
                 <div class="table-responsive">
                     <table class="table table-hover table-striped align-middle mb-0">
                         <thead class="table-light">
-                            <tr class="text-center">
+                            <tr>
                                 <th>USERNAME</th>
                                 <th>FIRST NAME</th>
                                 <th>LAST NAME</th>
                                 <th>GENDER</th>
                                 <th>DENTIST</th>
                                 <th>UPDATED BY</th>
-                                <th>PATIENT ACTIONS</th>
-                                <th>PATIENT INFORMATION</th>
-                                <th>APPOINTMENT ACTIONS</th>
-                                <th>VISIT ACTIONS</th>
+                                <th class="text-center">PATIENT ACTIONS</th>
+                                <th class="text-center">PATIENT INFORMATION</th>
+                                <th class="text-center">APPOINTMENT ACTIONS</th>
+                                <th class="text-center">VISIT ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for patient in page_patients %}
-                            	<tr class="text-center">
+                            	<tr>
                                     <td class="text-primary">{{ patient.patient_username }}</td>
                                     <td>{{ patient.first_name }}</td>
                                     <td>{{ patient.last_name }}</td>
                                     <td>{{ patient.gender }}</td>
                                     <td>{{ patient.primary_dentist }}</td>
                                     <td>{{ patient.updated_by }}</td>
+
                                     <!-- Patient Actions -->
-                                    <td class="text-center">
-                                        <a href="{% url 'patients:viewpatient' patient.pk %}" class="btn btn-sm btn-outline-primary" title="View Patient:- {{ patient.full_name }}">
-                                            <i class="fas fa-eye fa-fw"></i>
-                                        </a>
-                                        <a href="{% url 'patients:editpatient' patient.pk %}" class="btn btn-sm btn-outline-warning"
-                                           title="Edit Patient:- {{ patient.full_name }}">
-                                            <i class="fas fa-edit fa-fw"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ patient.pk }}">
-                                            <i class="fas fa-trash-alt fa-fw"></i>
-                                        </button>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <a href="{% url 'patients:viewpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                               title="View Patient:- {{ patient.full_name }}">
+                                                <i class="fas fa-eye fa-fw"></i>
+                                            </a>
+                                            <a href="{% url 'patients:editpatient' patient.pk %}" class="btn btn-sm btn-outline-warning"
+                                               title="Edit Patient:- {{ patient.full_name }}">
+                                                <i class="fas fa-edit fa-fw"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ patient.pk }}">
+                                                <i class="fas fa-trash-alt fa-fw"></i>
+                                            </button>
+                                        </div>
                                     </td>
+
                                     <!-- Patient information -->
                                     <td>
-                                        {# Contacts #}
-                                        {% if patient.has_contact %}
-                                        	<a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-info"
-                                               title="Edit Contact:- {{ patient.full_name }}">
-                                                <i class="fas fa-user fa-fw"></i>
-                                            </a>
-                                        {% else %}
-                                            <a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-info" id="genericBlinker"
-                                               title="Add Contact:- {{ patient.full_name }}">
-                                                <i class="fas fa-user-plus fa-fw"></i>
-                                            </a>
-                                        {% endif %}
-                                        {# Details #}
-                                        {% if patient.has_detail %}
-                                        	<a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" class="btn btn-sm btn-outline-info"
-                                               title="Edit Detail:- {{ patient.full_name }}">
-                                                <i class="fas fa-circle-info fa-fw"></i>
-                                            </a>
-                                        {% else %}
-                                        	<a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" id="genericBlinker" class="btn btn-sm btn-outline-info"
-                                               title="Edit Detail:- {{ patient.full_name }}">
-                                                <i class="fas fa-circle-info fa-fw"></i>
-                                            </a>
-                                        {% endif %}
-                                        {# Insurance #}
-                                        {% if patient.has_insurance %}
-                                        	<a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-info"
-                                               title="Edit Insurance:- {{ patient.full_name }}">
-                                                <i class="fas fa-hand-holding-medical fa-fw"></i>
-                                            </a>
-                                        {% else %}
-                                        	<a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-info" id="genericBlinker"
-                                               title="Add Insurance:- {{ patient.full_name }}">
-                                                <i class="fas fa-hand-holding-medical fa-fw"></i>
-                                            </a>
-                                        {% endif %}
+                                        <div class="d-flex justify-content-center gap-1">
+                                            {# Contacts #}
+                                            {% if patient.has_contact %}
+                                                <a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                   title="Edit Contact:- {{ patient.full_name }}">
+                                                    <i class="fas fa-user fa-fw"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'patients:createcontactpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                   title="Add Contact:- {{ patient.full_name }}">
+                                                    <i class="fas fa-user-plus fa-fw genericBlinker"></i>
+                                                </a>
+                                            {% endif %}
+                                            {# Details #}
+                                            {% if patient.has_detail %}
+                                                <a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                   title="Edit Detail:- {{ patient.full_name }}">
+                                                    <i class="fas fa-circle-info fa-fw"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'patients:createpatientdetailpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                   title="Add Detail:- {{ patient.full_name }}">
+                                                    <i class="fas fa-circle-info fa-fw genericBlinker"></i>
+                                                </a>
+                                            {% endif %}
+                                            {# Insurance #}
+                                            {% if patient.has_insurance %}
+                                                <a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                   title="Edit Insurance:- {{ patient.full_name }}">
+                                                    <i class="fas fa-hand-holding-medical fa-fw"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'patients:createinsurancepatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                   title="Add Insurance:- {{ patient.full_name }}">
+                                                    <i class="fas fa-hand-holding-medical fa-fw genericBlinker"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+
+                                    <!-- Appointment Actions -->
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            {% if user.user_type == 'Dentists' or user.user_type == 'Administrators' or user.user_type == 'Employees' %}
+                                                <a href="{% url 'patients:addappointmentpatient' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                   title="Create Appointment for {{ patient.full_name }}">
+                                                    <i class="fas fa-calendar-plus fa-fw"></i>
+                                                </a>
+                                                <a href="{% url 'patients:createreocurringappointment' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                   title="Create Reocurring Appointment for {{ patient.full_name }}">
+                                                    <i class="fas fa-people-roof fa-fw"></i>
+                                                </a>
+                                                {% with appointments=patient.patientappointment_patient.all %}
+                                                    {% if appointments %}
+                                                        {% if appointments.count == 1 %}
+                                                            <a href="{% url 'patients:viewappointment' app_id=appointments.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                               title="View Appointment for {{ patient.full_name }}">
+                                                                <i class="fas fa-glasses fa-fw"></i>
+                                                            </a>
+                                                        {% else %}
+                                                            <a href="{% url 'patients:listpatientappointments' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                               title="List Appointments for {{ patient.full_name }}">
+                                                                <i class="fas fa-list fa-fw"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-eye-slash fa-fw" title="No Patient Appointments"></i>
+                                                        </span>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+
+                                    <!-- Visit Actions -->
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            {%  if user.user_type == 'Dentists' or user.user_type == 'Administrators' or user.user_type == 'Employees' %}
+                                                <a href="" class="btn btn-sm btn-outline-primary" title="Create Visit for {{ patient.full_name }}">
+                                                    <i class="fas fa-hospital-user fa-fw"></i>
+                                                </a>
+                                                {% with visits=patient.patientvisit_patient.all %}
+                                                    {% if visits %}
+                                                        {% if visits.count == 1 %}
+                                                            <a href="{% url 'patients:viewpatientvisit' vis_id=visits.first.pk %}" class="btn btn-sm btn-outline-primary"
+                                                               title="View Visit for {{ patient.full_name }}">
+                                                                <i class="fas fa-glasses fa-fw"></i>
+                                                            </a>
+                                                        {% else %}
+                                                            <a href="{% url 'patients:listpatientvisits' patient.pk %}" class="btn btn-sm btn-outline-primary"
+                                                               title="List Visits for {{ patient.full_name }}">
+                                                                <i class="fas fa-list fa-fw"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-eye-slash fa-fw" title="No Patient Visits for {{ patient.full_name }}"></i>
+                                                        </span>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% endif %}
+                                        </div>
                                     </td>
                                 </tr>
+
                                 <!-- Modal -->
                                 <div class="modal fade" id="deleteModal{{ patient.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ patient.pk }}" aria-hidden="true">
                                     <div class="modal-dialog">

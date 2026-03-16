@@ -136,4 +136,4 @@ class PatientBookingForm(forms.ModelForm):
     class Meta:
         model = PatientBooking
         fields = '__all__'
-        exclude = ['updated_by']
+        exclude = ['updated_by', 'username']

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Archived Bills{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container-fluid pt-4">
+        <div class="card shadow-sm custom-table-container">
+
+            <div class="titleStatsDiv">
+                <h5 class="mb-0 text-gray-800">All Archived Bills</h5>
+                <div>
+                    <span class="countStat">Bills Total: {{ h_archivedcount }}</span>
+                </div>
+            </div>
+
+            <div class="searchAddDiv">
+                <div class="searchDiv">
+                    <form method="GET" class="d-flex w-100">
+                        <input class="form-control form-control-sm me-2" type="search" name="item_name" placeholder="Search Patient..">
+                        <button class="btn btn-sm btn-success" type="submit">
+                            Submit
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>PATIENT</th>
+                                <th>APPOINTMENT</th>
+                                <th>VISIT</th>
+                                <th>BILL TITLE</th>
+                                <th>TOTAL($)</th>
+                                <th>PAID</th>
+                                <th>ARCHIVED</th>
+                                <th class="text-center">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bill in page_archivedbills %}
+                                <tr>
+                                    <td>{{ bill.patient }}</td>
+                                    <td>{{ bill.appointment }}</td>
+                                    <td>{{ bill.visit }}</td>
+                                    <td>{{ bill.bill_title }}</td>
+                                    <td>{{ bill.total_charge }}</td>
+                                    <td>{{ bill.is_paid }}</td>
+                                    <td>{{ bill.archived }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'patients:viewarchivedbill' bill.pk %}" class="btn btn-sm btn-outline-primary"
+                                            title="View Bill">
+                                            <i class="fas fa-glasses fa-fw"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                            	<tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">No Bills found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            
+                {% if page_archivedbills.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if page_archivedbills.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_archivedbills.previous_page_number }}">&laquo; Previous</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+                            {% endif %}
+
+                            {% for i in page_archivedbills.paginator.page_range %}
+                                {% if page_archivedbills.number == i %}
+                                    <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_archivedbills.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_archivedbills.next_page_number }}">Next &raquo;</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}              
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}List Patients Labs{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container-fluid mt-4">
+        <div class="card shadow-sm custom-table-container">
+
+
+            <div class="titleStatsDiv">
+                <h5 class="mb-0 text-gray-800">All Patient Labs</h5>
+                <div>
+                    <span class="countStat">Labs Total: {{ h_labscount }}</span>
+                </div>
+            </div>
+
+            <div class="searchAddDiv">
+                <div class="searchDiv">
+                    <form method="GET" class="d-flex w-100">
+                        <input class="form-control form-control-sm me-2" type="search" name="item_name" placeholder="Search First Name, Last Name...">
+                        <button class="btn btn-sm btn-success" type="submit">
+                            Submit
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <a href="{% url 'dentists:createpatientlab' %}" id="tableTopRightDiv" class="btn btn-sm btn-primary" title="Add Patient Lab">
+                    <i class="fas fa-plus fa-fw"></i> Add Patient Lab
+                </a>
+            </div>
+
+            <div class="car-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>PATIENT</th>
+                                <th>DENTIST</th>
+                                <th>VISIT</th>
+                                <th>BRANCH</th>
+                                <th>LAB TITLE</th>
+                                <th>DUE DATE</th>
+                                <th>CREATED</th>
+                                <th>UPDATED</th>
+                                <th>UPDATED BY</th>
+                                <th class="text-center">LAB ACTIONS</th>
+                                <th class="text-center">VISIT STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lab in page_alllabs %}
+                            	<tr>
+                                    <td>{{ lab.patient }}</td>
+                                    <td>{{ lab.dentist }}</td>
+                                    <td>{{ lab.visit }}</td>
+                                    <td>{{ lab.branch }}</td>
+                                    <td>{{ lab.lab_title }}</td>
+                                    <td>{{ lab.due_date }}</td>
+                                    <td>{{ lab.created }}</td>
+                                    <td>{{ lab.updated }}</td>
+                                    <td>{{ lab.updated_by }}</td>
+                                    <td class="text-center">
+                                        {% if user.user_type == 'Administrators' or user.user_type == 'Dentists' or user.user_type == 'Employees'  %}
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a href="{% url 'dentists:viewpatientlab' lab.pk %}" class="btn btn-sm btn-outline-primary"
+                                                    title="View Lab For {{ lab.lab_title }}">
+                                                    <i class="fas fa-glasses fa-fw"></i>
+                                                </a>
+                                                <a href="{% url 'dentists:editpatientlab' lab.pk %}" class="btn btn-sm btn-outline-warning"
+                                                    title="Edit Lab For {{ lab.lab_title }}">
+                                                    <i class="fas fa-edit fa-fw"></i>
+                                                </a>
+                                                {% if lab.closed %}
+                                                    <span title="Lab Closed, Delete Unavailable." class="btn btn-sm btn-outline-secondary">
+                                                        <i class="fa-solid fa-trash fa-fw" id="readOnlyIcon"></i>
+                                                    </span>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ lab.pk }}">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center"></td>
+                                </tr>
+
+                                <div class="modal fade" id="deleteModal{{ lab.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ lab.pk }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ lab.pk }}">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete Lab <strong>{{ lab.lab_title }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{% url 'dentists:deletepatientlab' lab.pk %}" method="POST" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">No Patient Labs found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            
+                {% if page_alllabs.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if page_alllabs.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_alllabs.previous_page_number }}">&laquo; Previous</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+                            {% endif %}
+
+                            {% for i in page_alllabs.paginator.page_range %}
+                                {% if page_alllabs.number == i %}
+                                    <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_alllabs.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_alllabs.next_page_number }}">Next &raquo;</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}              
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

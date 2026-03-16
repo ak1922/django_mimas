@@ -10,6 +10,8 @@ from mimascompany.models.dentist_model import Dentist
 # Patient appointment form
 class PatientAppointmentForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     # ---- Appointment info ----
     appointment_title = forms.CharField(label='Appointment Title')
     reason = forms.CharField(label='Reason')
@@ -37,9 +39,9 @@ class PatientAppointmentForm(forms.ModelForm):
         queryset=Dentist.objects.all(),
         widget=forms.Select()
     )
-    branch_name = forms.ModelChoiceField(
+    branch = forms.ModelChoiceField(
         widget=forms.Select(),
-        label='Branch Name',
+        label='Branch',
         queryset=Branch.objects.all()
     )
     insurance = forms.ModelChoiceField(
@@ -78,8 +80,9 @@ class PatientAppointmentForm(forms.ModelForm):
         fields = [
             'patient',
             'dentist',
-            'branch_name',
+            'branch',
             'insurance',
+            'status',
             'appointment_title',
             'appointment_date',
             'appointment_time',

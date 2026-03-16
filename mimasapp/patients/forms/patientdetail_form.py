@@ -8,6 +8,8 @@ from mimascompany.models.dentist_model import Dentist
 # Patient detail form
 class PatientDetailForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     # -------------------------------------
     ssn = forms.CharField(label='SSN')
     phone_number = forms.CharField(label='Phone Number')
@@ -72,8 +74,7 @@ class PatientDetailForm(forms.ModelForm):
             except Patient.DoesNotExist:
                 pass
 
-        existing_details_patient_ids = PatientDetail.objects.values_list('patient_id', flat=True)
-        queryset = Patient.objects.exclude(patient_id__in=existing_details_patient_ids)
+        queryset = Patient.patient_without_details.without_details()
 
         if self.instance and self.instance.pk:
             current_patient = Patient.objects.filter(pk=self.instance.patient_id)

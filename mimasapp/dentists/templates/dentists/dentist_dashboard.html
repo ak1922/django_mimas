@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Dentist Dashboard{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/office.css' %}">
+{% endblock %}
+
+{% block body_content %}
+    <div class="dashboard-container">
+        <!-- Header and Profile Section -->
+        <div class="header-profile-section">
+            <h3 class="section-title">Dentist Dashboard</h3>
+            <span class="profile-name">Dashboard for {{ h_dentist }}</span>
+
+            <div class="profile-image-div">
+                {% if user.dentist_profile.photo %}
+                    <img src="{{ user.dentist_profile.photo.url }}" alt="Photo" class="profile-img">
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Action Menu (Sidebar/Nav might be better) -->
+        <div class="action-menu">
+            <a class="action-btn" href="" title="Upload Photo or Image">Profile Image</a>
+            <a class="action-btn" href="" title="Edit Employee Information">Employee Information</a>
+            {% if h_dentistcontact %}
+                <a class="action-btn" href="">Update Contact</a>
+            {% else %}
+                <a class="action-btn" href="">Add Contact</a>
+            {% endif %}
+        </div>
+
+        <!-- Today's Patients & Appointments Section (Cards) -->
+        <div class="info-cards-parent">
+            <h3 class="section-title">Today's Overview</h3>
+            <div class="info-cards-container">
+                <div class="card patient-card">
+                    <h6>My Patients</h6>
+                    {% if h_mypatients %}
+                        <a href="" class="card-link"></a>
+                    {% else %}
+                        <span class="card-link">None</span>
+                    {% endif %}
+                </div>
+                <div class="card appointment-card">
+                    <h6>Next Appointment</h6>
+                    {% if h_nextappointment %}
+                        <a href="" class="card-link"></a>
+                    {% else %}
+                        <span class="card-link">None</span>
+                    {% endif %}
+                </div>
+                <div class="card visit-card">
+                    <h6>Next Visit</h6>
+                    {% if h_nextvisit %}
+                        <a href="" class="card-link"></a>
+                    {% else %}
+                        <span class="card-link">None</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Information Quick Links -->
+        <div class="quick-links-parent">
+            <h3 class="section-title">Patient Information Quick Links</h3>
+            <div class="quick-links-row">
+                <a class="quick-link-btn" href="">My Visits</a>
+                <a class="quick-link-btn" href="">My Labs</a>
+                <a class="quick-link-btn" href="">My Referrals</a>
+                <a class="quick-link-btn" href="">My Treatments</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

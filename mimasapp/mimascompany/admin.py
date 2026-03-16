@@ -26,7 +26,7 @@ class ServiceAdmin(admin.ModelAdmin):
    
 @admin.register(Dentist)
 class DentistAdmin(admin.ModelAdmin):
-       list_display = ['employee', 'branch_name', 'supervisor', 'specialty', 'created', 'updated', 'updated_by']
+       list_display = ['employee', 'branch', 'supervisor', 'specialty', 'created', 'updated', 'updated_by']
        search_fields = ['employee__last_name', 'employee__first_name']
        
        
@@ -36,10 +36,10 @@ class DepartmentAdmin(admin.ModelAdmin):
     search_fields = ['department_name', 'department_head__last_name', 'department_head__first_name']
 
 
-@admin.register(EmployeeDetail)
-class EmployeeDetailAdmin(admin.ModelAdmin):
-    list_display = ['employee', 'ssn', 'address', 'phone_number', 'date_hired', 'created', 'updated', 'updated_by']
-    search_fields = ['employee__last_name', 'employee__first_name', 'supervisor__last_name', 'supervisor__first_name']
+# @admin.register(EmployeeDetail)
+# class EmployeeDetailAdmin(admin.ModelAdmin):
+#     list_display = ['employee', 'ssn', 'address', 'phone_number', 'date_hired', 'created', 'updated', 'updated_by']
+#     search_fields = ['employee__last_name', 'employee__first_name', 'supervisor__last_name', 'supervisor__first_name']
 
 
 @admin.register(EmployeeContact)
@@ -58,7 +58,7 @@ class CompanyPositionsAdmin(admin.ModelAdmin):
 
 @admin.register(PatientBooking)
 class PatientBookingAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email', 'created', 'updated', 'updated_by']
+    list_display = ['username','first_name', 'last_name', 'email', 'created', 'updated', 'updated_by']
     search_fields = ['first_name', 'last_name', 'email']
 
 

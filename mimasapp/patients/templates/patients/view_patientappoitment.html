@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title_content %}View Appointment for {{ h_appointment.patient.patient_name }}{% endblock %}
+{% block title_content %}View Appointment for {{ h_appointment.patient.full_name }}{% endblock %}
 
 {% block css_content %}
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
@@ -13,16 +13,15 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h5 class="formTitle">Appointment for {{ h_appointment.patient.patient_name }}</h5>
+            <h5 class="formTitle">Appointment for {{ h_appointment.patient.full_name }}</h5>
             {{ h_form.as_p }}
         </form>
 
-        <div class="formActionsDiv">
+        <div class="buttomsDiv">
             {% if user.user_type == 'Employees' or user.user_type == 'Administrators' or user.user_type == 'Dentists' %}
-                <a class="formActionList" href="{% url 'patients:listallappointments' %}">Back to List</a>
-                <a class="formActionPatient" href="{% url 'patients:patientscenter' %}">Patients Center</a>
+                <a class="backToListLink" href="{% url 'patients:listallappointments' %}">Back to List</a>
             {% else %}
-                <a class="formActionPatient" href="{% url 'patients:patientdashboard' pat_id=user.id %}">Patient Dashboard</a>
+                <a class="formSubmitButton" href="{% url 'patients:patientdashboard' pat_id=user.id %}">Patient Dashboard</a>
             {% endif %}
         </div>
     </div>

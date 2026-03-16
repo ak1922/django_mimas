@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Patient Bill{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <h4 class="formTitle">
+                Bill for {{ h_paybill.patient.full_name }}
+            </h4>
+            {{ h_form.as_p }}
+            <div class="buttomsDiv">
+                {% if not h_paybill %}
+                    <a href="{% url 'patients:listallbills' %}" class="backToListLink">Back To Bills</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Bill</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

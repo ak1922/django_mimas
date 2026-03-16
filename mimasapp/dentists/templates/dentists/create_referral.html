@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Patient Referral{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+        <form method="POST" action="{{ request.path }}?next={{ request.META.HTTP_REFERER|urlencode }}">
+            {% csrf_token %}
+            <h4 class="formTitle">
+                {% if h_existing_referral %}
+                    View Referral {{ h_existing_referral.referral_title }}
+                {% else %}
+                    Patient Referral
+                {% endif %}
+            </h4>
+            {{ h_form.as_p }}
+            <div class="buttomsDiv">
+                {% if h_existing_referral %}
+                    <a href="{% url 'dentists:listallpatientreferrals' %}" class="backToListLink">Back To Referrals</a>
+                {% else %}
+                    <button class="formSubmitButton" type="submit">Submit Referral</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+<br><br><br><br>
+{% endblock %}

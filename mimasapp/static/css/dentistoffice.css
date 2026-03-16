@@ -1,0 +1,195 @@
+/* --- General Styles --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h3 {
+    color: #0056b3;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 10px;
+}
+
+h5 {
+    margin-top: 0;
+    color: #555;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* --- Stats Cards (Patients/Appts/Visits) --- */
+.stats-container {
+    margin-bottom: 20px;
+}
+
+.general-stat {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.stat-item {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-left: 4px solid #00a8cc; /* Accent color */
+}
+
+.stat-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0056b3;
+    margin-top: 5px;
+}
+
+/* --- Scrolling Messages (Marquee) --- */
+.message-container {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.scrolling-messages {
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.marquee-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 20s linear infinite;
+}
+
+.marquee-content span {
+    margin-right: 50px;
+    font-size: 0.95rem;
+}
+
+@keyframes marquee {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+}
+
+/* --- Action Divs (Create/List) --- */
+#workDiv, #archiveDiv {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+#actionDiv {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    border: #003268;
+}
+
+/* Base styles for all action links */
+#actionDivTop, #actionDivBel, #archiveDivItem {
+    padding: 10px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+/* Top Actions (Create) */
+#actionDivTop {
+    background-color: #e3f2fd;
+    color: #0056b3;
+    border: 1px solid #bbdefb;
+}
+
+#actionDivTop:hover {
+    background-color: #bbdefb;
+}
+
+/* Bottom Actions (List) */
+#actionDivBel {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+#actionDivBel:hover {
+    background-color: #e2e6ea;
+    color: #000;
+}
+
+/* Archive Items */
+
+
+#archiveDivTitle {
+    color: #856404;
+}
+
+#archiveDivItem {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #e1d7bc;
+    margin-top: 10px;
+}
+
+#archiveDivItem:hover {
+    background-color: #ffeeba;
+}
+
+#listDiv {
+    border: 1px solid #d3dce4;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#createDiv {
+    border: 1px solid #92c7f8;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 0;
+}
+
+#archiveDiv {
+    border: 1px solid #ffc107;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#archiveItemsDiv {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}

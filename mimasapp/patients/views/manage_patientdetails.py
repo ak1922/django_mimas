@@ -1,3 +1,4 @@
+import logging
 from django.db.models import Q
 from django.urls import reverse
 from django.contrib import messages
@@ -12,6 +13,9 @@ from patients.models.patientdetails_model import PatientDetail
 from patients.forms.patientdetail_form import PatientDetailForm, PatientDetailReadOnlyForm
 
 
+logger = logging.getLogger(__name__)
+
+
 # Create detail
 @login_required
 @group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
@@ -23,7 +27,8 @@ def create_patient_detail(request):
 
         if form.is_valid():
             new_detail = form.save()
-            messages.success(request, f'Details for {new_detail.patient.full_name} added.')
+            messages.success(request, f'New details for Patient {new_detail.patient} created.')
+            logger.info(f'New details for Patient {new_detail.patient} created by {request.user}.')
             return redirect(next_url)
         else:
             messages.error(request, 'Issues creating new detail')
@@ -53,7 +58,8 @@ def create_patient_detail_patient(request, pat_id=None):
 
         if form.is_valid():
             new_details = form.save()
-            messages.success(request, f'Information for {new_details.patient.full_name} updated.')
+            messages.success(request, f'New details for Patient {new_details.patient} created.')
+            logger.info(f'New details for Patient {new_details.patient} created by {request.user}.')
             return redirect(next_url)
         else:
             messages.error(request, 'Invalid form submitted!')
@@ -85,7 +91,8 @@ def edit_patient_detail(request, det_id):
             edited_detail.updated_by = current_user
             edited_detail.save()
             form.save_m2m()
-            messages.success(request, f'Information updated for {edited_detail.patient.full_name}')
+            messages.success(request, f'Patient details for {edited_detail.patient} updated')
+            logger.info(f'Patient details for {edited_detail.patient} updated by {request.user}')
             return redirect(next_url)
         else:
             messages.error(request, 'Issues encounted with detail update.')

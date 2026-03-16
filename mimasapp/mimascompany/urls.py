@@ -18,6 +18,9 @@ from .views.manage_employeecontact import create_employee_contact, edit_employee
     list_employee_contacts, add_employee_contact_employee, view_employee_contact
 from .views.manage_dentists import create_dentist, list_dentists, delete_dentist, edit_dentist, update_info_dentist_dash, \
     view_dentist
+from .views.manage_patientbooking import create_customer_booking, create_patient_with_booking, list_customers_bookookings, \
+    view_customer_booking, delete_customer_booking
+
 
 app_name = 'mimascompany'
 
@@ -102,4 +105,10 @@ urlpatterns = [
     path('viewemployeedetail/<int:det_id>/view/', view_employee_detail, name='viewemployeedetail'),
     path('deleteemployeedetail/<int:det_id>/delete/', delete_employee_detail, name='deleteemployeedetail'),
     path('createemployeedetailemployee/<int:emp_id>/create/', create_employee_detail_employee, name='createemployeedetailemployee'),
+    # Bookings
+    path('createcustomerbooking/', create_customer_booking, name='createcustomerbooking'),
+    path('listcustomersbookookings/', list_customers_bookookings, name='listcustomersbookookings'),
+    path('viewcustomerbooking/<int:book_id>/view/', view_customer_booking, name='viewcustomerbooking'),
+    path('deletecustomerbooking/<int:book_id>/delete/', delete_customer_booking, name='deletecustomerbooking'),
+    path('createpatientwithbooking/<int:book_id>/create/', create_patient_with_booking, name='createpatientwithbooking'),
 ]

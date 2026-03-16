@@ -26,27 +26,27 @@
                 {% if user.is_authenticated and user.user_type == 'Administrators' %}
                     <li><a href="" class="linkItem">Managers Dashboard</a></li>
                     <li><a href="{% url 'mimascompany:employeedashboard' %}" class="linkItem">Employee Dashboard</a></li>
-                    <li><a href="" class="linkItem">Dentist Dashboard</a></li>
-                    <li><a href="" class="linkItem">Patient Dashboard</a></li>
+                    <li><a href="{% url 'dentists:dentistdashboard' %}" class="linkItem">Dentist Dashboard</a></li>
+                    <li><a href="{% url 'patients:patientdashbaord' %}" class="linkItem">Patient Dashboard</a></li>
                     <li><a href="{% url 'mimascompany:staffroom' %}" class="linkItem">Staff Room</a></li>
-                    <li><a href="" class="linkItem">Dentist Office</a></li>
+                    <li><a href="{% url 'dentists:dentistoffice' %}" class="linkItem">Dentist Office</a></li>
                     <li><a href="{% url 'patients:patientscenter' %}" class="linkItem">Patients Center</a></li>
                 {% elif user.is_authenticated and user.user_type == 'Employees' %}
                 {# Employees #}
                     <li><a href="{% url 'mimascompany:employeedashboard' %}" class="linkItem">Employee Dashboard</a></li>
                     <li><a href="{% url 'mimascompany:staffroom' %}" class="linkItem">Staff Room</a></li>
-                    <li><a href="" class="linkItem">Dentist Office</a></li>
+                    <li><a href="{% url 'dentists:dentistoffice' %}" class="linkItem">Dentist Office</a></li>
                     <li><a href="{% url 'patients:patientscenter' %}" class="linkItem">Patients Center</a></li>
                 {% elif user.is_authenticated and user.user_type == 'Dentists' %}
                 {# Dentists #}
-                    <li><a href="" class="linkItem">Dentist Dashboard</a></li>
+                    <li><a href="{% url 'dentists:dentistdashboard' %}" class="linkItem">Dentist Dashboard</a></li>
                     <li><a href="{% url 'patients:patientscenter' %}" class="linkItem">Patients Center</a></li>
-                    <li><a href="" class="linkItem">Dentist Office</a></li>
+                    <li><a href="{% url 'dentists:dentistoffice' %}" class="linkItem">Dentist Office</a></li>
                     <li><a href="{% url 'mimascompany:staffroom' %}" class="linkItem">Staff Room</a></li>
                 {% else %}
                 {# Patients #}
                     {% if user.is_authenticated and user.user_type == 'Patients' %}
-                        <li><a href="" class="linkItem">Patient Dashboard</a></li>
+                        <li><a href="{% url 'patients:patientdashbaord' %}" class="linkItem">Patient Dashboard</a></li>
                     {% endif %}
                 {% endif %}
             </ul>

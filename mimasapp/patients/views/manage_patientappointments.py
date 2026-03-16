@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 from django.db.models import Q
 from datetime import timedelta
@@ -6,14 +7,13 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-
 from accounts.decorators import group_required
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.employee_model import Employee
-from patients.models.patients_model import Patient
-from patients.models.patientinsurance_model import PatientInsurance
-from patients.forms.patientappointment_form import PatientAppointmentForm
-from patients.models.patientappointment_model import PatientAppointment
+from mimascompany.models import Dentist, Employee
+from patients.forms import PatientAppointmentForm, ArchivedAppointmentsReadOnlyForm
+from patients.models import Patient, PatientInsurance, PatientAppointment, ArchivedPatientAppointment
+
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -28,10 +28,13 @@ def create_appointment(request):
         if form.is_valid():
             new_appointment = form.save()
             messages.success(request, f'New appointment {new_appointment.appointment_title} created for {new_appointment.patient.full_name}')
+            logger.info(f'New patient appointment {new_appointment.appointment_title} created by {request.user}')
             return redirect('patients:listallappointments')
         else:
             for field, errors in form.errors.items():
-                messages.error(request, f'{field}: {", ".join(errors)}')
+                for error in errors:
+                    messages.error(request, f'{field}: {", ".join(errors)}')
+                    logger.info(f'Patient Appointment Form Error:- {field} - {error}')
     else:
         form = PatientAppointmentForm()
     return render(request, 'patients/create_patientappointment.html', {'h_form': form})
@@ -45,7 +48,7 @@ def create_reocurring_appointment(request, pat_id):
     patient = get_object_or_404(Patient, pk=pat_id)
     dentist = Dentist.objects.filter(employee=patient.primary_dentist).first()
     insurance = PatientInsurance.objects.filter(patient=patient).first()
-    branch_name = dentist.branch_name if dentist else None
+    branch_name = dentist.branch if dentist else None
 
     if request.method == 'POST':
         form = PatientAppointmentForm(request.POST)
@@ -67,16 +70,17 @@ def create_reocurring_appointment(request, pat_id):
                 PatientAppointment.objects.create(
                     patient=patient,
                     dentist=dentist,
-                    branch_name=branch_name,
+                    branch=branch_name,
                     insurance=insurance,
                     appointment_date=current_date,
                     appointment_title=f'{base_title} - Appt {i+1}',
                     appointment_time=data['appointment_time'],
                     reason=data['reason'],
-                    confirmed=data['confirmed']
+                    status=data['status']
                 )
 
             messages.success(request, f'{number_appointments} appointments created successfully.')
+            logger.info(f'New patient appointments created by {request.user}')
             return redirect('patients:listallappointments')
         else:
             for field, errors in form.errors.items():
@@ -86,12 +90,12 @@ def create_reocurring_appointment(request, pat_id):
         form = PatientAppointmentForm(initial={
             'patient': patient,
             'dentist': dentist,
-            'branch_name': branch_name,
+            'branch': branch_name,
             'insurance': insurance,
         })
 
     context = {'h_form': form, 'patient': patient}
-    return render(request, 'patients/create_reocurring_appointment.html', context)
+    return render(request, 'patients/create_patientappointment.html', context)
 
 
 @login_required
@@ -100,10 +104,9 @@ def create_reocurring_appointment(request, pat_id):
 def add_patient_appointment_patient(request, pat_id):
 
     patient = get_object_or_404(Patient, pk=pat_id)
-    patient_insurance = get_object_or_404(PatientInsurance, patient=patient)
     dentist_instance = Dentist.objects.filter(employee=patient.primary_dentist).first()
-    appointment_branch = dentist_instance.branch_name
-    current_user_instance = request.user
+    appointment_branch = dentist_instance.branch
+    current_user = get_object_or_404(Employee, user=request.user)
 
     if request.method == 'POST':
         form = PatientAppointmentForm(request.POST)
@@ -113,8 +116,7 @@ def add_patient_appointment_patient(request, pat_id):
             new_appointment.patient = patient
             new_appointment.dentist = dentist_instance
             new_appointment.branch = appointment_branch
-            new_appointment.insurance = patient_insurance
-            new_appointment.updated_by = current_user_instance
+            new_appointment.updated_by = current_user
             new_appointment.save()
             messages.success(request, 'Appointment created successfully.')
             return redirect('patients:listpatients')
@@ -125,8 +127,7 @@ def add_patient_appointment_patient(request, pat_id):
         form = PatientAppointmentForm(initial={
             'patient': patient,
             'dentist': dentist_instance,
-            'branch_name': appointment_branch,
-            'insurance': patient_insurance
+            'branch': appointment_branch,
         })
 
     context = {
@@ -165,14 +166,16 @@ def edit_appointment(request, app_id):
 def list_all_appointments(request):
     """ List patient appointments """
 
-    appointments = PatientAppointment.objects.all().order_by('appointment_date')
+    today = date.today()
     query = request.GET.get('item_name')
+    appointments = PatientAppointment.objects.all().order_by('appointment_date')
+
 
     if query:
         appointments = appointments.filter(
             Q(appointment_title__icontains=query) |
-            Q(patient__first_name__icontains=query) |
-            Q(patient__last_name__icontains=query)
+            Q(patient__last_name__icontains=query) |
+            Q(patient__first_name__icontains=query)
         ).distinct()
     else:
         appointments = PatientAppointment.objects.all().order_by('appointment_date')
@@ -183,7 +186,7 @@ def list_all_appointments(request):
     page_appointments = paginator.get_page(page_number)
 
     context = {
-        'h_query': query,
+        'h_today': today,
         'h_appointscount': appointments.count(),
         'page_appointments': page_appointments
      }
@@ -194,15 +197,31 @@ def list_all_appointments(request):
 @login_required
 @group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
 def list_patient_appointments(request, pat_id):
+    """ List appointments for a particular patient """
 
     today = date.today()
+    query = request.GET.get('item_name')
     patient = get_object_or_404(Patient, pk=pat_id)
-    patient_appointments = PatientAppointment.objects.filter(patient=patient)
+    patient_appointments = PatientAppointment.objects.filter(patient=patient).order_by('-updated')
+
+    if query:
+        patient_appointments = patient_appointments.filter(
+            Q(appointment_title__icontains=query) |
+            Q(patient__last_name__icontains=query) |
+            Q(patient__first_name__icontains=query)
+        ).distinct()
+    else:
+        patient_appointments = PatientAppointment.objects.filter(patient=patient).order_by('-updated')
+
+    paginator = Paginator(patient_appointments, per_page=10)
+    page_number = request.GET.get('page')
+    page_patientappointments = paginator.get_page(page_number)
 
     context = {
         'h_today': today,
         'h_patient': patient,
-        'h_patientappointments': patient_appointments
+        'page_patientappointments': page_patientappointments,
+        'h_appointmentstotal': patient_appointments.count(),
     }
     return render(request, 'patients/myappointments.html', context)
 
@@ -253,6 +272,51 @@ def delete_appointment(request, app_id):
     appointment = PatientAppointment.objects.get(pk=app_id)
 
     if request.method == 'POST':
+        logger.info(f'Patient appointment {appointment.appointment_title} delete requested by {request.user}')
         appointment.delete()
         messages.success(request, 'Patient appointment deleted.')
+        logger.info(f'Patient appointment deleted by {request.user}')
     return redirect('patients:listallappointments')
+
+
+# -------------------------- ARCHIVED APPOINTMENTS -----------------------------
+
+# List archived visits
+@login_required
+@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
+def list_archived_appointments(request):
+
+    query = request.GET.get('item_name')
+    archived_appointments = ArchivedPatientAppointment.objects.all().order_by('-archived')
+
+    if query:
+        archived_appointments = archived_appointments.filter(
+            Q(appointment_title__icontains=query) |
+            Q(patient__last_name__icontains=query) |
+            Q(patient__first_name__icontains=query)
+        ).distinct()
+    else:
+        archived_appointments = ArchivedPatientAppointment.objects.all().order_by('-archived')
+
+    paginator = Paginator(archived_appointments, per_page=10)
+    page_number = request.GET.get('page')
+    page_archivedappointments = paginator.get_page(page_number)
+
+    context = {
+        'page_archivedappointments': page_archivedappointments,
+        'h_archivedcount': archived_appointments.count()
+    }
+    return render(request, 'patients/list_archivedappointments.html', context)
+
+
+# View archived appointment
+@login_required
+@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
+def view_archived_appointment(request, app_id):
+
+    appointment = get_object_or_404(ArchivedPatientAppointment, pk=app_id)
+    form = ArchivedAppointmentsReadOnlyForm(instance=appointment)
+
+    for field in form.fields.values():
+        field.disabled = True
+    return render(request, 'patients/view_archived_appointment.html', {'h_form': form})

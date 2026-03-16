@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}List All Bills{% endblock %}
+
+{% block css_content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container-fluid pt-4">
+        <div class="card shadow-sm custom-table-container">
+
+            <div class="titleStatsDiv">
+                <h5 class="mb-0 text-gray-800">All Patient Bills</h5>
+                <div>
+                    <span class="countStat">Bills Total: {{ h_allbillscount }}</span>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>PATIENT</th>
+                                <th>VISIT</th>
+                                <th>BILL TITLE</th>
+                                <th>TOTAL($)</th>
+                                <th>IS PAID</th>
+                                <th>CREATED</th>
+                                <th>UPDATED BY</th>
+                                <th class="text-center">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bill in page_allbills %}
+                            	<tr>
+                                    <td>{{ bill.patient }}</td>
+                                    <td>{{ bill.visit }}</td>
+                                    <td>{{ bill.bill_title }}</td>
+                                    <td>{{ bill.total_charge }}</td>
+                                    <td>{{ bill.is_paid }}</td>
+                                    <td>{{ bill.created }}</td>
+                                    <td>{{ bill.updated_by }}</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <a href="{% url 'patients:viewpatientbill' bill.pk %}" class="btn btn-sm btn-outline-primary"
+                                               title="View Bill">
+                                                <i class="fas fa-eye fa-fw"></i>
+                                            </a>
+                                            {% if bill.is_paid %}
+                                                <span title="Piad Bill" class="btn btn-sm btn-outline-dark">
+                                                    <i class="fas fa-flag-checkered fa-fw"></i>
+                                                </span>
+                                            {% elif bill.visit.visit_status == 'Completed' %}
+                                                <a href="{% url 'patients:paypatientbill' bill.pk %}" class="btn btn-sm btn-outline-success"
+                                                    title="Checkout Patient Bill">
+                                                    <i class="fas fa-flag-checkered fa-fw genericBlinker"></i>
+                                                </a>
+                                            {% elif bill.visit.visit_status == 'Checked In' %}
+                                                <span class="btn btn-sm btn-outline-dark">
+                                                     <i class="fa-regular fa-hourglass-half fa-fw fa-spin"></i>
+                                                </span>
+                                            {% else %}
+                                                <span class="btn btn-sm btn-outline-dark">
+                                                     <i class="fa-solid fa-hourglass-start fa-fw"></i>
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">No Bills found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -16,10 +16,10 @@ class Dentist(AuditModel):
         on_delete=models.CASCADE,
         related_name='dentist_employee'
     )
-    branch_name = models.ForeignKey(
+    branch = models.ForeignKey(
         Branch,
         on_delete=models.CASCADE,
-        related_name='dentist_branchname'
+        related_name='dentist_branch'
     )
     supervisor = models.ForeignKey(
         Employee,

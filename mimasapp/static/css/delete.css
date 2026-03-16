@@ -1,0 +1,52 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+}
+
+#actionsDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+#actionsDelete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    font-size: 14px;
+    background-color: #f00202;
+    color: white;
+    border: none;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+#actionsDelete:hover {
+    background-color: #fc6868;
+    color: black;
+}
+
+#actionsList {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    font-size: 14px;
+    background-color: #01377d;
+    color: white;
+    padding: 4px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+#actionsList:hover {
+    color: black;
+    background-color: #a2c9fa;
+}
