@@ -1,12 +1,13 @@
 from django import forms
 
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.dentist_model import Dentist
-from patients.models.patients_model import Patient
-from patients.models.patientvisit_models import PatientVisit
-from patients.models.patientinsurance_model import PatientInsurance
-from patients.models.patientappointment_model import PatientAppointment
-from patients.models.patientlab_model import PatientLab
+from mimascompany.models import Dentist, Branch
+from patients.models import (
+    Patient,
+    PatientLab,
+    PatientVisit,
+    PatientInsurance,
+    PatientAppointment
+)
 
 
 class PatientLabForm(forms.ModelForm):
@@ -14,15 +15,15 @@ class PatientLabForm(forms.ModelForm):
     required_css_class = 'required'
 
     lab_title = forms.CharField(label='Lab Title')
-    lab_name = forms.CharField(
+    laboratory_name = forms.CharField(
         label='Laboratory Name',
         required=False
     )
-    lab_address = forms.CharField(
+    laboratory_address = forms.CharField(
         label='Laboratory Address',
         required=False
     )
-    lab_phone = forms.CharField(
+    laboratory_phone = forms.CharField(
         label='Laboratory Phone',
         required=False
     )
@@ -100,9 +101,9 @@ class PatientLabForm(forms.ModelForm):
             'due_date',
             'appointment',
             'insurance',
-            'lab_name',
-            'lab_phone',
-            'lab_address',
+            'laboratory_name',
+            'laboratory_phone',
+            'laboratory_address',
             'closed',
             'instructions'
         ]

@@ -219,6 +219,7 @@ class PatientVisit(DateTimeAuditModel):
         return f'{self.visit_title}'
 
     class Meta(DateTimeAuditModel.Meta):
+        db_table = 'patient_visits'
         ordering = ['-visit_date', '-visit_time']
         verbose_name = 'Patient Visit'
         verbose_name_plural = 'Patients Visits'

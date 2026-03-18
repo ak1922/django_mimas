@@ -1,7 +1,6 @@
 from django import forms
 
-from patients.models.patients_model import Patient
-from patients.models.patientinsurance_model import PatientInsurance
+from patients.models import Patient, PatientInsurance
 
 
 # Patient insurance form

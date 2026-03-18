@@ -1,7 +1,12 @@
 from django.db import models
 
 from mimascompany.models import Employee, Dentist, Branch
-from patients.models import Patient, PatientInsurance, ArchivedPatientVisit, ArchivedPatientAppointment
+from patients.models import (
+    Patient,
+    PatientInsurance,
+    ArchivedPatientVisit,
+    ArchivedPatientAppointment
+)
 
 
 # Archived report
@@ -66,5 +71,12 @@ class ArchivedDentistReport(models.Model):
         return self.archived_title
 
     class Meta:
+        db_table = 'archived_dentist_report'
+        ordering = ['-archived']
         verbose_name = 'Archived Dentist Report'
         verbose_name_plural = 'Archived Dentists Reports'
+        indexes = [
+            models.Index(fields=['-archived'], name='adr_archived_idx'),
+            models.Index(fields=['visit', 'dentist'], name='adr_visitdentist_idx'),
+            models.Index(fields=['patient', 'visit', 'appointment'], name='adr_patappvisit_idx')
+        ]

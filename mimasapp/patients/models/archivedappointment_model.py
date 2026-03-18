@@ -15,10 +15,8 @@ class ArchivedPatientAppointment(models.Model):
     reason = models.TextField(max_length=600)
     status = models.CharField(max_length=20)
 
-
-    archived = models.CharField(null=True, blank=True)
-    updated = models.CharField(blank=True, null=True)
-
+    archived = models.DateTimeField(null=True, blank=True)
+    updated = models.DateTimeField(blank=True, null=True)
 
     patient = models.ForeignKey(
         Patient,
@@ -56,5 +54,10 @@ class ArchivedPatientAppointment(models.Model):
 
     class Meta:
         ordering =['archived']
+        db_table = 'archived_patient_appointment'
         verbose_name = 'Archived Patient Appointment'
         verbose_name_plural = 'Archived Patients Appointments'
+        indexes = [
+            models.Index(fields=['confirmed'], name='apa_confirmed_idx'),
+            models.Index(fields=['confirmed', 'appointment_date'], name='apa_confirmeddate_idx')
+        ]

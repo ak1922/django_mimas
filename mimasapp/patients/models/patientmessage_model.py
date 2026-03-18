@@ -1,11 +1,14 @@
 from django.db import models
 
-from .patients_model import Patient
-from .patientappointment_model import PatientBooking, PatientAppointment
-from .patientvisit_models import PatientVisit
-from .patientbill_model import PatientBill, ArchivedPatientBill
-from .archivedvisit_model import ArchivedPatientVisit
-from .archivedappointment_model import ArchivedPatientAppointment
+from mimascompany.models import PatientBooking
+from patients.models import (
+    Patient,
+    PatientVisit,
+    PatientBill,
+    ArchivedPatientVisit,
+    PatientAppointment,
+    ArchivedPatientAppointment,
+)
 
 
 # Patient center messages
@@ -53,7 +56,7 @@ class PatientMessage(models.Model):
         on_delete=models.CASCADE
     )
     archived_bill = models.ForeignKey(
-        ArchivedPatientBill,
+        'patients.ArchivedPatientBill',
         on_delete=models.CASCADE,
         null=True, blank=True
     )
@@ -62,6 +65,7 @@ class PatientMessage(models.Model):
         return self.message[:50]
 
     class Meta:
+        db_table = 'patient_messages'
         ordering = ['-created']
         verbose_name = 'Patient Message'
         verbose_name_plural = 'Patients Messages'

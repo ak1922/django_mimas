@@ -90,6 +90,12 @@ class DentistReport(DateTimeAuditModel):
         return self.report_title
 
     class Meta(DateTimeAuditModel.Meta):
+        db_table = 'dentist_report'
         ordering = ['-created']
         verbose_name = 'Dentist Report'
         verbose_name_plural = 'Dentists Reports'
+        indexes = [
+            models.Index(fields=['closed'], name='dr_closed_idx'),
+            models.Index(fields=['dentist', 'closed'], name='dr_dentistclosed_idx'),
+            models.Index(fields=['patient', 'closed'], name='dr_patientclosed_idx')
+        ]

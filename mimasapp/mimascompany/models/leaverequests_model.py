@@ -66,19 +66,20 @@ class LeaveRequest(AuditModel):
         related_name='approved_leave_requests'
     )
     employee = models.ForeignKey(
-        'Employee',
+        'mimascompany.Employee',
         on_delete=models.CASCADE,
         related_name='employee_leaverequest'
     )
 
-    # ----------------- Model managers --------------------
+    # ---- Managers ----
     objects = models.Manager()
     leavedays = LeaveRequestManager()
 
-    class Meta:
-        ordering = ['status']
-        verbose_name = 'EmployeeDetail'
-        verbose_name_plural = 'EmployeeDetails'
-
     def __str__(self):
         return f"{self.employee.full_name}"
+
+    class Meta:
+        ordering = ['status']
+        db_table = 'leave_requests'
+        verbose_name = 'Leave Request'
+        verbose_name_plural = 'Leave Requests'

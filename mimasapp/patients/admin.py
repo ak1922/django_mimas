@@ -4,7 +4,6 @@ from patients.models import (
     Patient,
     PatientLab,
     PatientBill,
-    PatientBooking,
     PatientVisit,
     PatientDetail,
     PatientContact,
@@ -21,7 +20,7 @@ from patients.models import (
     ArchivedPatientVisit,
     ArchivedPatientReferral,
     ArchivedPatientTreatment,
-    ArchivedPatientAppointment
+    ArchivedPatientAppointment,
 )
 
 
@@ -130,12 +129,6 @@ class ArchivedPatientVisitAdmin(admin.ModelAdmin):
 class PatientVisitTaskAdmin(admin.ModelAdmin):
     list_display = ['assigned_to', 'task_title', 'visit', 'task_status', 'priority', 'created', 'updated']
     search_fields = ['assigned_to__user__first_name', 'assigned_to__user__last_name']
-
-
-@admin.register(PatientBooking)
-class PatientBookingAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email', 'message', 'created', 'updated']
-    search_fields = ['first_name', 'last_name', 'email']
 
 
 @admin.register(PatientBill)

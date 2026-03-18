@@ -5,11 +5,10 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
+from mimascompany.models import Employee
 from accounts.decorators import group_required
-from mimascompany.models.employee_model import Employee
-from patients.forms.patientinsurance_form import PatientInsuranceForm
-from patients.models.patients_model import Patient
-from patients.models.patientinsurance_model import PatientInsurance
+from patients.forms import PatientInsuranceForm
+from patients.models import Patient, PatientInsurance
 
 
 # Create insurance

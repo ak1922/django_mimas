@@ -1,11 +1,12 @@
 from django import forms
 
-from patients.models.patients_model import Patient
-from patients.models.patientinsurance_model import PatientInsurance
-from patients.models.patientappointment_model import PatientAppointment, AppointmentStatus
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.dentist_model import Dentist
-
+from mimascompany.models import Dentist, Branch
+from patients.models import (
+    Patient,
+    PatientInsurance,
+    PatientAppointment,
+    AppointmentStatus
+)
 
 # Patient appointment form
 class PatientAppointmentForm(forms.ModelForm):
@@ -77,6 +78,7 @@ class PatientAppointmentForm(forms.ModelForm):
 
     class Meta:
         model = PatientAppointment
+        exclude = ['updated_by']
         fields = [
             'patient',
             'dentist',
@@ -88,4 +90,3 @@ class PatientAppointmentForm(forms.ModelForm):
             'appointment_time',
             'reason'
         ]
-        exclude = ['updated_by']

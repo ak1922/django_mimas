@@ -7,7 +7,7 @@
 
         <!-- Header: Photo and Name -->
         <div class="employee-header" style="text-align: center; margin-bottom: 20px;">
-            <a href="" title="">
+            <a href="{% url 'mimascompany:employeephoto' %}" title="Upload Photo">
                 {% if employee.photo %}
                     <img src="{{ employee.photo.url }}" alt="{{ employee.full_name }}" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
                 {% else %}

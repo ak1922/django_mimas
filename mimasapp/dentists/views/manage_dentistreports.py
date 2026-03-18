@@ -1,5 +1,6 @@
 import logging
 from django.db.models import Q
+from django.urls import reverse
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -86,6 +87,8 @@ def create_report_patient_visit(request, vis_id=None):
 @group_required(allowed_groups=['Dentists', 'Employees', 'Administrators'])
 def edit_dentist_report(request, rep_id):
 
+    next_url = request.GET.get('next', reverse('dentists:listalldentistreports'))
+
     report = get_object_or_404(DentistReport, pk=rep_id)
 
     if request.method == 'POST':
@@ -98,7 +101,7 @@ def edit_dentist_report(request, rep_id):
             edited_report.save()
             messages.success(request, f'Report {edited_report.report_title} for patient {edited_report.patient} updated.')
             logger.info(f'Report {edited_report.report_title} for patient {edited_report.patient} updated by {request.user}.')
-            return redirect('dentists:listalldentistreports')
+            return redirect(next_url)
         else:
             messages.error(request, 'Invalid Report.')
             return redirect(request.path)

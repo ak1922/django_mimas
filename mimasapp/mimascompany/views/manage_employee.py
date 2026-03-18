@@ -119,7 +119,7 @@ def edit_employee(request, emp_id):
                         output_size = (300, 300)
                         img = img.resize(output_size, Image.Resampling.LANCZOS)
                         img.save(employee_instance.photo.path)
-                    # ---- Finally EmployeeForm
+                    # ---- Save EmployeeForm
                     employee_instance.save()
 
                 # ---- Messages and Logging ----
@@ -155,6 +155,28 @@ def edit_employee(request, emp_id):
 def view_employee(request, emp_id):
     employee = get_object_or_404(Employee, pk=emp_id)
     return render(request, 'mimascompany/view_employee.html', {'employee': employee})
+
+
+# Upload image
+@login_required
+@group_required(allowed_groups=['Administrators', 'Employees'])
+def employee_photo(request):
+
+    employee = get_object_or_404(Employee, user=request.user)
+
+    if request.method == 'POST':
+        form = UploadImageForm(request.POST, instance=employee, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Photo successfully uploaded.')
+            return redirect('mimascompany:employeedashboard')
+        else:
+            for error in form.errors.items():
+                messages.error(request, f'{error}')
+                logger.error(f'{error}')
+    else:
+        form = UploadImageForm(instance=employee)
+    return render(request, 'mimascompany/upload_employeeimage.html', {'h_form': form})
 
 
 # Delete employee

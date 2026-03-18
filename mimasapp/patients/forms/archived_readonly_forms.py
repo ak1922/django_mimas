@@ -1,11 +1,14 @@
 from django import forms
 
-from patients.models.patientbill_model import ArchivedPatientBill
-from patients.models.archivedvisit_model import ArchivedPatientVisit
-from patients.models.archivedappointment_model import ArchivedPatientAppointment
-from patients.models.treatmentroom_model import TreatmentRoom
+from patients.models import (
+    TreatmentRoom,
+    ArchivedPatientBill,
+    ArchivedPatientVisit,
+    ArchivedPatientAppointment
+)
 
 
+# Treatment room read only form
 class TreatmentRoomReadOnlyForm(forms.ModelForm):
 
     is_occupied = forms.CheckboxInput(attrs={'class': 'form-check-input'})

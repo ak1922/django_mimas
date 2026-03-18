@@ -1,19 +1,18 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
 
-from .auxiliary_models import DateTimeAuditModel
 from accounts.models import AccountUser
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.employee_model import Employee
+from .auxiliary_models import DateTimeAuditModel
+from mimascompany.models import Dentist, Employee
 
 
 # ---- Patient model queryset
 class PatientQuerySet(models.QuerySet):
     def to_dentist(self, dentist_id):
-        return self.filter(primary_dentist_id=dentist_id)
+        return self.filter(Q(primary_dentist_id=dentist_id))
 
     def has_dentist(self):
-        return self.exclude(primary_dentist__isnull=True)
+        return self.exclude(Q(primary_dentist__isnull=True))
 
     def recently_updated(self):
         return self.order_by('updated')
@@ -33,24 +32,24 @@ class PatientManager(models.Manager):
 
     def for_employee(self, employee):
         """ Get patients associated with a specific dentist employee """
-        return self.get_queryset().filter(primary_dentist__employee=employee)
+        return self.get_queryset().filter(Q(primary_dentist__employee=employee))
 
 
 class PatientWithoutDetailsManager(models.Manager):
     """ Get patients without details """
     def without_details(self):
-        return self.filter(patientdetail_patient__isnull=True)
+        return self.filter(Q(patientdetail_patient__isnull=True))
 
 
 class PatientWithoutContactManager(models.Manager):
     """ Get patients without contact """
     def without_contact(self):
-        return self.filter(patientcontact_patient__isnull=True)
+        return self.filter(Q(patientcontact_patient__isnull=True))
 
 
 class PatientWithoutInsuranceManage(models.Manager):
     def without_insurance(self):
-        return self.filter(patientinsurance_patient__isnull=True)
+        return self.filter(Q(patientinsurance_patient__isnull=True))
 
 
 # --------------------------- Patients model ----------------------------------
@@ -58,10 +57,10 @@ class PatientWithoutInsuranceManage(models.Manager):
 class Patient(DateTimeAuditModel):
 
     class Gender(models.TextChoices):
-        MALE = 'M', _('Male')
-        FEMALE = 'F', _('Female')
-        OTHER = 'O', _('Other')
-        NOT_SPECIFIED = 'NS', _('Not Specified')
+        MALE = 'M', 'Male',
+        FEMALE = 'F', 'Female',
+        OTHER = 'O', 'Other',
+        NOT_SPECIFIED = 'NS', 'Not Specified',
 
     # ---- Personal info ----
     first_name = models.CharField(max_length=70)
@@ -71,21 +70,19 @@ class Patient(DateTimeAuditModel):
         choices=Gender.choices,
         default=Gender.NOT_SPECIFIED
     )
+
+    # ---- Related models ----
     patient = models.ForeignKey(
         AccountUser,
         on_delete=models.CASCADE,
         related_name='patient_accountuser'
     )
-
-    # ---- Dentist info ----
     primary_dentist = models.ForeignKey(
         Dentist,
         on_delete=models.SET_NULL,
         blank=True, null=True,
         related_name='patients_primarydentist'
     )
-
-    # ---- Audit info ----
     updated_by = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
@@ -96,9 +93,9 @@ class Patient(DateTimeAuditModel):
     # ---- Managers ----
     objects = models.Manager()
     patient_manager = PatientManager()
-    patient_without_details = PatientWithoutDetailsManager()
-    patient_without_contact = PatientWithoutContactManager()
-    patient_without_insurance = PatientWithoutInsuranceManage()
+    withoutdetails = PatientWithoutDetailsManager()
+    withoutcontact = PatientWithoutContactManager()
+    withoutinsurance = PatientWithoutInsuranceManage()
 
     @property
     def full_name(self):
@@ -132,6 +129,11 @@ class Patient(DateTimeAuditModel):
         return self.full_name
 
     class Meta(DateTimeAuditModel.Meta):
-        ordering = ['created']
-        verbose_name = _("Patient")
-        verbose_name_plural = _("Patients")
+        ordering = ['-created']
+        db_table = 'patients'
+        verbose_name = "Patient"
+        verbose_name_plural = "Patients"
+        indexes = [
+            models.Index(fields=['patient', 'gender'], name='p_patientgender_idx'),
+            models.Index(fields=['patient', 'primary_dentist'], name='p_patientprimdentist_idx'),
+        ]

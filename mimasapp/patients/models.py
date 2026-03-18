@@ -20,5 +20,6 @@ from patients.models import (
     ArchivedPatientReferral,
     ArchivedPatientTreatment,
     ArchivedPatientAppointment,
-    DateTimeAuditModel
+    DateTimeAuditModel,
+    AppointmentStatus
 )

@@ -4,10 +4,9 @@ from django.db import models
 from model_utils import Choices
 from django.db.models import Sum
 
-from .auxiliary_models import AuditModel
 from accounts.models import AccountUser
+from mimascompany.models import  AuditModel
 from .leaverequests_model import LeaveRequest
-
 
 def photo_store(instance, filename):
 
@@ -24,6 +23,8 @@ class CompanyPositions(AuditModel):
     description = models.CharField()
 
     class Meta:
+        db_table = 'company_positions'
+        ordering = ['title']
         verbose_name = "Company Position"
         verbose_name_plural = "Company Positions"
 
@@ -108,9 +109,6 @@ class Employee(AuditModel):
     objects = models.Manager()
     active_employees = EmployeeManager()
 
-    class Meta:
-        ordering = ['last_name', 'first_name']
-
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
@@ -121,9 +119,6 @@ class Employee(AuditModel):
             img.save(self.photo.path)
         else:
             print('No user photo uploaded with profile.')
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.position or 'No Position'})'
 
     @property
     def full_name(self):
@@ -155,3 +150,16 @@ class Employee(AuditModel):
             status=LeaveRequest.ApprovalStatus.APPROVED
         ).aggregate(Sum('days_taken'))['days_taken__sum'] or 0
         return self.vacations_days_accrued - used_days
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name} ({self.position or 'No Position'})'
+
+    class Meta:
+        ordering = ['last_name', 'first_name']
+        db_table = 'employees'
+        verbose_name = 'Employee'
+        verbose_name_plural = 'Employees'
+        indexes = [
+            models.Index(fields=['user', 'status'], name='e_userstatus_idx'),
+            models.Index(fields=['user', 'gender'], name='e_usergender_idx'),
+        ]

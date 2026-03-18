@@ -3,12 +3,12 @@ from .patients_model import Patient
 from .patientcontact_model import PatientContact
 from .patientdetails_model import PatientDetail
 from .patientinsurance_model import PatientInsurance
-from .patientappointment_model import PatientAppointment, PatientBooking
+from .patientappointment_model import PatientAppointment, AppointmentStatus
 from .patientvisit_models import PatientVisit, PostVisitOption
 from .visittask_model import PatientVisitTask
 from .archivedvisit_model import ArchivedPatientVisit
 from .archivedappointment_model import ArchivedPatientAppointment
-from .patientbill_model import PatientBill, ArchivedPatientBill
+from .patientbill_model import PatientBill
 from .patientlab_model import PatientLab
 from .archivedlab_model import ArchivedPatientLab
 from .patienttreatment_model import PatientTreatment
@@ -17,3 +17,4 @@ from .patientreferral_model import PatientReferral
 from .archivedreferral_model import ArchivedPatientReferral
 from .patientmessage_model import PatientMessage
 from .treatmentroom_model import TreatmentRoom
+from .archivedbill_model import ArchivedPatientBill

@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Max
+from django.db.models import Max, Index
 from django.utils.text import slugify
 from django.template.defaultfilters import upper
 
@@ -32,7 +32,6 @@ class TreatmentRoom(DateTimeAuditModel):
         null=True, blank=True
     )
 
-    # An IntegerField to hold the auto-incrementing part for a specific branch
     room_index = models.PositiveIntegerField(default=1, null=True, blank=True)
 
     # ---- Related models ----
@@ -71,6 +70,7 @@ class TreatmentRoom(DateTimeAuditModel):
 
     class Meta(DateTimeAuditModel.Meta):
         ordering = ['room_name', 'updated']
+        db_table = 'treatment_rooms'
         verbose_name = 'Treatment Room'
         verbose_name_plural = 'Treatment Rooms'
         constraints = [
@@ -79,4 +79,7 @@ class TreatmentRoom(DateTimeAuditModel):
                 fields=['room_name', 'branch'],
                 violation_error_message='The room chosen belongs to a different branch.'
             )
+        ]
+        indexes = [
+            Index(fields=['visit', 'room_number'], name='visit_idx')
         ]

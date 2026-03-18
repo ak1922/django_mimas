@@ -6,9 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.decorators import group_required
-from mimascompany.models.employee_model import Employee
-from patients.models.patients_model import Patient
-from patients.forms.patient_form import PatientForm, PatientReadOnlyForm
+from mimascompany.models import Employee
+from patients.models import Patient
+from patients.forms import PatientForm, PatientReadOnlyForm
 
 
 logger = logging.getLogger(__name__)

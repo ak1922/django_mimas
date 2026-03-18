@@ -1,15 +1,20 @@
 from django.contrib import admin
 
-from .models.employee_model import CompanyPositions, Employee
-from .models.employeetasks_model import TaskCategory, EmployeeTask, EmployeeTaskItem
-from .models.leaverequests_model import LeaveRequest
-from .models.bookings_model import PatientBooking
-from .models.branch_model import Branch
-from .models.service_model import Service
-from .models.department_model import Department
-from .models.dentist_model import Dentist
-from .models.employeedetails_model import EmployeeDetail
-from .models.employeecontact_model import EmployeeContact
+from mimascompany.models import (
+    Branch,
+    Service,
+    Dentist,
+    Department,
+    Employee,
+    EmployeeDetail,
+    EmployeeTask,
+    EmployeeTaskItem,
+    EmployeeContact,
+    TaskCategory,
+    LeaveRequest,
+    CompanyPositions,
+    PatientBooking
+)
 
 
 @admin.register(Branch)
@@ -36,10 +41,10 @@ class DepartmentAdmin(admin.ModelAdmin):
     search_fields = ['department_name', 'department_head__last_name', 'department_head__first_name']
 
 
-# @admin.register(EmployeeDetail)
-# class EmployeeDetailAdmin(admin.ModelAdmin):
-#     list_display = ['employee', 'ssn', 'address', 'phone_number', 'date_hired', 'created', 'updated', 'updated_by']
-#     search_fields = ['employee__last_name', 'employee__first_name', 'supervisor__last_name', 'supervisor__first_name']
+@admin.register(EmployeeDetail)
+class EmployeeDetailAdmin(admin.ModelAdmin):
+    list_display = ['employee', 'ssn', 'address', 'phone_number', 'date_hired', 'created', 'updated', 'updated_by']
+    search_fields = ['employee__last_name', 'employee__first_name', 'supervisor__last_name', 'supervisor__first_name']
 
 
 @admin.register(EmployeeContact)

@@ -1,15 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
 
 
 class UserType(models.TextChoices):
     """ User types for default groups created with signal """
 
-    PATIENTS = 'Patients', _('Patients')
-    DENTISTS = 'Dentists', _('Dentists')
-    EMPLOYEES = 'Employees', _('Employees')
-    ADMINISTRATORS = 'Administrators', _('Administrators')
+    PATIENTS = 'Patients', 'Patients',
+    DENTISTS = 'Dentists', 'Dentists',
+    EMPLOYEES = 'Employees', 'Employees',
+    ADMINISTRATORS = 'Administrators', 'Administrators'
 
 
 class AccountUser(AbstractUser):
@@ -18,7 +17,11 @@ class AccountUser(AbstractUser):
     username = models.CharField(max_length=20, unique=True)
     email = models.EmailField(max_length=200, unique=True)
     password = models.CharField()
-    user_type = models.CharField(max_length=30, choices=UserType.choices, default=UserType.PATIENTS)
+    user_type = models.CharField(
+        max_length=30,
+        choices=UserType.choices,
+        default=UserType.PATIENTS
+    )
 
     @property
     def is_administrator(self):

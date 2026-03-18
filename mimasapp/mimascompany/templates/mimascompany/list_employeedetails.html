@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load mask_utils %}
 
 {% block title_content %}List Employees Details{% endblock %}
 
@@ -57,7 +58,7 @@
                                     <td>{{ detail.employee }}</td>
                                     <td>
                                         {% if user.user_type != 'Administrators' %}
-                                            {{ detail.masked_ssn }}
+                                            {{ detail.ssn|mask_ssn }}
                                         {% else %}
                                             {{ detail.ssn }}
                                         {% endif %}

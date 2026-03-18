@@ -91,17 +91,6 @@ class EmployeeTask(AuditModel):
     objects = models.Manager()
     tasks = EmployeeTaskManager()
 
-    class Meta:
-        verbose_name = 'Employee Task'
-        verbose_name_plural = 'Employee Tasks'
-        ordering = ['-priority', 'end_date']
-        indexes = [
-            models.Index(fields=['status', 'employee'])
-        ]
-
-    def __str__(self):
-        return f'{self.task_name}'
-
     def clean(self):
         """Custom validation to ensure end_date is after start_date"""
         super().clean()
@@ -112,6 +101,17 @@ class EmployeeTask(AuditModel):
     def is_overdue(self):
         """Returns True if task is not completed and end_date has passed"""
         return self.status != self.Status.COMPLETED and timezone.now() > self.end_date
+
+    def __str__(self):
+        return f'{self.task_name}'
+
+    class Meta:
+        verbose_name = 'Employee Task'
+        verbose_name_plural = 'Employee Tasks'
+        ordering = ['-priority', 'end_date']
+        indexes = [
+            models.Index(fields=['status', 'employee'], name='et_stausemployee_idx'),
+        ]
 
 
 class EmployeeTaskItem(AuditModel):
@@ -136,10 +136,17 @@ class EmployeeTaskItem(AuditModel):
         related_name='employeetaskitem_taskname'
     )
 
+    def __str__(self):
+        return f'{self.item_name} - {self.task_name}'
+
+
     class Meta:
+        db_table = 'employee_task_items'
         ordering = ['start_date']
         verbose_name = 'Employee Task Item'
         verbose_name_plural = 'Employee Task Items'
-
-    def __str__(self):
-        return f'{self.item_name} - {self.task_name}'
+        indexes = [
+            models.Index(fields=['-start_date'], name='ep1_startdate_idx'),
+            models.Index(fields=['end_date'], name='emp_enddate_idx'),
+            models.Index(fields=['employee', 'start_date'], name='epi_empstartdate_idx')
+        ]

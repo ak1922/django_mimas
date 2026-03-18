@@ -23,7 +23,7 @@
             {{ h_form.as_p }}
             <div class="buttomsDiv">
                 {% if h_exisitng_treatment %}
-                    <a href="{% url 'dentists.listalltreatments' %}" class="backToListLink">Back To Treatments</a>
+                    <a href="{% url 'dentists:listalltreatments' %}" class="backToListLink">Back To Treatments</a>
                 {% else %}
                     <button class="formSubmitButton" type="submit">Submit Treatment</button>
                 {% endif %}

@@ -5,10 +5,9 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
+from mimascompany.models import Employee
 from accounts.decorators import group_required
-from mimascompany.models.employee_model import Employee
-from patients.models.patients_model import Patient
-from patients.models.patientcontact_model import PatientContact
+from patients.models import Patient, PatientContact
 from patients.forms.patientscontact_form import PatientContactForm
 
 

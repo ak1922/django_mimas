@@ -94,9 +94,15 @@ class ArchivedPatientVisit(models.Model):
         return ', '.join(self.visit_options.values_list('name', flat=True))
 
     def __str__(self):
-        return self.visit_title
+        return f'{self.patient} - {self.visit_title}'
 
     class Meta:
-        db_table = 'archived_patient_visit'
+        ordering = ['-archived', '-visit_date']
+        db_table = 'archived_patient_visits'
         verbose_name = 'Archived Patient Visit'
         verbose_name_plural = 'Archived Patients Visits'
+        indexes = [
+            models.Index(fields=['archived'], name='apv_archived_idx'),
+            models.Index(fields=['patient', 'dentist'], name='apv_patientdsentist_idx'),
+            models.Index(fields=['-total_price_aggregated', 'patient'], name='apv_totalpricepatient_idx'),
+        ]
