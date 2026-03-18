@@ -1,19 +1,16 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
-from mimascompany.models.employee_model import Employee
-from mimascompany.models.dentist_model import Dentist
-from patients.models.patients_model import Patient
-from patients.models.auxiliary_models import DateTimeAuditModel
+from mimascompany.models import Dentist, Employee
+from patients.models import Patient, DateTimeAuditModel
 
 
 # Patient details model
 class PatientDetail(DateTimeAuditModel):
 
     class BlodType(models.TextChoices):
-        TYPEA = 'Type A', _('Type A')
-        TYPEAB = 'Type AB', _('Type AB')
-        TYPEO = 'Type O', _('Type O')
+        TYPEA = 'Type A', 'Type A',
+        TYPEAB = 'Type AB', 'Type AB',
+        TYPEO = 'Type O', 'Type O'
 
     ssn = models.CharField(max_length=15)
     date_of_birth = models.DateField(blank=True, null=True)
@@ -57,6 +54,11 @@ class PatientDetail(DateTimeAuditModel):
         return f'{self.patient.full_name}'
 
     class Meta(DateTimeAuditModel.Meta):
+        db_table = 'patient_details'
         ordering = ['created']
         verbose_name = 'Patient Detail'
         verbose_name_plural = 'Patient Details'
+        indexes = [
+            models.Index(fields=['patient', 'blood_type'], name='pd_patientbloodtype_idx'),
+            models.Index(fields=['blood_type'], name='pd_bloodtype_idx'),
+        ]

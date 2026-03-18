@@ -73,8 +73,16 @@ class ArchivedPatientLab(models.Model):
     )
 
     def __str__(self):
-        return self.archived_title
+        return f'{self.patient} - {self.archived_title}'
 
     class Meta:
+        db_table = 'archived_patient_labs'
+        ordering = ['-archived']
         verbose_name = 'Archived Patient Lab'
         verbose_name_plural = 'Archived Patients Labs'
+        indexes = [
+            models.Index(fields=['archived'], name='apl_archived_idx'),
+            models.Index(fields=['patient', 'closed'], name='apl_patientclosed_idx'),
+            models.Index(fields=['dentist', 'closed'], name='apl_dentistclosed_idx'),
+            models.Index(fields=['archived_title', 'updated_by'], name='archivedtitleupadtedby_idx'),
+        ]

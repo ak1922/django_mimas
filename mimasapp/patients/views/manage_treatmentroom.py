@@ -4,10 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 
 from accounts.decorators import group_required
-from patients.models.treatmentroom_model import TreatmentRoom
-from patients.forms.treatmentroom_form import TreatmentRoomForm
-from patients.forms.archived_readonly_forms import TreatmentRoomReadOnlyForm
-from mimascompany.models.employee_model import Employee
+from mimascompany.models import Employee
+from patients.models import TreatmentRoom
+from patients.forms import TreatmentRoomForm, TreatmentRoomReadOnlyForm
 
 
 logger = logging.getLogger(__name__)

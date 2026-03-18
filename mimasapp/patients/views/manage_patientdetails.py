@@ -6,11 +6,10 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
+from mimascompany.models import Employee
 from accounts.decorators import group_required
-from mimascompany.models.employee_model import Employee
-from patients.models.patients_model import Patient
-from patients.models.patientdetails_model import PatientDetail
-from patients.forms.patientdetail_form import PatientDetailForm, PatientDetailReadOnlyForm
+from patients.models import Patient, PatientDetail
+from patients.forms import PatientDetailForm, PatientDetailReadOnlyForm
 
 
 logger = logging.getLogger(__name__)

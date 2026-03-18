@@ -22,22 +22,24 @@
     margin-top: 40px;
 }
 
-.formSubmitButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 170px;
-    padding: 8px;
-    border-radius: 6px;
-    background-color: #3b575c;
-    color: white;
-    border: none;
-    text-decoration: none;
-}
-
 .formSubmitButton:hover {
     background-color: #909c9e;
     color: black;
+}
+
+.formSubmitButton {
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    background-color: #3b575c;
+    color: white;
+    width: 200px;
+    text-align: center;
+    white-space: nowrap;
+    line-height: normal;
+    box-sizing: border-box;
 }
 
 .backToListLink {
@@ -46,7 +48,7 @@
     align-content: center;
     text-decoration: none;
     width: 170px;
-    padding: 8px;
+    padding: 12px;
     border-radius: 6px;
     background-color: #3b575c;
     color: white;
@@ -58,17 +60,11 @@
     color: black;
 }
 
-/*.formTitle {*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*}*/
-
 .genericFormDiv {
     margin-bottom: 10px;
 }
 
 label.required::after {
-    content: " *";
-    color: red;
+  content: " *";
+  color: red;
 }

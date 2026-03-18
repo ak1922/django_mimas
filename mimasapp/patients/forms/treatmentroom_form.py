@@ -1,8 +1,7 @@
 from django import forms
 
-from mimascompany.models.branch_model import Branch
-from patients.models.treatmentroom_model import TreatmentRoom
-from patients.models.patientvisit_models import PatientVisit
+from mimascompany.models import Branch
+from patients.models import PatientVisit, TreatmentRoom
 
 
 # Treatment room form

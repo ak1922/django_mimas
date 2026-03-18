@@ -1,7 +1,12 @@
 from django.db import models
 
 from mimascompany.models import Branch, Dentist, Employee
-from patients.models import Patient, PatientInsurance, ArchivedPatientVisit, ArchivedPatientAppointment
+from patients.models import (
+     Patient,
+     PatientInsurance,
+     ArchivedPatientVisit,
+     ArchivedPatientAppointment
+)
 
 
 # Archived patient treatment
@@ -75,5 +80,12 @@ class ArchivedPatientTreatment(models.Model):
 
     class Meta:
         ordering = ['archived']
+        db_table = 'archived_patients_treatments'
         verbose_name = 'Archived Patient Treatment'
         verbose_name_plural = 'Archived Patients Treatments'
+        indexes = [
+            models.Index(fields=['closed'], name='apt_closed_idx'),
+            models.Index(fields=['archived'], name='apt_archived_idx'),
+            models.Index(fields=['closed', 'patient'], name='apt_closedpatient_idx'),
+            models.Index(fields=['archived', 'patient'], name='apt_archivedpatient_idx')
+        ]

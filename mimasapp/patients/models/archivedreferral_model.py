@@ -75,6 +75,14 @@ class ArchivedPatientReferral(models.Model):
         return f'{self.referral_title} - {self.patient}'
 
     class Meta:
+        ordering = ['-archived', 'referral_date']
         db_table = 'archived_patient_referrals'
         verbose_name = 'Archived Patient Referral'
         verbose_name_plural = 'Archived Patients Referrals'
+        indexes = [
+            models.Index(fields=['-archived'], name='apr_archived_idx'),
+            models.Index(fields=['dentist', 'patient'], name='apr_dentistpatient_idx'),
+            models.Index(fields=['closed'], name='apr_closed_idx'),
+            models.Index(fields=['closed', 'patient'], name='apr_closedpatient_idx'),
+            models.Index(fields=['updated_by', 'referral_title'], name='apr_updatedbyreferraltitle_idx')
+        ]

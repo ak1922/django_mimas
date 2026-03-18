@@ -45,5 +45,9 @@ class Dentist(AuditModel):
 
     class Meta:
         ordering = ['created']
+        db_table = 'dentists'
         verbose_name = 'Dentist'
         verbose_name_plural = 'Dentists'
+        indexes = [
+            models.Index(fields=['employee', 'supervisor'], name='d_empsuper_idx')
+        ]

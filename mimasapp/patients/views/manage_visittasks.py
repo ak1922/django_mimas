@@ -8,9 +8,8 @@ from django.core.paginator import Paginator
 
 from accounts.decorators import group_required
 from mimascompany.models.employee_model import Employee
-from patients.models.patientvisit_models import PatientVisit
-from patients.models.visittask_model import PatientVisitTask
-from patients.forms.visittask_forms import PatientVisitTaskForm
+from patients.forms import PatientVisitTaskForm
+from patients.models import PatientVisit, PatientVisitTask
 
 
 logger = logging.getLogger(__name__)

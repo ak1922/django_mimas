@@ -1,8 +1,6 @@
 from django import forms
 
-from patients.models.patients_model import Patient
-from patients.models.patientcontact_model import PatientContact
-
+from patients.models import Patient, PatientContact
 
 # Patient contact form
 class PatientContactForm(forms.ModelForm):
@@ -42,5 +40,11 @@ class PatientContactForm(forms.ModelForm):
 
     class Meta:
         model = PatientContact
-        fields = ['patient', 'contact_name', 'contact_address', 'contact_phone', 'relationship']
         exclude = ['updated_by']
+        fields = [
+            'patient',
+            'contact_name',
+            'contact_address',
+            'contact_phone',
+            'relationship'
+        ]

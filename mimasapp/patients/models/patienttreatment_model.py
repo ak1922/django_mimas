@@ -15,13 +15,13 @@ from patients.models import (
 class PatientTreatmentQuerySet(models.QuerySet):
 
     def open_treatments(self):
-        return self.filter(closed=False)
+        return self.filter(Q(closed=False))
 
     def closed_treatments(self):
-        return self.filter(closed=True)
+        return self.filter(Q(closed=True))
 
     def with_related(self):
-        return self.select_related('patient', 'dentist')
+        return self.select_related('patient', 'dentist', 'visit', 'branch')
 
 
 # ----- Custom manager
@@ -115,6 +115,14 @@ class PatientTreatment(DateTimeAuditModel):
         return f'{self.treatment_title}'
 
     class Meta(DateTimeAuditModel.Meta):
+        db_table = 'patient_treatments'
         ordering = ['created']
         verbose_name = 'Patient Treatment'
         verbose_name_plural = 'Patients Treatments'
+        indexes = [
+            models.Index(fields=['closed'], name='pt_closed_idx'),
+            models.Index(fields=['patient', 'closed'], name='pt_patientclosed_idx'),
+            models.Index(fields=['branch', 'closed'], name='pt_branchclosed_idx'),
+            models.Index(fields=['dentist', 'closed'], name='pt_dentistclosed_idx'),
+            models.Index(fields=['patient', '-created'], name='pt_patientcreated_idx')
+        ]

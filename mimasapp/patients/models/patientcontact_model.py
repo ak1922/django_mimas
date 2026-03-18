@@ -1,10 +1,7 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
-from patients.models.patients_model import Patient
-from patients.models.auxiliary_models import DateTimeAuditModel
-from mimascompany.models.employee_model import Employee
-
+from mimascompany.models import Employee
+from patients.models import Patient, DateTimeAuditModel
 
 # Patients contact model
 class PatientContact(DateTimeAuditModel):
@@ -15,7 +12,7 @@ class PatientContact(DateTimeAuditModel):
     contact_phone = models.CharField(max_length=15)
     relationship = models.CharField(max_length=20)
 
-    # ---- Other model fields ----
+    # ---- Related models ----
     patient = models.OneToOneField(
         Patient,
         on_delete=models.CASCADE,
@@ -34,5 +31,9 @@ class PatientContact(DateTimeAuditModel):
 
     class Meta(DateTimeAuditModel.Meta):
         ordering = ['created']
-        verbose_name = _('Patient Contact')
-        verbose_name_plural = _('Patient Contacts')
+        db_table = 'patient_contacts'
+        verbose_name = 'Patient Contact'
+        verbose_name_plural = 'Patient Contacts'
+        indexes = [
+            models.Index(fields=['patient', 'updated_by'], name='pc_patientupdatedby_idx')
+        ]

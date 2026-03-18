@@ -4,7 +4,7 @@
 
 {% block title_content %}Patient Visits{% endblock %}
 
-{% block extra_css %}
+{% block css_content %}
     <link rel="stylesheet" href="{% static 'css/delete.css' %}">
 {% endblock %}
 
@@ -13,7 +13,7 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <h4>Archive patient visit?</h4>
+            <h4>Archive patient visit {{ h_visit }}?</h4>
             <div id="actionsDiv">
                 <button id="actionsDelete" type="submit">Archive Visit</button>
                 <a id="actionsList" href="{% url 'patients:listallpatientvisits' %}">Cancel</a>

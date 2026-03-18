@@ -1,7 +1,13 @@
 from django.db import models
 
 from mimascompany.models import Employee, Dentist, Branch
-from patients.models import Patient, PatientInsurance, PatientVisit, PatientAppointment, DateTimeAuditModel
+from patients.models import (
+    Patient,
+    PatientInsurance,
+    PatientVisit,
+    PatientAppointment,
+    DateTimeAuditModel
+)
 
 
 # --------- Custom queryset -----------
@@ -14,7 +20,7 @@ class PatientLabQuerySet(models.QuerySet):
         return self.filter(closed=True)
 
     def with_related(self):
-        return self.select_related('patient', 'dentist')
+        return self.select_related('patient', 'dentist', 'visit')
 
 
 # --------- Custom manager -----------
@@ -98,11 +104,19 @@ class PatientLab(DateTimeAuditModel):
             return True
         return False
 
-
     def __str__(self):
         return self.lab_title
 
     class Meta(DateTimeAuditModel.Meta):
-        ordering = ['created']
+        ordering = ['-created']
+        db_table = 'patient_labs'
         verbose_name = 'Patient Lab'
         verbose_name_plural = 'Patient Labs'
+        indexes = [
+            models.Index(fields=['closed'], name='pl_closed_idx'),
+            models.Index(fields=['closed', 'dentist'], name='pl_closeddentist_idx'),
+            models.Index(fields=['patient', 'dentist'], name='pl_patientdentist_idx'),
+            models.Index(fields=['lab_title', 'updated_by'], name='pl_labtitleupdatedby_idx'),
+            models.Index(fields=['lab_title', 'due_date', 'dentist'], name='pl_labtitleduedatedentist_idx'),
+            models.Index(fields=['patient', 'laboratory_name'], name='pl_patientlabname_idx')
+        ]

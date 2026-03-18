@@ -1,8 +1,7 @@
 from django.db import models
 
-from patients.models.auxiliary_models import DateTimeAuditModel
-from patients.models.patients_model import Patient
-from mimascompany.models.employee_model import Employee
+from mimascompany.models import Employee
+from patients.models import Patient, DateTimeAuditModel
 
 
 # Patient insurance model
@@ -37,5 +36,9 @@ class PatientInsurance(DateTimeAuditModel):
 
     class Meta(DateTimeAuditModel.Meta):
         ordering = ['created']
+        db_table = 'patient_insurance'
         verbose_name = 'Patient Insurance'
-        verbose_name_plural = 'Patients Insurance'
+        verbose_name_plural = 'Patients Insurance',
+        indexes = [
+            models.Index(fields=['patient', 'company'], name='pi_patientcompany_idx')
+        ]

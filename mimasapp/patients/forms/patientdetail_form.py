@@ -1,8 +1,7 @@
 from django import forms
 
-from patients.models.patients_model import Patient
-from patients.models.patientdetails_model import PatientDetail
-from mimascompany.models.dentist_model import Dentist
+from mimascompany.models import Dentist
+from patients.models import Patient, PatientDetail
 
 
 # Patient detail form
@@ -74,7 +73,7 @@ class PatientDetailForm(forms.ModelForm):
             except Patient.DoesNotExist:
                 pass
 
-        queryset = Patient.patient_without_details.without_details()
+        queryset = Patient.withoutdetails.without_details()
 
         if self.instance and self.instance.pk:
             current_patient = Patient.objects.filter(pk=self.instance.patient_id)
@@ -86,6 +85,7 @@ class PatientDetailForm(forms.ModelForm):
 
     class Meta:
         model = PatientDetail
+        exclude = ['updated_by']
         fields = [
             'patient',
             'ssn',
@@ -99,7 +99,6 @@ class PatientDetailForm(forms.ModelForm):
             'current_medication',
             'secondary_dentist'
         ]
-        exclude = ['updated_by']
 
 
 # Patient detail read only form

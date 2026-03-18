@@ -1,9 +1,7 @@
 from django.db import models
 
-from .auxiliary_models import DateTimeAuditModel
-from mimascompany.models.employee_model import Employee
-from .patientappointment_model import PatientAppointment
-from .patientvisit_models import PatientVisit
+from mimascompany.models import Employee
+from patients.models import PatientVisit, PatientAppointment, DateTimeAuditModel
 
 
 # Visit management
@@ -58,10 +56,16 @@ class PatientVisitTask(DateTimeAuditModel):
         related_name='patientvisittask_updatedby'
     )
 
-    class Meta(DateTimeAuditModel.Meta):
-        ordering = ['task_status']
-        verbose_name = 'Patient Visit Task'
-        verbose_name_plural = 'Patient Visits Tasks'
-
     def __str__(self):
         return f'{self.task_title}- {self.visit.visit_title}'
+
+    class Meta(DateTimeAuditModel.Meta):
+        ordering = ['task_status']
+        db_table = 'patients_visits_tasks'
+        verbose_name = 'Patient Visit Task'
+        verbose_name_plural = 'Patients Visits Tasks'
+        indexes = [
+            models.Index(fields=['assigned_to', 'visit'], name='pvt_assignedtovisit_idx'),
+            models.Index(fields=['visit', 'task_status'], name='pvt_visittaskstatus_idx'),
+            models.Index(fields=['assigned_to', 'task_title'], name='pvt_assignedtotasktitle_idx')
+        ]

@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from pathlib import Path
 import os
 import logging
+from pathlib import Path
 from django.contrib.messages import constants as messages
 
 
@@ -141,6 +141,9 @@ MESSAGE_TAGS = {
 }
 
 AUTH_USER_MODEL = 'accounts.AccountUser'
+
+MEDIA_URL = '/pictures/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'pictures')
 
 LOGGING = {
     "version": 1,

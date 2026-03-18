@@ -4,7 +4,7 @@
 
 {% block title_content %}Patient Visit Cost {{ h_visit.patient.full_name }}{% endblock %}
 
-{% block extra_css %}
+{% block css_content %}
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
 {% endblock %}
 
@@ -28,12 +28,16 @@
                     </tr>
                 {% endfor %}
             </tbody>
+            <tfoot>
+                <tr>
+                    <th>Total Cost</th>
+                    <td>$<strong>{{ h_totalcost }}</strong></td>
+                </tr>
+            </tfoot>
         </table>
 
-        <h4>Total Amount: ${{ h_totalcost }}</h4>
-
         <div class="buttomsDiv">
-            <a class="backToListLink" href="">Back to List</a>
+            <a class="backToListLink" href="{% url 'patients:listallpatientvisits' %}">Back to List</a>
             <a class="backToListLink" href="{% url 'patients:patientscenter' %}">Patients Center</a>
         </div>
     </div>

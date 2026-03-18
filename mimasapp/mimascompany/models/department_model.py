@@ -22,6 +22,7 @@ class Department(AuditModel):
         ordering = ['department_name']
         verbose_name = 'Department'
         verbose_name_plural = 'Departments'
+        db_table = 'departments'
 
     def __str__(self):
         return self.department_name

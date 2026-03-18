@@ -12,5 +12,6 @@ from patients.forms import (
     ArchivedPatientVisitReadOnlyForm,
     PatientDetailReadOnlyForm,
     PatientAppointmentForm,
-    PatientBillForm
+    PatientBillForm,
+    PatientVisitTaskForm
 )

@@ -1,12 +1,12 @@
 from django.db import models
 
-from mimascompany.models.employee_model import Employee
-from patients.models.patients_model import Patient
-from patients.models.auxiliary_models import DateTimeAuditModel
-from patients.models.patientvisit_models import PatientVisit
-from patients.models.patientappointment_model import PatientAppointment
-from .archivedvisit_model import ArchivedPatientVisit
-from .archivedappointment_model import ArchivedPatientAppointment
+from mimascompany.models import Employee
+from patients.models import (
+    Patient,
+    PatientVisit,
+    PatientAppointment,
+    DateTimeAuditModel
+)
 
 
 # Patient bill model
@@ -62,52 +62,11 @@ class PatientBill(DateTimeAuditModel):
 
     class Meta(DateTimeAuditModel.Meta):
         verbose_name = 'Patient Bill'
+        db_table = 'patient_bills'
         verbose_name_plural = 'Patient Bills'
-
-
-# Archived patient bill
-class ArchivedPatientBill(models.Model):
-
-    bill_title = models.CharField(max_length=300)
-    is_paid = models.BooleanField(default=True)
-    total_charge = models.DecimalField(
-        default=0.00,
-        max_digits=10,
-        decimal_places=2
-    )
-
-    archived = models.DateTimeField()
-    updated = models.DateTimeField()
-
-
-    patient = models.ForeignKey(
-        Patient,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='archivedbill_patient'
-    )
-    appointment = models.ForeignKey(
-        ArchivedPatientAppointment,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='archivedbill_appointment'
-    )
-    visit = models.ForeignKey(
-        ArchivedPatientVisit,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='archivedbill_visit'
-    )
-    updated_by = models.ForeignKey(
-        Employee,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='archivedbill_updatedby'
-    )
-
-    def __str__(self):
-        return self.bill_title
-
-    class Meta:
-        verbose_name = 'Archived Patient Bill'
-        verbose_name_plural = 'Archived Patients Bills'
+        indexes = [
+            models.Index(fields=['is_paid'], name='pb_ispaid_idx'),
+            models.Index(fields=['is_paid', 'total_charge'], name='pb_ispaidtotalcharge_idx'),
+            models.Index(fields=['patient', 'visit'], name='pb_patientvisit_idx'),
+            models.Index(fields=['patient', 'is_paid'], name='pb_patientispaid_idx')
+        ]

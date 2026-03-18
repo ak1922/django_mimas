@@ -1,8 +1,7 @@
 from django import forms
 
-from patients.models.visittask_model import PatientVisitTask
-from patients.models.patientvisit_models import PatientVisit
-from patients.models.patientappointment_model import PatientAppointment
+from patients.models import PatientVisit, PatientAppointment, PatientVisitTask
+
 
 # Employee task item
 class PatientVisitTaskForm(forms.ModelForm):

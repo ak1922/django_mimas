@@ -1,13 +1,13 @@
 from django.db import models
 
-from .patients_model import Patient
-from .patientinsurance_model import PatientInsurance
-from .patientappointment_model import PatientAppointment
-from .patientvisit_models import PatientVisit
-from .auxiliary_models import DateTimeAuditModel
-from mimascompany.models.dentist_model import Dentist
-from mimascompany.models.branch_model import Branch
-from mimascompany.models.employee_model import Employee
+from mimascompany.models import Dentist, Branch, Employee
+from patients.models import (
+    Patient,
+    PatientVisit,
+    PatientInsurance,
+    PatientAppointment,
+    DateTimeAuditModel
+)
 
 
 # ------- Custom referral queryset ----
@@ -37,7 +37,7 @@ class PatientReferral(DateTimeAuditModel):
     referral_date = models.DateField(blank=True, null=True)
     referral_phone = models.CharField(blank=True, null=True)
     reason = models.CharField(blank=True, null=True)
-    extra_details = models.TextField()
+    extra_details = models.TextField(blank=True, null=True)
     closed = models.BooleanField(default=False)
 
     # ---- Related models ----
@@ -105,6 +105,13 @@ class PatientReferral(DateTimeAuditModel):
         return self.referral_title
 
     class Meta(DateTimeAuditModel.Meta):
-        ordering =['created']
+        ordering =['-created']
+        db_table = 'patient_referrals'
         verbose_name = 'Patient Referral'
         verbose_name_plural = 'Patient Referrals'
+        indexes = [
+            models.Index(fields=['patient', 'closed'], name='pr_patientclosed_idx'),
+            models.Index(fields=['referral_date'], name='pr_referraldate_idx'),
+            models.Index(fields=['dentist', 'closed'], name='pr_dentistclosed_idx'),
+            models.Index(fields=['branch', 'closed'], name='pr_branchclosed_idx')
+        ]

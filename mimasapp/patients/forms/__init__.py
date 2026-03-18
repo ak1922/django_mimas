@@ -13,3 +13,4 @@ from .patientscontact_form import PatientContactForm
 from .patientvisit_forms import PatientVisitForm
 from .treatmentroom_form import TreatmentRoomForm
 from .patientbill_form import PatientBillForm
+from .visittask_forms import PatientVisitTaskForm

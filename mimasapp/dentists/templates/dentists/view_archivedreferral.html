@@ -13,7 +13,7 @@
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            <p class="formTitle">Archived Referral For {{ h_archivedreferral.patient }}</p>
+            <h5 class="formTitle">Archived Referral For {{ h_archivedreferral.patient }}</h5>
             {{ h_form.as_p }}
 
             <div class="buttomsDiv">

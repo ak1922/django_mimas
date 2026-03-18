@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views.company import index, staff_room
-from .views.manage_employee import EmployeeCreateView, list_employees, edit_employee, delete_employee, view_employee
+from .views.manage_employee import EmployeeCreateView, list_employees, edit_employee, delete_employee, view_employee, \
+    employee_photo
 from .views.manage_positions import edit_position, create_position, delete_position, list_positions, view_position
 from .views.manage_employeetask import create_task_category, delete_task_category, edit_task_category, list_task_categories, \
     create_task, delete_task, edit_task, list_tasks, create_task_item, edit_task_item, list_task_items, delete_task_item, \
@@ -31,9 +32,10 @@ urlpatterns = [
     path('employeedashboard/', EmployeeDashboardView.as_view(), name='employeedashboard'),
     # Employees
     path('listemployees/', list_employees, name='listemployees'),
-    path('createemployee/', EmployeeCreateView.as_view(), name='createemployee'),
+    path('employeephoto/', employee_photo, name='employeephoto'),
     path('editemployee/<int:emp_id>/edit/', edit_employee, name='editemployee'),
     path('viewemployee/<int:emp_id>/view/', view_employee, name='viewemployee'),
+    path('createemployee/', EmployeeCreateView.as_view(), name='createemployee'),
     path('deleteemployee/<int:emp_id>/delete/', delete_employee, name='deleteemployee'),
     # Dentists
     path('listdentists/', list_dentists, name='listdentists'),
