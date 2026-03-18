@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mimas-deployment
+  namespace: devops
+  labels:
+    app: mimascompany
+spec:
+  selector:
+    matchLabels:
+      app: mimascompany
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mimascompany
+    spec:
+      containers:
+        - name: mimascompany
+          image: akwasi14/mimascompany
+          env:
+          - name: DJANGO_ALLOWED_HOSTS
+            value: "kwc4.barocay.com"
+          ports:
+          - containerPort: 8000
+            name: mimascompany
