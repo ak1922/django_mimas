@@ -106,8 +106,6 @@ class AppLoginForm(forms.Form):
         password = cleaned_data.get('password')
 
         if email and password:
-            # We don't authenticate here, just check if email exists if needed
-            # Or leave clean empty and handle error in view
             pass
         return cleaned_data
 

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: mimascompany
-          image: akwasi14/mimascompany
+          image: akwasi14/mimascompany:latest
           env:
           - name: DJANGO_ALLOWED_HOSTS
             value: "kwc4.barocay.com"

@@ -29,7 +29,12 @@ SECRET_KEY = 'django-insecure-ek*v6v#0gh5(65mob-zbxj-v35#$n=x^_d)h-h8gx#$l53(5fi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+env_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
+
+env_hosts = [host.strip() for host in env_hosts if host.strip()]
+static_host = ['0.0.0.0', '10.0.0.55', '127.0.0.1']
+
+ALLOWED_HOSTS = list(set(env_hosts + static_host))
 
 
 # Application definition
@@ -147,7 +152,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'pictures')
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False, # Keep Django's default loggers, but we will redefine the levels
+    "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
             "format": "[%(asctime)s] [%(levelname)s] [%(name)s:%(lineno)s] %(message)s",
@@ -159,23 +164,23 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": "INFO", # Handler level: Processes INFO and above
+            "level": "INFO",
             "class": "logging.StreamHandler",
             "formatter": "verbose"
         },
     },
     "loggers": {
-        "": { # This is the root logger
+        "": {
             "handlers": ["console"],
-            "level": "INFO", # Logger level: Captures INFO and above
+            "level": "INFO",
             "propagate": True,
         },
         "django": {
             "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"), # Allows overriding via env variable
-            "propagate": False, # Prevents logs from being handled by the root logger's handler again
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
         },
-        "myproject": { # A logger for your specific application/project namespace
+        "myproject": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,

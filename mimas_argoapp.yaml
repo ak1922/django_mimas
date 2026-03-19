@@ -1,0 +1,20 @@
+apiVersion: argocdproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-mimas
+  namespace: argocd
+spec:
+  project: default
+  source:
+    path: django_mimas/argofiles
+    repoURL: git@github.com:ak1922/django_mimas.git
+    targetRevision: HEAD
+  destination:
+    server: https://kmaz:6443
+    namespace: devops
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
+    automated:
+      selfHeal: true
+      prune: true
