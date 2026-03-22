@@ -304,7 +304,6 @@ def archive_patient_visit(request, vis_id):
 
 # View archived visit
 @login_required
-@group_required(allowed_groups=['Dentists', 'Administrators', 'Employees'])
 def view_archived_visit(request, vis_id):
 
     archived_visit = get_object_or_404(ArchivedPatientVisit, pk=vis_id)

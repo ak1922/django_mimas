@@ -106,9 +106,14 @@ class ServiceForm(forms.ModelForm):
 
     class Meta:
         model = Service
-        fields = '__all__'
         exclude = ['updated_by']
-
+        fields = [
+            'service_name',
+            'department',
+            'description',
+            'duration',
+            'price'
+        ]
 
 # Patient booking
 class PatientBookingForm(forms.ModelForm):

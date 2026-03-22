@@ -10,6 +10,8 @@ from mimascompany.models.employee_model import Employee
 # Dentist form
 class DentistForm(forms.ModelForm):
 
+    required_css_class = 'required'
+
     specialty = forms.CharField(label='Specialty')
 
     employee = forms.ModelChoiceField(

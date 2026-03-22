@@ -3,9 +3,9 @@ from django.db.models import Index
 from model_utils import FieldTracker
 from django.core.exceptions import ValidationError
 
+from .treatmentroom_model import TreatmentRoom
 from mimascompany.models import Branch, Service, Dentist, Employee, Department
 from patients.models import Patient, PatientInsurance, PatientAppointment, DateTimeAuditModel
-from .treatmentroom_model import TreatmentRoom
 
 
 POST_VISIT_CHOICES = [

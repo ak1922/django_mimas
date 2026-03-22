@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from datetime import time, datetime, timedelta
 
+from accounts.models import AccountUser
 from mimascompany.models import Dentist, Branch, Employee
 from patients.models import Patient, PatientInsurance, DateTimeAuditModel
 
@@ -81,7 +82,7 @@ class PatientAppointment(DateTimeAuditModel):
         related_name='patientappointment_insurance'
     )
     updated_by = models.ForeignKey(
-        Employee,
+        AccountUser,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

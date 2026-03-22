@@ -1,6 +1,5 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.contrib.auth.password_validation import validate_password
 
 from .models import AccountUser, UserType
 
@@ -62,16 +61,12 @@ class RegisterAppUserForm(forms.ModelForm):
             if not password1:
                 self.add_error('password1', 'This field is required for new registrations.')
             if not password2:
-                self.add_error('password1', 'This field is required for new registrations.')
+                self.add_error('password2', 'This field is required for new registrations.')
 
         # ---- Check for matching passwords
         if password1 and password2:
             if password1 != password2:
                 raise ValidationError('Passwords do not match.')
-            # try:
-            #     validate_password(password1, self.instance)
-            # except ValidationError as e:
-            #     self.add_error('password1', e)
         return cleaned_data
 
     def save(self, commit=True):

@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title_content %}Patient Dash{% endblock %}
+{% block title_content %}Dashboard for {{ h_patient }}{% endblock %}
 
 {% block css_content %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -13,7 +13,7 @@
     <div class="container dashboard-container">
         <div class="profileHeaderDiv">
             <h3 class="profileHeaderTitle"><i class="fas fa-user-circle"></i> Patient Dashboard</h3>
-            <span class="profileHeaderName">Dashboard for {{ h_patient.patient_name }}</span>
+            <span class="profileHeaderName">Dashboard for {{ h_patient }}</span>
         </div>
 
         <div class="formActionsMenu">
@@ -27,7 +27,7 @@
             <div class="visitMenu">
                 <!-- Show next patient appointment -->
                 <div class="visitItems">
-                    {% if h_daysleft is not None %}
+                    {% if h_daysleft is not None and h_nextappointment.status == 'Scheduled' %}
                         {% if h_daysleft == 0 %}
                             <span class="visitItemTopicblinker"><i class="fas fa-exclamation-triangle"></i> Your appointment is today.</span>
                         {% elif h_daysleft == 1 %}
@@ -42,11 +42,11 @@
                 </div>
                 <div class="visitItems">
                     <span class="visitItemTopic"><i class="fas fa-question-circle"></i> Unconfirmed Appointments</span>
-                    <a class="visitItemTopicLink" href="">{{ h_unconfirmed }}</a>
+                    <a class="visitItemTopicLink" href="{% url 'patients:unconfirmedappointments' h_patient.pk %}">{{ h_unconfirmed }}</a>
                 </div>
                 <div class="visitItems">
                     <span class="visitItemTopic"><i class="fas fa-check-circle"></i> Confirmed Appointment</span>
-                    <a class="visitItemTopicLink" href="">{{ h_confirmed }}</a>
+                    <a class="visitItemTopicLink" href="{% url 'patients:confirmedappointment' h_patient.pk %}">{{ h_confirmed }}</a>
                 </div>
             </div>
         </div>
@@ -56,11 +56,11 @@
             <div class="visitMenu">
                 <div class="visitItems">
                     <span class="visitItemTopic"><i class="fas fa-clock"></i> Scheduled</span>
-                    <a class="visitItemTopicLink" href="">{{ h_scheduledvisits }}</a>
+                    <a class="visitItemTopicLink" href="{% url 'patients:scheduledvisits' h_patient.pk %}">{{ h_scheduledvisits }}</a>
                 </div>
                 <div class="visitItems">
                     <span class="visitItemTopic"><i class="fas fa-check"></i> Completed Visits</span>
-                    <a class="visitItemTopicLink" href="">{{ h_completedvisits }}</a>
+                    <a class="visitItemTopicLink" href="{% url 'patients:completedvisits' h_patient.pk %}">{{ h_completedvisits }}</a>
                 </div>
                 <div class="visitItems">
                     <span class="visitItemTopic"><i class="fas fa-times-circle"></i> No Show</span>
@@ -74,15 +74,15 @@
             <div class="visitMenu">
                 <div class="visitItems">
                     <span class="visitItemTopic"><i class="fas fa-tooth"></i> Completed Treatments</span>
-                    <a class="visitItemTopicLink" href="">{{ h_completedtreatments }}</a>
+                    <a class="visitItemTopicLink" href="{% url 'patients:completedtreatments' h_patient.pk %}">{{ h_completedtreatments }}</a>
                 </div>
                 <div class="visitItems">
                     <span class="visitItemTopic"><i class="fas fa-flask"></i> Completed Labs</span>
-                    <a class="visitItemTopicLink" href="">{{ h_completedlabs }}</a>
+                    <a class="visitItemTopicLink" href="{% url 'patients:completedlabs' h_patient.pk %}">{{ h_completedlabs }}</a>
                 </div>
                 <div class="visitItems">
                     <span class="visitItemTopic"><i class="fas fa-user-md"></i> Completed Referrals</span>
-                    <a class="visitItemTopicLink" href="">{{ h_completedreferrals }}</a>
+                    <a class="visitItemTopicLink" href="{% url 'patients:completedreferrals' h_patient.pk %}">{{ h_completedreferrals }}</a>
                 </div>
             </div>
         </div>

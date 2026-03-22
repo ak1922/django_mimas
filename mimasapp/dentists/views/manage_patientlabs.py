@@ -221,7 +221,6 @@ def delete_patient_lab(request, lab_id):
 
 # View archived lab
 @login_required
-@group_required(allowed_groups=['Administrators', 'Employees', 'Dentists'])
 def view_archived_lab(request, lab_id):
 
     archived_lab = ArchivedPatientLab.objects.get(pk=lab_id)

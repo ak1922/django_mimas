@@ -32,7 +32,7 @@ DEBUG = True
 env_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
 
 env_hosts = [host.strip() for host in env_hosts if host.strip()]
-static_host = ['0.0.0.0', '10.0.0.55', '127.0.0.1']
+static_host = ['10.0.0.55', 'localhost']
 
 ALLOWED_HOSTS = list(set(env_hosts + static_host))
 

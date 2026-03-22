@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Completed Referrals for {{ h_patient }}{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/patientsdash.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container mt-4">
+        <h2 class="viewTitle">Completed Referrals for {{ h_patient }}</h2>
+        <p class="dentistName">Primary Dentist: {{ h_patient.primary_dentist }}</p>
+
+        {% for referral in h_referrals %}
+        	{% if forloop.counter0|divisibleby:3 %}
+                <div class="row mb-3">
+        	{% endif %}
+
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ referral.referral_title }}</h5>
+                        <p class="card-text mt-0 mb-0">Visit: {{ referral.visit.visit_title }}</p>
+                        <p class="card-text mt-0 mb-0">Lab Name: {{ referral.referral_name }}</p>
+                        <p class="card-text mt-0 mb-0">Dentist: {{ referral.dentist }}</p>
+                        <p class="card-text mt-0 mb-0">Branch: {{ referral.branch }}</p>
+                        <div class="patientActionDiv">
+                            <a id="patientActionLink" href="{% url 'dentists:viewarchivedreferral' referral.pk %}" class="btn btn-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if forloop.counter|divisibleby:3 or forloop.last %}
+                </div>
+            {% endif %}
+        {% empty %}
+            <p>No Completed Referrals</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}

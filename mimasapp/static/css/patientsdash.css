@@ -128,3 +128,29 @@ body {
     animation: blinker 1s linear infinite;
     font-weight: bold;
 }
+
+/* Dashboard views */
+.viewTitle {
+    font-family: 'Georgia', serif;
+    margin-top: 10px;
+    margin-bottom: 6px;
+
+}
+
+.patientActionDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#patientActionLink {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 180px;
+    margin-top: 15px;
+}
+
+.dentistName {
+    color: #856404;
+}

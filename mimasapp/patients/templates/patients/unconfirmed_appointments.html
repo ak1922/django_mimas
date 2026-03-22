@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title_content %}Unconfirmed Appointments for {{ h_patient }}{% endblock %}
+
+{% block css_content %}
+	<link rel="stylesheet" href="{% static 'css/patientsdash.css' %}">
+{% endblock %}
+
+{% block body_content %}
+
+    <div class="container mt-4">
+        <h2 class="viewTitle">Unconfirmed Appointments for {{ h_patient }}</h2>
+        <p class="dentistName">Primary Dentist: {{ h_patient.primary_dentist }}</p>
+
+        {% for appointment in h_unconfirmed %}
+        	{% if forloop.counter0|divisibleby:3 %}
+                <div class="row mb-3">
+        	{% endif %}
+
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ appointment.appointment_date|date:"D, M d, Y" }}</h5>
+                        <p class="card-text mt-0 mb-0">Time: {{ appointment.appointment_time }}</p>
+                        <p class="card-text mt-0 mb-0">Reason: {{ appointment.reason }}</p>
+                        <p class="card-text mt-0 mb-0">Dentist: {{ appointment.dentist }}</p>
+                        <div class="patientActionDiv">
+                            <a id="patientActionLink" href="{% url 'patients:editappointment' appointment.pk %}" class="btn btn-primary">Confirm</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if forloop.counter|divisibleby:3 or forloop.last %}
+                </div>
+            {% endif %}
+        {% empty %}
+            <p>No Unconfirmed Appointments</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}

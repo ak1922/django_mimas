@@ -88,8 +88,10 @@
             </div>
 
             <div class="buttomsDiv">
-                {% if h_exists_visit %}
+                {% if h_exists_visit and user.user_type == 'Patient' %}
                     <a href="{% url 'patients:listallpatientvisits' %}" class="backToListLink">Back To Visits</a>
+                {% elif h_exists_visit %}
+                    <a href="{% url 'patients:patientdashbaord' %}" class="backToListLink">Patient Dashboard</a>
                 {% else %}
                     <button class="formSubmitButton" type="submit">Submit Visit</button>
                 {% endif %}

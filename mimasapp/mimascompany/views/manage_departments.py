@@ -7,8 +7,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.decorators import group_required
 from accounts.models import AccountUser
-from mimascompany.models.department_model import Department
-from mimascompany.forms.company_forms import DepartmentForm
+from mimascompany.models import Department
+from mimascompany.forms import DepartmentForm
 
 
 # Setting logging
@@ -23,15 +23,14 @@ def create_department(request):
 
     if request.method == 'POST':
         form = DepartmentForm(request.POST)
-
         if form.is_valid():
             new_dept = form.save()
             messages.success(request, f'New department {new_dept.department_name} created by {request.user}.')
             logger.info(f'New department {new_dept.department_name} created by {request.user}.')
             return redirect('mimascompany:listdepartments')
         else:
-            messages.error(request, 'Issues with department creation!')
-
+            for error in form.errors.items():
+                messages.error(request, f'Department Form Error:- {error}')
     else:
         form = DepartmentForm()
 
@@ -51,7 +50,6 @@ def edit_department(request, dept_id):
 
     if request.method == 'POST':
         form = DepartmentForm(request.POST, instance=department)
-
         if form.is_valid():
             current_user = AccountUser.objects.get(username=request.user)
             edited_department = form.save(commit=False)
@@ -62,7 +60,6 @@ def edit_department(request, dept_id):
             return redirect('mimascompany:listdepartments')
         else:
             messages.error(request, 'Issues with department update!')
-
     else:
         form = DepartmentForm(instance=department)
     return render(request, 'mimascompany/create_department.html', {'h_form': form})

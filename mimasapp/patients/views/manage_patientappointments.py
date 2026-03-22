@@ -1,6 +1,7 @@
 import logging
 from datetime import date
 from django.db.models import Q
+from django.urls import reverse
 from datetime import timedelta
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -8,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.decorators import group_required
+from accounts.models import AccountUser
 from mimascompany.models import Dentist, Employee
 from patients.forms import PatientAppointmentForm, ArchivedAppointmentsReadOnlyForm
 from patients.models import Patient, PatientInsurance, PatientAppointment, ArchivedPatientAppointment
@@ -61,12 +63,10 @@ def create_reocurring_appointment(request, pat_id):
             base_date = data['appointment_date']
             base_title = data['appointment_title']
 
-            # Iterate to create appointments
             for i in range(number_appointments):
                 # Calculate new date
                 current_date = base_date + timedelta(weeks=i * frequency)
 
-                # Create the record directly with necessary data
                 PatientAppointment.objects.create(
                     patient=patient,
                     dentist=dentist,
@@ -81,12 +81,11 @@ def create_reocurring_appointment(request, pat_id):
 
             messages.success(request, f'{number_appointments} appointments created successfully.')
             logger.info(f'New patient appointments created by {request.user}')
-            return redirect('patients:listallappointments')
+            return redirect('patients:listpatients')
         else:
             for field, errors in form.errors.items():
                 messages.error(request, f'{field}: {", ".join(errors)}')
     else:
-        # Pre-fill form
         form = PatientAppointmentForm(initial={
             'patient': patient,
             'dentist': dentist,
@@ -106,7 +105,7 @@ def add_patient_appointment_patient(request, pat_id):
     patient = get_object_or_404(Patient, pk=pat_id)
     dentist_instance = Dentist.objects.filter(employee=patient.primary_dentist).first()
     appointment_branch = dentist_instance.branch
-    current_user = get_object_or_404(Employee, user=request.user)
+    current_user = get_object_or_404(AccountUser, username=request.user)
 
     if request.method == 'POST':
         form = PatientAppointmentForm(request.POST)
@@ -118,11 +117,14 @@ def add_patient_appointment_patient(request, pat_id):
             new_appointment.branch = appointment_branch
             new_appointment.updated_by = current_user
             new_appointment.save()
-            messages.success(request, 'Appointment created successfully.')
+            messages.success(request, f'Appointment created successfully for {patient.full_name}.')
+            logger.info(f'Appointment created successfully for {patient.full_name} by {request.user}.')
             return redirect('patients:listpatients')
         else:
-            messages.error(request, 'Invalid form data. Please check the details.')
-
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}:- {error}')
+                    logger.error(f'Patient Appointment Form Error:- {field} - {error}')
     else:
         form = PatientAppointmentForm(initial={
             'patient': patient,
@@ -139,22 +141,27 @@ def add_patient_appointment_patient(request, pat_id):
 
 # Edit appointment
 @login_required
-@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
 def edit_appointment(request, app_id):
     """ Edit patient appointment """
 
+    next_url = request.GET.get('next', reverse('patients:listallappointments'))
     appointment = PatientAppointment.objects.get(pk=app_id)
 
     if request.method == 'POST':
         form = PatientAppointmentForm(request.POST, instance=appointment)
 
         if form.is_valid():
-            current_user = Employee.objects.get(user=request.user)
+            current_user = AccountUser.objects.get(username=request.user)
             edited_appointment = form.save()
             edited_appointment.updated_by = current_user
             edited_appointment.save()
-            return redirect('patients:listallappointments')
-
+            messages.success(request, f'Appointment for {edited_appointment.patient} updated.')
+            logger.info(f'Appointment for {edited_appointment.patient} updated by {request.user}.')
+            return redirect(next_url)
+        else:
+            for error in form.errors.items():
+                messages.error(request, f'Patient Appointment Form:- {error}')
+                logger.error(f'Patient Appointment Form:- {error}')
     else:
         form = PatientAppointmentForm(instance=appointment)
     return render(request, 'patients/create_patientappointment.html', {'h_form': form})
@@ -247,7 +254,6 @@ def view_next_appointment(request, pat_id):
 
 # Patient appointment read only
 @login_required
-@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
 def view_appointment(request, app_id):
 
     appointment = PatientAppointment.objects.get(pk=app_id)

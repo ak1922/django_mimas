@@ -12,7 +12,8 @@ from .views.manage_employeeleave import edit_leave_request, list_all_leavereques
     view_leave_request
 from .views.manage_departments import create_department, edit_department, list_departments, delete_department, view_department
 from .views.manage_branches import edit_branch, create_branch, list_branches, view_branch, delete_branch
-from .views.manage_services import create_service, list_services, view_service, delete_service, edit_service
+from .views.manage_services import create_service, list_services, view_service, delete_service, edit_service, \
+    create_service_with_department
 from .views.manage_employeedetails import create_employee_detail, create_employee_detail_employee, edit_employee_detail, \
     list_employee_details, delete_employee_detail, view_employee_detail
 from .views.manage_employeecontact import create_employee_contact, edit_employee_contact, delete_employee_contact, \
@@ -81,6 +82,7 @@ urlpatterns = [
     path('viewservice/<int:svc_id>/view/', view_service, name='viewservice'),
     path('editservice/<int:svc_id>/edit/', edit_service, name='editservice'),
     path('deleteservice/<int:svc_id>/delete/', delete_service, name='deleteservice'),
+    path('createservicewithdepartment/<int:dept_id>/create/', create_service_with_department, name='createservicewithdepartment'),
     # Departments
     path('createdepartment/', create_department, name='createdepartment'),
     path('listdepartments/', list_departments, name='listdepartments'),

@@ -1,7 +1,9 @@
 from django.urls import path
 
 from .views.patients_center import patientscenter
-from .views.patient_dashboard import patient_dashbaord
+from .views.patient_dashboard import patient_dashboard, patient_unconfirmed_appointments, patient_confirmed_appointment, \
+    patient_scheduled_visits, patient_completed_visits, patient_completed_treatments, patient_completed_labs, \
+    patient_completed_referrals
 from .views.manage_patients import create_patient, edit_patient, list_patients, delete_patient, view_patient
 from .views.manage_patientcontacts import create_patient_contact, list_patient_contacts, edit_patient_contact, \
     create_patient_contact_patient, view_patient_contact, delete_patient_contact
@@ -27,7 +29,14 @@ app_name = 'patients'
 
 urlpatterns = [
     # Patient dashboard
-    path('patientdashbaord/', patient_dashbaord, name='patientdashbaord'),
+    path('patientdashboard/', patient_dashboard, name='patientdashbaord'),
+    path('completedlabs/<int:pat_id>/patient/', patient_completed_labs, name='completedlabs'),
+    path('schedulevisits/<int:pat_id>/patient/', patient_scheduled_visits, name='scheduledvisits'),
+    path('completedvisits/<int:pat_id>/patient/', patient_completed_visits, name='completedvisits'),
+    path('completedreferrals/<int:pat_id>/patient/', patient_completed_referrals, name='completedreferrals'),
+    path('confirmedappointment/<int:pat_id>/patient/', patient_confirmed_appointment, name='confirmedappointment'),
+    path('completedtreatments/<int:pat_id>/patient/', patient_completed_treatments, name='completedtreatments'),
+    path('unconfirmedappointments/<int:pat_id>/patient', patient_unconfirmed_appointments, name='unconfirmedappointments'),
     # Patients center
     path('patientscenter/', patientscenter, name='patientscenter'),
     # Patients

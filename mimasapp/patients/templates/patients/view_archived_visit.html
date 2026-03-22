@@ -22,7 +22,7 @@
                 <a class="backToListLink" href="">Back to List</a>
                 <a class="backToListLink" href="{% url 'patients:patientscenter' %}">Patients Center</a>
             {% else %}
-                <a class="backToListLink" href="">Patient Dashboard</a>
+                <a class="backToListLink" href="{% url 'patients:patientdashbaord' %}">Patient Dashboard</a>
             {% endif %}
         </div>
     </div>

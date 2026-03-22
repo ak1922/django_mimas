@@ -1,3 +1,4 @@
+import logging
 from django.db.models import Q
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -6,8 +7,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.models import AccountUser
 from accounts.decorators import group_required
-from mimascompany.models.service_model import Service
-from mimascompany.forms.company_forms import ServiceForm
+from mimascompany.forms import ServiceForm
+from mimascompany.models import Service, Department
+
+
+logger = logging.getLogger(__name__)
+
 
 # Create service
 @login_required
@@ -16,14 +21,15 @@ def create_service(request):
 
     if request.method == 'POST':
         form = ServiceForm(request.POST)
-
         if form.is_valid():
             new_service = form.save()
             messages.success(request, f'New service {new_service} created for {new_service.department} department by {request.user}.')
+            logger.info(f'New service {new_service} created for {new_service.department} department by {request.user}.')
             return redirect('mimascompany:listservices')
         else:
-            messages.error(request, 'Issues creating new service.')
-
+            for error in form.errors.items():
+                messages.error(request, f'Service Form:- {error}')
+                logger.error(f'Service Form:- {error}')
     else:
         form = ServiceForm()
     context = {
@@ -33,7 +39,33 @@ def create_service(request):
     return render(request, 'mimascompany/create_service.html', context)
 
 
-# List services
+# Add service from departments
+@login_required
+@group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
+def create_service_with_department(request, dept_id):
+
+    department = get_object_or_404(Department, pk=dept_id)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if request.method == 'POST':
+            new_service = form.save(commit=False)
+            new_service.department = department
+            new_service.save()
+            messages.success(request, f'New service added to {new_service.department}')
+            logger.info(f'New service added to {new_service.department} by {request.user}')
+            return redirect('mimascompany:listdepartments')
+        else:
+            for error in form.errors.items():
+                messages.error(request, f'Service Form:- {error}')
+                logger.error(f'Service Form:- {error}')
+    else:
+        form = ServiceForm(initial={
+            'department': department
+        })
+    return render(request, 'mimascompany/create_service.html', {'h_form': form})
+
+
+# List all services
 @login_required
 @group_required(allowed_groups=['Administrators', 'Dentists', 'Employees'])
 def list_services(request):

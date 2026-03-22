@@ -25,7 +25,7 @@ class AccountUser(AbstractUser):
 
     @property
     def is_administrator(self):
-        return self.is_superuser
+        return self.user_type == UserType.ADMINISTRATORS
 
     @property
     def is_employee(self):

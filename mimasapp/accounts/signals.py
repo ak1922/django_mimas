@@ -11,7 +11,7 @@ def assign_user_group(sender, instance, created, **kwargs):
     """ Create and/or assign users to a group after registration """
 
     if created:
-        if instance.is_superuser:
+        if instance.is_administrator:
             group, _ = Group.objects.get_or_create(name='Administrators')
             instance.groups.add(group)
 

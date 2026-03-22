@@ -1,5 +1,6 @@
 from django.db import models
 
+from accounts.models import AccountUser
 from patients.models import PatientInsurance, Patient
 from mimascompany.models import Branch, Dentist, Employee
 
@@ -43,7 +44,7 @@ class ArchivedPatientAppointment(models.Model):
         related_name='archivedappointment_insurabce'
     )
     updated_by = models.ForeignKey(
-        Employee,
+        AccountUser,
         null=True,
         on_delete=models.SET_NULL,
         related_name='archivedappointment_updatedby'

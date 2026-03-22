@@ -21,7 +21,7 @@
             {% if user.user_type == 'Employees' or user.user_type == 'Administrators' or user.user_type == 'Dentists' %}
                 <a class="backToListLink" href="{% url 'patients:listallappointments' %}">Back to List</a>
             {% else %}
-                <a class="formSubmitButton" href="{% url 'patients:patientdashboard' pat_id=user.id %}">Patient Dashboard</a>
+                <a class="formSubmitButton" href="{% url 'patients:patientdashbaord' %}">Patient Dashboard</a>
             {% endif %}
         </div>
     </div>

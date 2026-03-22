@@ -66,6 +66,9 @@
                                         <a href="{% url 'mimascompany:editdepartment' department.pk %}" class="btn btn-sm btn-outline-warning" title="Edit">
                                             <i class="fas fa-edit fa-fw"></i>
                                         </a>
+                                        <a href="{% url 'mimascompany:createservicewithdepartment' department.pk %}" class="btn btn-sm btn-outline-secondary" title="Create Service">
+                                            <i class="fas fa-wrench fa-fw"></i>
+                                        </a>
                                         <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ department.pk }}">
                                             <i class="fas fa-trash-alt fa-fw"></i>
                                         </button>

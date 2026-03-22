@@ -19,7 +19,7 @@ urlpatterns = [
     # Dentist office
     path('dentistoffice/', dentist_office, name='dentistoffice'),
     # Dentist dashboard
-    path('dentistdashboard/', dentist_dashboard, name='dentistdashboard'),
+    path('dashboard/', dentist_dashboard, name='dentistdashboard'),
     # Patient labs
     path('createpatientlab/', create_patient_lab, name='createpatientlab'),
     path('listallpatientslabs/', list_all_patients_labs, name='listallpatientslabs'),
