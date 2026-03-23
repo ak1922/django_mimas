@@ -32,7 +32,7 @@ DEBUG = True
 env_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
 
 env_hosts = [host.strip() for host in env_hosts if host.strip()]
-static_host = ['10.0.0.55', 'localhost']
+static_host = ['10.0.0.55', 'localhost', '127.0.0.1']
 
 ALLOWED_HOSTS = list(set(env_hosts + static_host))
 
@@ -96,16 +96,16 @@ WSGI_APPLICATION = 'mimasapp.wsgi.application'
 #     }
 # }
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
-        "CONN_MAX_AGE": 60,
-        "OPTIONS": {
-            # "options": "-c statement_timeout=5000"
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_NAME', 'postgres'),
+        'USER': os.getenv('DATABASE_USERNAME', 'postgres'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': 'db',
+        'PORT': 5432,
+        'CONN_MAX_AGE': 60,
+        'OPTIONS': {
+            # options: -c statement_timeout=5000
         },
     }
 }
