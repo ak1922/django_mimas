@@ -95,21 +95,38 @@ WSGI_APPLICATION = 'mimasapp.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('DATABASE_NAME', 'mimasm2'),
+#         'USER': os.getenv('DATABASE_USERNAME', 'postgres'),
+#         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+#         'HOST': 'localhost',
+#         'PORT': 5432,
+#         'CONN_MAX_AGE': 60,
+#         'OPTIONS': {
+#             # options: -c statement_timeout=5000
+#         },
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME', 'postgres'),
-        'USER': os.getenv('DATABASE_USERNAME', 'postgres'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': 'db',
-        'PORT': 5432,
-        'CONN_MAX_AGE': 60,
-        'OPTIONS': {
-            # options: -c statement_timeout=5000
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": 'postgres',
+        "PASSWORD": 'Barcode$32',
+        "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+        "PORT": os.getenv("DB_PORT", "5432"),
+        "CONN_MAX_AGE": 60,   # keeps connections open; good perf
+        "OPTIONS": {
+            # optional: set a statement timeout (ms) to avoid runaway queries
+            # "options": "-c statement_timeout=5000"
         },
     }
 }
-
+print(f"DB User: {DATABASES['default']['USER']}")
+print(f"DB Password: {DATABASES['default']['PASSWORD']}")
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
